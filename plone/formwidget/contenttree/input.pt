@@ -1,0 +1,13 @@
+<script type="text/javascript" tal:content="view/js"></script>
+<div tal:attributes="id string:${view/id}-queryselect">
+    <tal:block replace="structure view/subform/render" />
+    <tal:block condition="nocall:view/terms">
+        <div tal:replace="structure view/renderQueryWidget" />
+    </tal:block>
+</div>
+<div class="visualClear contenttreeWidget" style="display:none" 
+    tal:attributes="id string:${view/id}-contenttree">
+    <ul class="navTree navTreeLevel0">
+        <li tal:replace="structure view/render_tree" />
+    </ul>
+</div>

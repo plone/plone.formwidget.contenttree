@@ -1,0 +1,42 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns:gs="http://namespaces.zope.org/genericsetup"
+    i18n_domain="plone.formwidget.contenttree">
+    
+    <include package="plone.z3cform" />
+    
+    <adapter factory=".navtree.QueryBuilder" />
+    <adapter factory=".navtree.NavtreeStrategy" />
+    
+    <browser:page
+        name="contenttree-fetch"
+        for=".interfaces.IContentTreeWidget"
+        permission="zope.Public"
+        class=".widget.Fetch"
+        />
+    
+    <browser:resourceDirectory
+        name="plone.formwidget.contenttree"
+        directory="jqueryFileTree"
+        />
+        
+    <gs:registerProfile
+        name="default"
+        title="Content tree widget"
+        directory="profiles/default"
+        for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+        provides="Products.GenericSetup.interfaces.EXTENSION"
+        />
+
+    <!-- Demo -->
+    <browser:page
+        for="*"
+        name="test-tree-widget"
+        class="plone.formwidget.contenttree.demo.TestView"
+        permission="cmf.ModifyPortalContent"
+        />
+    <adapter factory="plone.formwidget.contenttree.demo.TestAdapter" />
+
+</configure>

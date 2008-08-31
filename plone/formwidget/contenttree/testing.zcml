@@ -1,0 +1,12 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="plone.formwidget.contenttree">
+
+    <include file="meta.zcml" package="Products.GenericSetup"/>
+
+    <include package="plone.z3cform" file="testing.zcml" />
+    <include package="plone.formwidget.contenttree" file="configure.zcml" />
+    
+</configure>
