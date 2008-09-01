@@ -9,12 +9,16 @@ from plone.formwidget.contenttree import PathSourceBinder
 from z3c.form import form, button, field
 from plone.z3cform import layout
 
-from Products.CMFCore.utils import getToolByName
-
 class ITestForm(Interface):
     
     buddy = schema.Choice(title=u"Buddy object",
+                          description=u"Select one, please",
                           source=PathSourceBinder(portal_type='Document'))
+
+    friends = schema.List(title=u"Friend objects",
+                          description=u"Select as many as you want",
+                          value_type=schema.Choice(title=u"Selection",
+                                                   source=PathSourceBinder(portal_type='Document')))
 
 class TestAdapter(object):
     implements(ITestForm)
@@ -29,9 +33,16 @@ class TestAdapter(object):
         print "setting", value
     buddy = property(_get_buddy, _set_buddy)
 
+    def _get_friends(self):
+        return []
+    def _set_friends(self, value):
+        print "setting", value
+    friends = property(_get_friends, _set_friends)
+
 class TestForm(form.Form):
     fields = field.Fields(ITestForm)
     fields['buddy'].widgetFactory = ContentTreeFieldWidget
+    fields['friends'].widgetFactory = MultiContentTreeFieldWidget
     
     @button.buttonAndHandler(u'Ok')
     def handle_ok(self, action):
