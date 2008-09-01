@@ -1,0 +1,15 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="plone.formwidget.contenttree">
+
+    <!-- Demo -->
+    <browser:page
+        for="*"
+        name="test-tree-widget"
+        class="plone.formwidget.contenttree.demo.TestView"
+        permission="cmf.ModifyPortalContent"
+        />
+    <adapter factory="plone.formwidget.contenttree.demo.TestAdapter" />
+
+</configure>

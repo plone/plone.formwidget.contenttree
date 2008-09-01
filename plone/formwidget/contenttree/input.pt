@@ -1,9 +1,8 @@
-<script type="text/javascript" tal:content="view/js"></script>
-<div tal:attributes="id string:${view/id}-queryselect">
+<script type="text/javascript" tal:content="structure view/js"></script>
+<div tal:attributes="id string:${view/id}-autocomplete">
+    <div tal:attributes="id string:${view/id}-input-fields" class="autocompleteInputWidget"
+         tal:content="structure view/renderQueryWidget" />
     <tal:block replace="structure view/subform/render" />
-    <tal:block condition="nocall:view/terms">
-        <div tal:replace="structure view/renderQueryWidget" />
-    </tal:block>
 </div>
 <div class="visualClear contenttreeWidget" style="display:none" 
     tal:attributes="id string:${view/id}-contenttree">

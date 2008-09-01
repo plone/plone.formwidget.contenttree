@@ -1,6 +1,5 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
-    xmlns:z3c="http://namespaces.zope.org/z3c"
     xmlns:browser="http://namespaces.zope.org/browser"
     xmlns:gs="http://namespaces.zope.org/genericsetup"
     i18n_domain="plone.formwidget.contenttree">
@@ -19,7 +18,7 @@
     
     <browser:resourceDirectory
         name="plone.formwidget.contenttree"
-        directory="jqueryFileTree"
+        directory="jquery-contenttree"
         />
         
     <gs:registerProfile
@@ -31,12 +30,6 @@
         />
 
     <!-- Demo -->
-    <browser:page
-        for="*"
-        name="test-tree-widget"
-        class="plone.formwidget.contenttree.demo.TestView"
-        permission="cmf.ModifyPortalContent"
-        />
-    <adapter factory="plone.formwidget.contenttree.demo.TestAdapter" />
-
+    <include file="demo.zcml" />
+    
 </configure>

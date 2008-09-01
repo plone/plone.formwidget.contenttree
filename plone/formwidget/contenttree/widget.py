@@ -5,8 +5,8 @@ import z3c.form.interfaces
 import z3c.form.widget
 import z3c.form.util
 
-from z3c.formwidget.query.widget import QuerySourceRadioWidget
-from z3c.formwidget.query.widget import QuerySourceCheckboxWidget
+from plone.formwidget.autocomplete.widget import AutocompleteSelectionWidget
+from plone.formwidget.autocomplete.widget import AutocompleteMultiSelectionWidget
 
 from plone.app.layout.navigation.interfaces import INavtreeStrategy
 from plone.app.layout.navigation.navtree import buildFolderTree
@@ -88,8 +88,8 @@ class ContentTreeBase(Explicit):
     collapseSpeed = 200
     multiFolder = True
     
-    # Whether to act as single or multi select
-    multiple = False
+    # Overrides for autocomplete widget
+    formatItem = 'function(row, idx, count, value) { return row[1] + " (" + row[0] + ")"; }'
     
     def render_tree(self):
         context = self.context
@@ -105,8 +105,8 @@ class ContentTreeBase(Explicit):
     
     def render(self):
         return self.widget_template(self)
-        
-    def js(self):
+    
+    def js_extra(self):
         
         form_context = self.form.__parent__
         form_name = self.form.__name__
@@ -116,9 +116,7 @@ class ContentTreeBase(Explicit):
         
         tokens = [self.terms.getTerm(value).token for value in self.value if value]
         
-        return """
-        (function($) {
-            $().ready(function() {
+        return """\
                 $('#%(id)s-contenttree').css('display', 'block');
                 $('#%(id)s-contenttree').contentTree({
                     script: '%(url)s',
@@ -127,31 +125,24 @@ class ContentTreeBase(Explicit):
                     expandSpeed: %(expandSpeed)d,
                     collapseSpeed: %(collapseSpeed)s,
                     multiFolder: %(multiFolder)s,
-                    multiSelect: %(multiSelect)s,
-                }, function(href, rel, selected) { alert(selected + ' href: ' + href + ', rel: ' + rel); }
+                    multiSelect: false,
+                }, function(event, selected, data, title) { alert(event + ', ' + selected + ', ' + data + ', ' + title); }
                 );
-                
-                // TODO: Set current selection
-            });
-        })(jQuery);
         """ % dict(url=url,
                    id=self.name.replace('.', '-'),
                    folderEvent=self.folderEvent,
                    selectEvent=self.selectEvent,
                    expandSpeed=self.expandSpeed,
                    collapseSpeed=self.collapseSpeed,
-                   multiFolder=str(self.multiFolder).lower(),
-                   multiSelect=str(self.multiple).lower())
+                   multiFolder=str(self.multiFolder).lower())
 
-class ContentTreeWidget(ContentTreeBase, QuerySourceRadioWidget):
+class ContentTreeWidget(ContentTreeBase, AutocompleteSelectionWidget):
     """ContentTree widget that allows single selection.
     """
     
-class MultiContentTreeWidget(ContentTreeBase, QuerySourceCheckboxWidget):
+class MultiContentTreeWidget(ContentTreeBase, AutocompleteMultiSelectionWidget):
     """ContentTree widget that allows multiple selection
     """
-    
-    multiple = True
     
 @implementer(z3c.form.interfaces.IFieldWidget)
 def ContentTreeFieldWidget(field, request):

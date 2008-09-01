@@ -1,28 +1,10 @@
 plone.formwidget.contenttree to-do
 ==================================
 
-This is Limi's mockup about selection widgets. To achieve this, we should:
-
- 1) Change plone.formwidget.autocomplete so that instead of using ;-delimited
-    tokens in the text field, it builds a list of radio buttons/check boxes.
-    This should be easy enough with custom result() handler in the jQuery
-    Autocomplete widget. The widget can act in single-select mode, even for
-    multi-select fields.
-    
- 2) Make plone.formwidget.contenttree extend plone.formwidget.autocomplete.
-    The searchable source for the content tree widget should work with the
-    autocomplete widget already.
-    
- 3) Add a browse button, and pop up a box with the tree widget.
+ - Put the tree in a dialog box behind a "browse" button
+ - Make the select event store the selected value in memory only
+ - Make add button insert a new value into radio button/checkbox list
  
- 4) Make selection callback do nothing except store value
- 
- 5) Make Add and Close buttons act as below.
- 
- 6) Ensure the extract() method in both widgets works. It is likely that we
-    can make do with the one from z3c.formwidget.query, since we're now just
-    talking about radio buttons.
-
 The design:
 -----------
 

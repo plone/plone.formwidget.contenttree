@@ -49,7 +49,7 @@ if(jQuery) (function($){
                 return false;
             }
             
-            function handleSelectEvent() {
+            function handleSelectEvent(event) {
                 var li = $(this).parent();
                 var selected = true;
                 if(!li.hasClass('navTreeCurrentItem')) {
@@ -64,7 +64,7 @@ if(jQuery) (function($){
                     selected = false;
                 }
                 
-                h($(this).attr('href'), $(this).attr('rel'), selected);
+                h(event, true, $(this).attr('href'), $.trim($(this).text()));
             }
             
             function bindTree(t) {
