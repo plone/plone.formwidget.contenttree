@@ -1,7 +1,58 @@
 .contenttreeWidget {
-    
+    bottom: 3em;
+    height: auto;
+    left: 0px;
+    overflow-y: auto;
+    margin: 0em 1em;
+    padding-right: 1em;
+    position: absolute;
+    right: 0px;
+    top: 3em;
+    width: auto;
+    border: 1px solid #8CACBB;
 }
 
 .contenttreeWidget li a {
     border-bottom: solid 1px transparent;
+}
+
+.contenttreeWindow {
+    display: none;
+    position: fixed;
+    _position: absolute;
+    background-color: white;
+    z-index: 100;
+}
+
+.contenttreeWindow h2 {
+    position: absolute;
+    top: 0px;
+}
+
+.contenttreeWindowHeader {
+    padding: 1em;
+}
+
+.contenttreeWindowActions {
+    position: absolute;
+    width: 100%;
+    top: auto;
+    bottom: 0px;
+    padding: 1em;
+}
+.contenttreeWindowBlocker {
+    z-index: 99;
+    width: 100%;
+    height: 100%;
+    opacity: 0.4;
+    background-color: black;
+    top: 0px;
+    left: 0px;
+    position: fixed;
+    _position: absolute;
+    _top: expression(eval((document.body.scrollTop)?document.body.scrollTop:document.documentElement.scrollTop));
+}
+
+.option {
+    display: block;
 }

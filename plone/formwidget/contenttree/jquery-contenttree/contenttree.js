@@ -2,13 +2,48 @@
 if(jQuery) (function($){
     
     $.extend($.fn, {
+        showDialog: function() {
+            $(document.body).append($(document.createElement("div")).addClass("contenttreeWindowBlocker"))
+            $(this).show();
+            $(this).width($(window).width() * 0.75);
+            $(this).height($(window).height() * 0.75);
+            $(this).css({
+                'left': $(window).width() * 0.125,
+                'top': $(window).height() * 0.125
+            })
+        },
+        contentTreeAdd: function(id, name, klass, title, multi_select) {
+            var termCount = multi_select ? $('#' +id + '-input-fields').children().length : 0;
+
+
+            $(this).parents(".contenttreeWindow").find('.navTreeCurrentItem > a').each(function () {
+                var field = $('#' + id + '-input-fields input[value="' + $(this).attr('href') + '"]');
+                if(field.length == 0) {
+                    if (multi_select) {
+                        $('#' + id + '-input-fields').append('<span id="' + id + '-' + termCount + '-wrapper" class="option"><label for="' + id + '-' + termCount + '"><input type="checkbox" id="' + id + '-' + termCount + '" name="' + name + ':list" class="' + klass + '" title="' + title + '" checked="checked" value="' + $(this).attr('href') + '" /><span class="label">' + $.trim($(this).text()) + '</span></label></span>');
+                    } else {
+                        $('#' + id + '-input-fields').find(".option").remove();
+                        $('#' + id + '-input-fields').append('<span id="' + id + '-' + termCount + '-wrapper" class="option"><label for="' + id + '-' + termCount + '"><input type="radio" id="' + id + '-' + termCount + '" name="' + name + ':list" class="' + klass + '" title="' + title + '" checked="checked" value="' + $(this).attr('href') + '" /><span class="label">' + $.trim($(this).text()) + '</span></label></span>');
+                    }
+                } else {
+                    field.each(function() { this.checked = true });
+                }
+            });
+
+            $(".contenttreeWindowBlocker").remove();
+            $(this).parents(".contenttreeWindow").hide();
+        },
+        contentTreeCancel: function() {
+            $(".contenttreeWindowBlocker").remove();
+            $(this).parents(".contenttreeWindow").hide();
+        },
         contentTree: function(o, h) {
 
             // Defaults
             if(!o) var o = {};
             if(o.script == undefined) o.script = 'fetch';
                
-            if(o.folderEvent == undefined) o.folderEvent = 'dblclick';
+            if(o.folderEvent == undefined) o.folderEvent = 'click';
             if(o.selectEvent == undefined) o.selectEvent = 'click';
                
             if(o.expandSpeed == undefined) o.expandSpeed = -1;
@@ -53,27 +88,29 @@ if(jQuery) (function($){
                 var li = $(this).parent();
                 var selected = true;
                 if(!li.hasClass('navTreeCurrentItem')) {
-                    if(!o.multiSelect) {
+                    var multi_key = ((event.ctrlKey) || (navigator.userAgent.toLowerCase().indexOf('macintosh') != -1 && event.metaKey));
+
+                    if(!o.multiSelect || !multi_key) {
                         o.root.find('li.navTreeCurrentItem').removeClass('navTreeCurrentItem');
                     }
-                    
+
                     li.addClass('navTreeCurrentItem');
                     selected = true;
                 } else {
                     li.removeClass('navTreeCurrentItem');
                     selected = false;
                 }
-                
+
                 h(event, true, $(this).attr('href'), $.trim($(this).text()));
             }
-            
+
             function bindTree(t) {
                 $(t).find('li a').bind('click', function() { return false; });
                 $(t).find('li.navTreeFolderish a').bind(o.folderEvent, handleFolderEvent);
                 $(t).find('li.selectable a').bind(o.selectEvent, handleSelectEvent);
             }
 
-            $(this).each(function() {                
+            $(this).each(function() {
                 bindTree($(this));
             });
         }

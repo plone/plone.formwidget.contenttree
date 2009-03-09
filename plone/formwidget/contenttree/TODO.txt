@@ -1,10 +1,10 @@
 plone.formwidget.contenttree to-do
 ==================================
 
- - Put the tree in a dialog box behind a "browse" button
- - Make the select event store the selected value in memory only
- - Make add button insert a new value into radio button/checkbox list
- 
+ - Add favorites and recent items
+ - Add search to dialog box
+ - Get the multi_select value based on the widget
+
 The design:
 -----------
 

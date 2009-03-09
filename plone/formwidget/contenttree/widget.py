@@ -82,7 +82,7 @@ class ContentTreeBase(Explicit):
     recurse_template = ViewPageTemplateFile('input_recurse.pt')
     
     # Parameters passed to the JavaScript function
-    folderEvent = 'dblclick'
+    folderEvent = 'click'
     selectEvent = 'click'
     expandSpeed = 200
     collapseSpeed = 200
@@ -116,17 +116,40 @@ class ContentTreeBase(Explicit):
         
         tokens = [self.terms.getTerm(value).token for value in self.value if value]
         
+        multi_select = True
+        
         return """\
-                $('#%(id)s-contenttree').css('display', 'block');
-                $('#%(id)s-contenttree').contentTree({
-                    script: '%(url)s',
-                    folderEvent: '%(folderEvent)s',
-                    selectEvent: '%(selectEvent)s',
-                    expandSpeed: %(expandSpeed)d,
-                    collapseSpeed: %(collapseSpeed)s,
-                    multiFolder: %(multiFolder)s,
-                    multiSelect: false,
-                }, function(event, selected, data, title) { alert(event + ', ' + selected + ', ' + data + ', ' + title); }
+                $('#%(id)s-widgets-query').after(
+                    $(document.createElement('input'))
+                        .attr({
+                            'type': 'button',
+                            'value': 'Browse...'
+                        })
+                        .addClass('searchButton')
+                        .click(function () {
+                            $('#%(id)s-contenttree-window').showDialog();
+                        })
+                );
+                $('#%(id)s-contenttree-window').find('.contentTreeAdd').click(function () {
+                    $(this).contentTreeAdd('%(id)s', '%(name)s', '%(klass)s', '%(title)s', %(multiSelect)s);
+                });
+                $('#%(id)s-contenttree-window').find('.contentTreeCancel').click(function () {
+                    $(this).contentTreeCancel();
+                });
+                $('#%(id)s-widgets-query').after(" ");
+                $('#%(id)s-contenttree').contentTree(
+                    {
+                        script: '%(url)s',
+                        folderEvent: '%(folderEvent)s',
+                        selectEvent: '%(selectEvent)s',
+                        expandSpeed: %(expandSpeed)d,
+                        collapseSpeed: %(collapseSpeed)s,
+                        multiFolder: %(multiFolder)s,
+                        multiSelect: %(multiSelect)s,
+                    },
+                    function(event, selected, data, title) {
+                        // alert(event + ', ' + selected + ', ' + data + ', ' + title);
+                    }
                 );
         """ % dict(url=url,
                    id=self.name.replace('.', '-'),
@@ -134,7 +157,11 @@ class ContentTreeBase(Explicit):
                    selectEvent=self.selectEvent,
                    expandSpeed=self.expandSpeed,
                    collapseSpeed=self.collapseSpeed,
-                   multiFolder=str(self.multiFolder).lower())
+                   multiFolder=str(self.multiFolder).lower(),
+                   multiSelect=str(multi_select).lower(),
+                   name=self.name,
+                   klass=self.klass,
+                   title=self.title)
 
 class ContentTreeWidget(ContentTreeBase, AutocompleteSelectionWidget):
     """ContentTree widget that allows single selection.
