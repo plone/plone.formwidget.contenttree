@@ -1,5 +1,5 @@
 .contenttreeWidget {
-    bottom: 3em;
+    bottom: 3.5em;
     height: auto;
     left: 0px;
     overflow-y: auto;
@@ -7,7 +7,7 @@
     padding-right: 1em;
     position: absolute;
     right: 0px;
-    top: 3em;
+    top: 4em;
     width: auto;
     border: 1px solid #8CACBB;
 }
@@ -25,8 +25,9 @@
 }
 
 .contenttreeWindow h2 {
-    position: absolute;
+    display: block;
     top: 0px;
+    margin: 0px;
 }
 
 .contenttreeWindowHeader {

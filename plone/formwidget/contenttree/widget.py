@@ -87,10 +87,11 @@ class ContentTreeBase(Explicit):
     expandSpeed = 200
     collapseSpeed = 200
     multiFolder = True
-    
+    multi_select = False
+
     # Overrides for autocomplete widget
     formatItem = 'function(row, idx, count, value) { return row[1] + " (" + row[0] + ")"; }'
-    
+
     def render_tree(self):
         context = self.context
         source = self.bound_source
@@ -100,24 +101,22 @@ class ContentTreeBase(Explicit):
                                obj=context,
                                query=source.navigation_tree_query,
                                strategy=strategy)
-        
+
         return self.recurse_template(children=data.get('children', []), level=1)
-    
+
     def render(self):
         return self.widget_template(self)
-    
+
     def js_extra(self):
-        
+
         form_context = self.form.__parent__
         form_name = self.form.__name__
         widget_name = self.name.split('.')[-1]
-        
+
         url = "%s/@@%s/++widget++%s/@@contenttree-fetch" % (form_context.absolute_url(), form_name, widget_name)
-        
+
         tokens = [self.terms.getTerm(value).token for value in self.value if value]
-        
-        multi_select = True
-        
+
         return """\
                 $('#%(id)s-widgets-query').after(
                     $(document.createElement('input'))
@@ -158,7 +157,7 @@ class ContentTreeBase(Explicit):
                    expandSpeed=self.expandSpeed,
                    collapseSpeed=self.collapseSpeed,
                    multiFolder=str(self.multiFolder).lower(),
-                   multiSelect=str(multi_select).lower(),
+                   multiSelect=str(self.multi_select).lower(),
                    name=self.name,
                    klass=self.klass,
                    title=self.title)
@@ -166,15 +165,17 @@ class ContentTreeBase(Explicit):
 class ContentTreeWidget(ContentTreeBase, AutocompleteSelectionWidget):
     """ContentTree widget that allows single selection.
     """
-    
+
 class MultiContentTreeWidget(ContentTreeBase, AutocompleteMultiSelectionWidget):
     """ContentTree widget that allows multiple selection
     """
-    
+
+    multi_select = True
+
 @implementer(z3c.form.interfaces.IFieldWidget)
 def ContentTreeFieldWidget(field, request):
     return z3c.form.widget.FieldWidget(field, ContentTreeWidget(request))
 
 @implementer(z3c.form.interfaces.IFieldWidget)
 def MultiContentTreeFieldWidget(field, request):
-    return z3c.form.widget.FieldWidget(field, MultiContentTreeWidget(request))    
+    return z3c.form.widget.FieldWidget(field, MultiContentTreeWidget(request))

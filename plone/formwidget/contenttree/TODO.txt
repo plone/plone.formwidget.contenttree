@@ -3,7 +3,6 @@ plone.formwidget.contenttree to-do
 
  - Add favorites and recent items
  - Add search to dialog box
- - Get the multi_select value based on the widget
 
 The design:
 -----------
