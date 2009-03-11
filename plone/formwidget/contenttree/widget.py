@@ -46,8 +46,8 @@ class Fetch(BrowserView):
         context = widget.context
         source = widget.bound_source
         
-        portal_url = getMultiAdapter((self.context, self.request), name=u'plone_portal_state').portal_url()
-        directory = portal_url + self.request.form.get('href', None)
+        portal_path = getToolByName(context, 'portal_url').getPortalPath()
+        directory = portal_path + self.request.form.get('href', None)
         level = self.request.form.get('rel', 0)
         
         navtree_query = source.navigation_tree_query.copy()
