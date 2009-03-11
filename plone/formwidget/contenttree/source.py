@@ -16,6 +16,7 @@ from plone.app.layout.navigation.interfaces import INavigationQueryBuilder
 from Products.CMFCore.utils import getToolByName
 from Products.ZCTextIndex.ParseTree import ParseError
 
+
 class CustomFilter(object):
     """A filter that can be used to test simple values in brain metadata and
     indexes.
@@ -103,7 +104,7 @@ class PathSource(object):
             catalog_query['sort_limit'] = limit
         
         try:
-            results = (self._term_for_brain(brain) 
+            results = (self._term_for_brain(brain, real_value=False)
                         for brain in self.catalog(**catalog_query)
                             if self._filter(brain))
         except ParseError:
@@ -112,7 +113,7 @@ class PathSource(object):
         if catalog_query.has_key('path'):
             path = catalog_query['path']['query']
             if path != '':
-                return itertools.chain((self._term_for_brain(self._brain_for_path(path)),),
+                return itertools.chain((self._term_for_brain(self._brain_for_path(path), real_value=False),),
                                         results)
         
         return results
@@ -133,17 +134,34 @@ class PathSource(object):
         rid = self.catalog.getrid(path)
         return self.catalog._catalog[rid]
     
-    def _term_for_brain(self, brain):
+    def _term_for_brain(self, brain, real_value=True):
         path = brain.getPath()[len(self.portal_path):]
         return SimpleTerm(path, path, brain.Title)
+
+class ObjPathSource(PathSource):
     
+    def _path_for_value(self, value):
+        return '/'.join(value.getPhysicalPath())
+    
+    def _term_for_brain(self, brain, real_value=True):
+        path = brain.getPath()[len(self.portal_path):]
+        if real_value:
+            return SimpleTerm(brain.getObject(), path, brain.Title)
+        else:
+            return SimpleTerm(path, path, brain.Title)
+
 class PathSourceBinder(object):
     implements(IContextSourceBinder)
+
+    path_source = PathSource
 
     def __init__(self, navigation_tree_query=None, **kw):
         self.selectable_filter = CustomFilter(**kw)
         self.navigation_tree_query = navigation_tree_query
         
     def __call__(self, context):
-        return PathSource(context, selectable_filter=self.selectable_filter,
+        return self.path_source(context, selectable_filter=self.selectable_filter,
                             navigation_tree_query=self.navigation_tree_query)
+
+class ObjPathSourceBinder(PathSourceBinder):
+    path_source = ObjPathSource

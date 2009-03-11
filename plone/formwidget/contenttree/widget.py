@@ -46,7 +46,8 @@ class Fetch(BrowserView):
         context = widget.context
         source = widget.bound_source
         
-        directory = self.request.form.get('href', None)
+        portal_url = getMultiAdapter((self.context, self.request), name=u'plone_portal_state').portal_url()
+        directory = portal_url + self.request.form.get('href', None)
         level = self.request.form.get('rel', 0)
         
         navtree_query = source.navigation_tree_query.copy()
@@ -109,13 +110,11 @@ class ContentTreeBase(Explicit):
 
     def js_extra(self):
 
-        form_context = self.form.__parent__
+        form_url = self.request.getURL()
         form_name = self.form.__name__
         widget_name = self.name.split('.')[-1]
 
-        url = "%s/@@%s/++widget++%s/@@contenttree-fetch" % (form_context.absolute_url(), form_name, widget_name)
-
-        tokens = [self.terms.getTerm(value).token for value in self.value if value]
+        url = "%s/@@%s/++widget++%s/@@contenttree-fetch" % (form_url, form_name, widget_name)
 
         return """\
                 $('#%(id)s-widgets-query').after(
