@@ -28,11 +28,12 @@ class Fetch(BrowserView):
     recurse_template = ViewPageTemplateFile('input_recurse.pt')
     
     def validate_access(self):
-        content = self.context.form.context
-        view_name = self.context.form.__name__
-        view_instance = getMultiAdapter((content, self.request), name=view_name).__of__(content)
         
+        content = self.context.form.context
+        view_name = self.request.getURL().split('/')[-3] # /path/to/obj/++widget++wname/@@contenttree-fetch?q=foo
+
         # May raise Unauthorized
+        view_instance = content.restrictedTraverse(view_name)
         getSecurityManager().validate(content, content, view_name, view_instance)
         
     def __call__(self):
@@ -46,8 +47,7 @@ class Fetch(BrowserView):
         context = widget.context
         source = widget.bound_source
         
-        portal_path = getToolByName(context, 'portal_url').getPortalPath()
-        directory = portal_path + self.request.form.get('href', None)
+        directory = self.request.form.get('href', None)
         level = self.request.form.get('rel', 0)
         
         navtree_query = source.navigation_tree_query.copy()
@@ -111,10 +111,13 @@ class ContentTreeBase(Explicit):
     def js_extra(self):
 
         form_url = self.request.getURL()
-        form_name = self.form.__name__
-        widget_name = self.name.split('.')[-1]
-
-        url = "%s/@@%s/++widget++%s/@@contenttree-fetch" % (form_url, form_name, widget_name)
+        
+        form_prefix = self.form.prefix + self.__parent__.prefix
+        widget_name = self.name[len(form_prefix):]
+        
+        url = "%s/++widget++%s/@@contenttree-fetch" % (form_url, widget_name,)
+        
+        portal_path = getToolByName(self.context, 'portal_url').getPortalPath()
 
         return """\
                 $('#%(id)s-widgets-query').after(
@@ -129,7 +132,7 @@ class ContentTreeBase(Explicit):
                         })
                 );
                 $('#%(id)s-contenttree-window').find('.contentTreeAdd').click(function () {
-                    $(this).contentTreeAdd('%(id)s', '%(name)s', '%(klass)s', '%(title)s', %(multiSelect)s);
+                    $(this).contentTreeAdd('%(id)s', '%(name)s', '%(klass)s', '%(title)s', '%(basePath)s', %(multiSelect)s);
                 });
                 $('#%(id)s-contenttree-window').find('.contentTreeCancel').click(function () {
                     $(this).contentTreeCancel();
@@ -157,6 +160,7 @@ class ContentTreeBase(Explicit):
                    collapseSpeed=self.collapseSpeed,
                    multiFolder=str(self.multiFolder).lower(),
                    multiSelect=str(self.multi_select).lower(),
+                   basePath=portal_path,
                    name=self.name,
                    klass=self.klass,
                    title=self.title)

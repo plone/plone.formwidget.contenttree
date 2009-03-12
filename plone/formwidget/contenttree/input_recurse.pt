@@ -1,10 +1,9 @@
-<tal:master define="portal_path context/portal_url/getPortalPath;
-                    level options/level|python:0; children options/children | nothing;">
+<tal:master define="level options/level|python:0; children options/children | nothing;">
     <tal:navitem repeat="node children">
         <li tal:define="show_children       node/show_children;
                         children            node/children;
                         item_url            node/getURL;
-                        item_path           python:node['path'][len(portal_path):];
+                        item_path           node/path;
                         item_icon           node/item_icon;
                         selectable          node/selectable;
                         li_folder_class     python:show_children and ' navTreeFolderish' or '';
