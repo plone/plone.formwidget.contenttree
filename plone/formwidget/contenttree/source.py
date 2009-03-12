@@ -146,7 +146,7 @@ class ObjPathSource(PathSource):
     def _term_for_brain(self, brain, real_value=True):
         path = brain.getPath()[len(self.portal_path):]
         if real_value:
-            return SimpleTerm(brain.getObject(), path, brain.Title)
+            return SimpleTerm(brain._unrestrictedGetObject(), path, brain.Title)
         else:
             return SimpleTerm(path, path, brain.Title)
 
