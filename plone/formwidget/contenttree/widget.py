@@ -79,7 +79,8 @@ class ContentTreeBase(Explicit):
     # if we call this 'template' or use a <z3c:widgetTemplate /> directive,
     # we'll get infinite recursion when trying to render the radio buttons.
 
-    widget_template = ViewPageTemplateFile('input.pt')
+    input_template = ViewPageTemplateFile('input.pt')
+    display_template = None # set by subclass
     recurse_template = ViewPageTemplateFile('input_recurse.pt')
     
     # Parameters passed to the JavaScript function
@@ -106,7 +107,10 @@ class ContentTreeBase(Explicit):
         return self.recurse_template(children=data.get('children', []), level=1)
 
     def render(self):
-        return self.widget_template(self)
+        if self.mode == z3c.form.interfaces.DISPLAY_MODE:
+            return self.display_template(self)
+        else:
+            return self.input_template(self)
 
     def js_extra(self):
 
@@ -169,11 +173,16 @@ class ContentTreeWidget(ContentTreeBase, AutocompleteSelectionWidget):
     """ContentTree widget that allows single selection.
     """
 
+    klass = u"contenttree-widget"
+    display_template = ViewPageTemplateFile('display_single.pt')
+
 class MultiContentTreeWidget(ContentTreeBase, AutocompleteMultiSelectionWidget):
     """ContentTree widget that allows multiple selection
     """
 
+    klass = u"contenttree-widget"
     multi_select = True
+    display_template = ViewPageTemplateFile('display_multiple.pt')
 
 @implementer(z3c.form.interfaces.IFieldWidget)
 def ContentTreeFieldWidget(field, request):
