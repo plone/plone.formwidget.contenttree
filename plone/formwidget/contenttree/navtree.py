@@ -1,16 +1,19 @@
 from zope.interface import implements, Interface
-from zope.component import adapts, getMultiAdapter
+from zope.component import adapts
 
 from Products.CMFCore.utils import getToolByName
 
-from Products.CMFPlone.browser.navtree import SitemapNavtreeStrategy
+try:
+    from Products.CMFPlone.browser.navtree import SitemapNavtreeStrategy
+except ImportError:
+    # Plone trunk
+    from plone.app.layout.navigation.sitemap import SitemapNavtreeStrategy
 from Products.CMFPlone import utils
 
 from plone.app.layout.navigation.interfaces import INavtreeStrategy
 from plone.app.layout.navigation.interfaces import INavigationQueryBuilder
 
 from plone.app.layout.navigation.root import getNavigationRoot
-from plone.app.layout.navigation.navtree import NavtreeStrategyBase
 
 from plone.formwidget.contenttree.interfaces  import IContentSource
 from plone.formwidget.contenttree.interfaces  import IContentTreeWidget

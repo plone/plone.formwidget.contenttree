@@ -1,6 +1,12 @@
 Changelog
 =========
 
+1.0a2 - unreleased
+------------------
+
+* Import SitemapNavtreeStrategy conditionally so it doesn't break on Plone
+  trunk. [davisagli]
+
 1.0a1 - 2009-04-17
 ------------------
 
