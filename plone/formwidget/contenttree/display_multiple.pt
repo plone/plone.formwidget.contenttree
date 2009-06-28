@@ -13,10 +13,12 @@
                       onmouseout view/onmouseout;
                       onkeypress view/onkeypress;
                       onkeydown view/onkeydown;
-                      onkeyup view/onkeyup"><tal:block
-    tal:repeat="value view/displayValue"
-    ><span class="selected-option"
-           tal:content="value"
-    /><tal:block condition="not:repeat/value/end">, </tal:block
-  ></tal:block
-></span>
+                      onkeyup view/onkeyup"
+        tal:define="portal_url context/@@plone_portal_state/portal_url"
+        >
+    <div tal:repeat="item view/items">
+        <a tal:content="item/label" 
+           tal:attributes="href string:${portal_url}${item/value}"
+           />
+    </div>
+</span>

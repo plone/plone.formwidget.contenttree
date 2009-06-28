@@ -4,6 +4,9 @@ Changelog
 1.0a2 - unreleased
 ------------------
 
+* Fix display widgets.
+  [optilude]
+
 * Import SitemapNavtreeStrategy conditionally so it doesn't break on Plone
   trunk. [davisagli]
 
