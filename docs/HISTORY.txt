@@ -1,7 +1,14 @@
 Changelog
 =========
 
-1.0a2 - unreleased
+1.0a3 - 2009-06-29
+------------------
+
+* Fix security validator to work properly on add views and other views using
+  namespace traversal (++add++...)
+  [optilude]
+
+1.0a2 - 2009-06-28
 ------------------
 
 * Fix display widgets.
@@ -14,4 +21,3 @@ Changelog
 ------------------
 
 * Initial release
-

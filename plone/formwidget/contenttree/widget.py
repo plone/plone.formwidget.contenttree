@@ -37,7 +37,7 @@ class Fetch(BrowserView):
         # If the view is 'edit', then traversal prefers the view and
         # restrictedTraverse prefers the edit() method present on most CMF
         # content. Sigh...
-        if not view_name.startswith('@@'):
+        if not view_name.startswith('@@') and not view_name.startswith('++'):
             view_name = '@@' + view_name
         
         view_instance = content.restrictedTraverse(view_name)
