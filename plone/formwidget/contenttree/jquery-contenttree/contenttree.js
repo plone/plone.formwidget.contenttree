@@ -4,6 +4,8 @@ if(jQuery) (function($){
     $.extend($.fn, {
         showDialog: function() {
             $(document.body).append($(document.createElement("div")).addClass("contenttreeWindowBlocker"))
+            this[0].oldparent = $(this).parent()[0]; // store old parent element
+            $(".contenttreeWindowBlocker").before(this);
             $(this).show();
             $(this).width($(window).width() * 0.75);
             $(this).height($(window).height() * 0.75);
@@ -31,12 +33,14 @@ if(jQuery) (function($){
                 }
             });
 
-            $(".contenttreeWindowBlocker").remove();
-            $(this).parents(".contenttreeWindow").hide();
+            $(this).contentTreeCancel();
         },
         contentTreeCancel: function() {
             $(".contenttreeWindowBlocker").remove();
-            $(this).parents(".contenttreeWindow").hide();
+            var popup = $(this).parents(".contenttreeWindow");
+            popup.hide();
+            $(popup[0].oldparent).append(popup);
+            popup[0].oldparent = null;
         },
         contentTree: function(o, h) {
 

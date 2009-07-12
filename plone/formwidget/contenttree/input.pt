@@ -1,4 +1,3 @@
-<script type="text/javascript" tal:content="structure view/js"></script>
 <div tal:attributes="id string:${view/id}-autocomplete">
     <div tal:attributes="id string:${view/id}-input-fields" class="autocompleteInputWidget"
          tal:content="structure view/renderQueryWidget" />
@@ -19,3 +18,4 @@
 <input class="context contentTreeAdd" type="button" value="Add"/> <input class="standalone contentTreeCancel" type="button" value="Cancel"/>
 </div>
 </div>
+<script type="text/javascript" tal:content="structure view/js"></script>
