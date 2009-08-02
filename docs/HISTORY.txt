@@ -1,7 +1,7 @@
 Changelog
 =========
 
-1.0a4 - 2009-08-02
+1.0a5 - 2009-08-02
 ------------------
 
 * Don't filter children of non-queriable parent types (e.g. Large Plone
