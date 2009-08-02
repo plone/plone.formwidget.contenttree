@@ -79,11 +79,28 @@ class NavtreeStrategy(SitemapNavtreeStrategy):
         self.widget = widget
         self.showAllParents = True # override from base class
     
+    def subtreeFilter(self, node):
+        # Allow entering children even if the type would not normally be
+        # expanded in the navigation tree
+        return True
+    
+    def showChildrenOf(self, object):
+        # Allow entering children even if the type would not normally be
+        # expanded in the navigation tree
+        return True
+    
     def nodeFilter(self, node):
-        # Don't filter any nodes here
+        # Don't filter any nodes.
         return True
 
     def decoratorFactory(self, node):    
         new_node = super(NavtreeStrategy, self).decoratorFactory(node)
+        
+        # Allow entering children even if the type would not normally be
+        # expanded in the navigation tree
+        new_node['show_children'] = getattr(new_node['item'], 'is_folderish', False)
+        
+        # Mark selectable nodes
         new_node['selectable'] = self.widget.bound_source._filter(new_node['item'])
+        
         return new_node
