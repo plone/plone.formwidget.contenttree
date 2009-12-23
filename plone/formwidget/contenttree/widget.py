@@ -129,13 +129,14 @@ class ContentTreeBase(Explicit):
         url = "%s/++widget++%s/@@contenttree-fetch" % (form_url, widget_name,)
         
         portal_path = getToolByName(self.context, 'portal_url').getPortalPath()
-
+        ts = getToolByName(self.context, 'translation_service')
         return """\
+
                 $('#%(id)s-widgets-query').after(
                     $(document.createElement('input'))
                         .attr({
                             'type': 'button',
-                            'value': 'Browse...'
+                            'value': '%(button_val)s'
                         })
                         .addClass('searchButton')
                         .click(function () {
@@ -174,7 +175,8 @@ class ContentTreeBase(Explicit):
                    basePath=portal_path,
                    name=self.name,
                    klass=self.klass,
-                   title=self.title)
+                   title=self.title,
+                   button_val=ts.translate(u'label_contenttree_browse', default=u'browse...',  domain='plone.formwidget.contenttree'),)
 
 class ContentTreeWidget(ContentTreeBase, AutocompleteSelectionWidget):
     """ContentTree widget that allows single selection.
