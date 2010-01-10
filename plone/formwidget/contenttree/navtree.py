@@ -18,6 +18,7 @@ from plone.app.layout.navigation.root import getNavigationRoot
 from plone.formwidget.contenttree.interfaces  import IContentSource
 from plone.formwidget.contenttree.interfaces  import IContentTreeWidget
 
+
 class QueryBuilder(object):
     """Build a navtree query for a content source
     """
@@ -31,12 +32,12 @@ class QueryBuilder(object):
     def __call__(self):
         context = self.context
         source = self.source
-        
+
         portal_properties = getToolByName(context, 'portal_properties')
         navtree_properties = getattr(portal_properties, 'navtree_properties')
-        
+
         portal_url = getToolByName(context, 'portal_url')
-        
+
         query = {}
 
         # Construct the path query
@@ -49,9 +50,9 @@ class QueryBuilder(object):
         # use a regular depth-1 query in this case.
 
         if not currentPath.startswith(rootPath):
-            query['path'] = {'query' : rootPath, 'depth' : 1}
+            query['path'] = {'query': rootPath, 'depth': 1}
         else:
-            query['path'] = {'query' : currentPath, 'navtree' : 1}
+            query['path'] = {'query': currentPath, 'navtree': 1}
 
         # Only list the applicable types
         query['portal_type'] = utils.typesToList(context)
@@ -65,7 +66,8 @@ class QueryBuilder(object):
                 query['sort_order'] = sortOrder
 
         return query
-        
+
+
 class NavtreeStrategy(SitemapNavtreeStrategy):
     """The navtree strategy used for the content tree widget
     """
@@ -74,35 +76,38 @@ class NavtreeStrategy(SitemapNavtreeStrategy):
 
     def __init__(self, context, widget):
         super(NavtreeStrategy, self).__init__(context, None)
-        
+
         self.context = context
         self.widget = widget
         self.showAllParents = True # override from base class
         self.site_encoding = utils.getSiteEncoding(self.context)
-    
+
     def subtreeFilter(self, node):
         # Allow entering children even if the type would not normally be
         # expanded in the navigation tree
         return True
-    
+
     def showChildrenOf(self, object):
         # Allow entering children even if the type would not normally be
         # expanded in the navigation tree
         return True
-    
+
     def nodeFilter(self, node):
         # Don't filter any nodes.
         return True
 
-    def decoratorFactory(self, node):    
+    def decoratorFactory(self, node):
         new_node = super(NavtreeStrategy, self).decoratorFactory(node)
-        
+
         # Allow entering children even if the type would not normally be
         # expanded in the navigation tree
-        new_node['show_children'] = getattr(new_node['item'], 'is_folderish', False)
-        
+        new_node['show_children'] = getattr(new_node['item'],
+                                            'is_folderish',
+                                            False)
+
         # Mark selectable nodes
-        new_node['selectable'] = self.widget.bound_source._filter(new_node['item'])
+        new_node['selectable'] = self.widget.bound_source._filter(
+            new_node['item'])
 
         # turn all strings to unicode to render non ascii characters
         # in the recursion template

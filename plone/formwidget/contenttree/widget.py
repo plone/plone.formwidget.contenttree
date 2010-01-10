@@ -1,3 +1,7 @@
+from AccessControl import getSecurityManager
+from Acquisition import Explicit
+
+from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.interface import implements, implementer
 from zope.component import getMultiAdapter
 
@@ -5,67 +9,65 @@ import z3c.form.interfaces
 import z3c.form.widget
 import z3c.form.util
 
-from plone.formwidget.autocomplete.widget import AutocompleteSelectionWidget
-from plone.formwidget.autocomplete.widget import AutocompleteMultiSelectionWidget
-
 from plone.app.layout.navigation.interfaces import INavtreeStrategy
 from plone.app.layout.navigation.navtree import buildFolderTree
+
+from plone.formwidget.autocomplete.widget import \
+     AutocompleteSelectionWidget, AutocompleteMultiSelectionWidget
+
+from Products.CMFCore.utils import getToolByName
+from Products.Five.browser import BrowserView
 
 from plone.formwidget.contenttree.interfaces import IContentTreeWidget
 from plone.formwidget.contenttree import MessageFactory as _
 
-from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
-
-from AccessControl import getSecurityManager
-from Acquisition import Explicit
-
-from Products.Five.browser import BrowserView
-from Products.CMFCore.utils import getToolByName
 
 class Fetch(BrowserView):
-    
+
     fragment_template = ViewPageTemplateFile('fragment.pt')
     recurse_template = ViewPageTemplateFile('input_recurse.pt')
-    
+
     def validate_access(self):
-        
+
         content = self.context.form.context
-        view_name = self.request.getURL().split('/')[-3] # /path/to/obj/++widget++wname/@@contenttree-fetch?q=foo
+        view_name = self.request.getURL().split('/')[-3]
+        # /path/to/obj/++widget++wname/@@contenttree-fetch?q=foo
 
         # May raise Unauthorized
-        
+
         # If the view is 'edit', then traversal prefers the view and
         # restrictedTraverse prefers the edit() method present on most CMF
         # content. Sigh...
         if not view_name.startswith('@@') and not view_name.startswith('++'):
             view_name = '@@' + view_name
-        
+
         view_instance = content.restrictedTraverse(view_name)
-        getSecurityManager().validate(content, content, view_name, view_instance)
-        
+        getSecurityManager().validate(content, content, view_name,
+                                      view_instance)
+
     def __call__(self):
-        
+
         # We want to check that the user was indeed allowed to access the
         # form for this widget. We can only this now, since security isn't
         # applied yet during traversal.
         self.validate_access()
-        
+
         widget = self.context
         context = widget.context
         source = widget.bound_source
-        
+
         directory = self.request.form.get('href', None)
         level = self.request.form.get('rel', 0)
-        
+
         navtree_query = source.navigation_tree_query.copy()
         navtree_query['path'] = {'depth': 1, 'query': directory}
-        
+
         if 'is_default_page' not in navtree_query:
             navtree_query['is_default_page'] = False
-            
+
         strategy = getMultiAdapter((context, widget), INavtreeStrategy)
         catalog = getToolByName(context, 'portal_catalog')
-        
+
         children = []
         for brain in catalog(navtree_query):
             newNode = {'item'          : brain,
@@ -78,10 +80,11 @@ class Fetch(BrowserView):
                 children.append(newNode)
 
         return self.fragment_template(children=children, level=int(level))
-    
+
+
 class ContentTreeBase(Explicit):
     implements(IContentTreeWidget)
-    
+
     # XXX: Due to the way the rendering of the QuerySourceRadioWidget works,
     # if we call this 'template' or use a <z3c:widgetTemplate /> directive,
     # we'll get infinite recursion when trying to render the radio buttons.
@@ -89,7 +92,7 @@ class ContentTreeBase(Explicit):
     input_template = ViewPageTemplateFile('input.pt')
     display_template = None # set by subclass
     recurse_template = ViewPageTemplateFile('input_recurse.pt')
-    
+
     # Parameters passed to the JavaScript function
     folderEvent = 'click'
     selectEvent = 'click'
@@ -99,12 +102,13 @@ class ContentTreeBase(Explicit):
     multi_select = False
 
     # Overrides for autocomplete widget
-    formatItem = 'function(row, idx, count, value) { return row[1] + " (" + row[0] + ")"; }'
+    formatItem = ('function(row, idx, count, value) {'
+                  '  return row[1] + " (" + row[0] + ")"; }')
 
     def render_tree(self):
         context = self.context
         source = self.bound_source
-        
+
         strategy = getMultiAdapter((context, self), INavtreeStrategy)
         data = buildFolderTree(context,
                                obj=context,
@@ -122,12 +126,12 @@ class ContentTreeBase(Explicit):
     def js_extra(self):
 
         form_url = self.request.getURL()
-        
+
         form_prefix = self.form.prefix + self.__parent__.prefix
         widget_name = self.name[len(form_prefix):]
-        
+
         url = "%s/++widget++%s/@@contenttree-fetch" % (form_url, widget_name,)
-        
+
         portal_path = getToolByName(self.context, 'portal_url').getPortalPath()
         ts = getToolByName(self.context, 'translation_service')
         return """\
@@ -176,7 +180,11 @@ class ContentTreeBase(Explicit):
                    name=self.name,
                    klass=self.klass,
                    title=self.title,
-                   button_val=ts.translate(u'label_contenttree_browse', default=u'browse...',  domain='plone.formwidget.contenttree'),)
+                   button_val=ts.translate(
+                       u'label_contenttree_browse',
+                       default=u'browse...',
+                       domain='plone.formwidget.contenttree'))
+
 
 class ContentTreeWidget(ContentTreeBase, AutocompleteSelectionWidget):
     """ContentTree widget that allows single selection.
@@ -184,6 +192,7 @@ class ContentTreeWidget(ContentTreeBase, AutocompleteSelectionWidget):
 
     klass = u"contenttree-widget"
     display_template = ViewPageTemplateFile('display_single.pt')
+
 
 class MultiContentTreeWidget(ContentTreeBase, AutocompleteMultiSelectionWidget):
     """ContentTree widget that allows multiple selection
@@ -193,9 +202,11 @@ class MultiContentTreeWidget(ContentTreeBase, AutocompleteMultiSelectionWidget):
     multi_select = True
     display_template = ViewPageTemplateFile('display_multiple.pt')
 
+
 @implementer(z3c.form.interfaces.IFieldWidget)
 def ContentTreeFieldWidget(field, request):
     return z3c.form.widget.FieldWidget(field, ContentTreeWidget(request))
+
 
 @implementer(z3c.form.interfaces.IFieldWidget)
 def MultiContentTreeFieldWidget(field, request):

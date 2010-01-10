@@ -1,32 +1,37 @@
-from zope.interface import Interface, implements
 from zope.component import adapts
+from zope.interface import Interface, implements
 from zope import schema
+
+from plone.z3cform import layout
+
+from z3c.form import form, button, field
 
 from plone.formwidget.contenttree import ContentTreeFieldWidget
 from plone.formwidget.contenttree import MultiContentTreeFieldWidget
 from plone.formwidget.contenttree import PathSourceBinder
 
-from z3c.form import form, button, field
-from plone.z3cform import layout
 
 class ITestForm(Interface):
-    
+
     buddy = schema.Choice(title=u"Buddy object",
                           description=u"Select one, please",
                           source=PathSourceBinder(portal_type='Document'))
 
-    friends = schema.List(title=u"Friend objects",
-                          description=u"Select as many as you want",
-                          value_type=schema.Choice(title=u"Selection",
-                                                   source=PathSourceBinder(portal_type='Document')))
+    friends = schema.List(
+        title=u"Friend objects",
+        description=u"Select as many as you want",
+        value_type=schema.Choice(
+            title=u"Selection",
+            source=PathSourceBinder(portal_type='Document')))
+
 
 class TestAdapter(object):
     implements(ITestForm)
     adapts(Interface)
-    
+
     def __init__(self, context):
         self.context = context
-    
+
     def _get_buddy(self):
         return None
     def _set_buddy(self, value):
@@ -39,11 +44,12 @@ class TestAdapter(object):
         print "setting", value
     friends = property(_get_friends, _set_friends)
 
+
 class TestForm(form.Form):
     fields = field.Fields(ITestForm)
     fields['buddy'].widgetFactory = ContentTreeFieldWidget
     fields['friends'].widgetFactory = MultiContentTreeFieldWidget
-    
+
     @button.buttonAndHandler(u'Ok')
     def handle_ok(self, action):
         data, errors = self.extractData()
