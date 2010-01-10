@@ -1,6 +1,13 @@
 Changelog
 =========
 
+1.0a6 - (svn/unreleased)
+------------------------
+
+* Convert all strings in a new navtree node into unicode using the site 
+  encoding to render non-ascii characters in the widget.
+  [csenger]
+
 1.0a5 - 2009-08-02
 ------------------
 

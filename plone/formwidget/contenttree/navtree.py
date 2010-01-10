@@ -78,6 +78,7 @@ class NavtreeStrategy(SitemapNavtreeStrategy):
         self.context = context
         self.widget = widget
         self.showAllParents = True # override from base class
+        self.site_encoding = utils.getSiteEncoding(self.context)
     
     def subtreeFilter(self, node):
         # Allow entering children even if the type would not normally be
@@ -102,5 +103,11 @@ class NavtreeStrategy(SitemapNavtreeStrategy):
         
         # Mark selectable nodes
         new_node['selectable'] = self.widget.bound_source._filter(new_node['item'])
-        
+
+        # turn all strings to unicode to render non ascii characters
+        # in the recursion template
+        for key, value in new_node.items():
+            if isinstance(value, str):
+                new_node[key] = unicode(value, self.site_encoding)
+
         return new_node
