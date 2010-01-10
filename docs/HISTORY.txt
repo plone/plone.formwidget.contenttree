@@ -8,12 +8,12 @@ Changelog
   encoding to render non-ascii characters in the widget.
   [csenger]
 
-1.0a5 - 2009-08-02
-------------------
-
 * Added message IDs for translations and added locales directory with
   german translations.
   [jbaumann]
+
+1.0a5 - 2009-08-02
+------------------
 
 * Don't filter children of non-queriable parent types (e.g. Large Plone
   Folders).
