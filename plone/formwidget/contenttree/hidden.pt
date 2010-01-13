@@ -1,0 +1,6 @@
+<tal:sub repeat="item view/items">
+  <input type="hidden"  name="" class="hidden-widget" value=""
+	 tal:condition="item/checked"
+	 tal:attributes="name item/name;
+			 value item/value;" />
+</tal:sub>
