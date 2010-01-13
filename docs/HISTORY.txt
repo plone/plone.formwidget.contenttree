@@ -4,6 +4,8 @@ Changelog
 1.0a6 - (svn/unreleased)
 ------------------------
 
+* add a template for HIDDEN_MODE [csenger]
+
 * Convert all strings in a new navtree node into unicode using the site 
   encoding to render non-ascii characters in the widget.
   [csenger]

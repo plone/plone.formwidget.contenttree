@@ -90,6 +90,7 @@ class ContentTreeBase(Explicit):
     # we'll get infinite recursion when trying to render the radio buttons.
 
     input_template = ViewPageTemplateFile('input.pt')
+    hidden_template = ViewPageTemplateFile('hidden.pt')
     display_template = None # set by subclass
     recurse_template = ViewPageTemplateFile('input_recurse.pt')
 
@@ -120,6 +121,8 @@ class ContentTreeBase(Explicit):
     def render(self):
         if self.mode == z3c.form.interfaces.DISPLAY_MODE:
             return self.display_template(self)
+        elif self.mode == z3c.form.interfaces.HIDDEN_MODE:
+            return self.hidden_template(self)
         else:
             return self.input_template(self)
 
