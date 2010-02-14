@@ -2,7 +2,7 @@ from AccessControl import getSecurityManager
 from Acquisition import Explicit
 
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
-from zope.interface import implements, implementer
+from zope.interface import implementsOnly, implementer
 from zope.component import getMultiAdapter
 
 import z3c.form.interfaces
@@ -83,7 +83,7 @@ class Fetch(BrowserView):
 
 
 class ContentTreeBase(Explicit):
-    implements(IContentTreeWidget)
+    implementsOnly(IContentTreeWidget)
 
     # XXX: Due to the way the rendering of the QuerySourceRadioWidget works,
     # if we call this 'template' or use a <z3c:widgetTemplate /> directive,
