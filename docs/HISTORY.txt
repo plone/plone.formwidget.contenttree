@@ -4,6 +4,9 @@ Changelog
 1.0a6 - (svn/unreleased)
 ------------------------
 
+* Make the widget work properly on Zope 2.12
+  [optilude]
+
 * add a template for HIDDEN_MODE [csenger]
 
 * Convert all strings in a new navtree node into unicode using the site 
