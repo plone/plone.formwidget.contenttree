@@ -26,6 +26,7 @@ setup(name='plone.formwidget.contenttree',
       install_requires=[
           'setuptools',
           'z3c.formwidget.query',
+          'plone.formwidget.autocomplete',
           'plone.z3cform',
       ],
       entry_points="""
