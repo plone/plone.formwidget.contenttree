@@ -4,10 +4,15 @@ Changelog
 1.0a6 - (svn/unreleased)
 ------------------------
 
+* Fix icons in CMF 2.2.  This closes
+  http://code.google.com/p/dexterity/issues/detail?id=111
+  [davisagli]
+
 * Make the widget work properly on Zope 2.12
   [optilude]
 
-* add a template for HIDDEN_MODE [csenger]
+* Add a template for HIDDEN_MODE.
+  [csenger]
 
 * Convert all strings in a new navtree node into unicode using the site 
   encoding to render non-ascii characters in the widget.
