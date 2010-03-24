@@ -12,6 +12,18 @@
     border: 1px solid #8CACBB;
 }
 
+.contenttreeWidget li {
+    display: block;
+    padding-left: 1em;
+}
+
+.contenttreeWidget .navTreeCurrentItem {
+    font-weight: bold;
+}
+.contenttreeWidget .navTreeCurrentItem li {
+    font-weight: normal;
+}
+
 .contenttreeWidget li a {
     border-bottom: solid 1px transparent;
 }
