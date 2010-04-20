@@ -1,8 +1,11 @@
 Changelog
 =========
 
-1.0a6 - (svn/unreleased)
-------------------------
+1.0b1 - 2010-04-19
+------------------
+
+* Adjusted styles so the widget looks reasonable with Plone 4's sunburst theme.
+  [davisagli]
 
 * Fix icons in CMF 2.2.  This closes
   http://code.google.com/p/dexterity/issues/detail?id=111
