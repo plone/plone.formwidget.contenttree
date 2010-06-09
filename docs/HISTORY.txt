@@ -3,6 +3,13 @@ Changelog
 
 1.0b2 - unreleased
 ------------------
+* Make it possible to restrict the field to objects below a path
+  The constructor of ObjPathSource takes a path keyword argument
+  with a PathIndex catalog query. This argument filters objects
+  outside of this path. If the navigation_tree_query does not have
+  a path argument, the path is also copied into this query.
+  [gaudenzius]
+
 * Update widget in the contenttree-fetch browser view
   The widget.update() call rebinds to source which previously
   was only bound during traversal. This avoids problems with

@@ -22,14 +22,14 @@ class CustomFilter(object):
 
     Limitations:
 
-        - Will probably only work on FieldIndex and KeywordIndex indexes
+        - Will probably only work on FieldIndex, KeywordIndex and PathIndex indexes
     """
     implements(IContentFilter)
 
     def __init__(self, **kw):
         self.criteria = {}
         for key, value in kw.items():
-            if not isinstance(value, (list, tuple, set, frozenset)):
+            if not isinstance(value, (list, tuple, set, frozenset)) and not key == 'path':
                 self.criteria[key] = [value]
             elif isinstance(value, (set, frozenset)):
                 self.criteria[key] = list(value)
@@ -40,11 +40,14 @@ class CustomFilter(object):
         for key, value in self.criteria.items():
             test_value = index_data.get(key, None)
             if test_value is not None:
-                if not isinstance(test_value, (list, tuple, set, frozenset)):
+                if not isinstance(test_value, (list, tuple, set, frozenset)) and not key == 'path':
                     test_value = set([test_value])
                 elif isinstance(value, (list, tuple)):
                     test_value = set(test_value)
-                if not test_value.intersection(value):
+                if key == 'path':
+                    if not test_value.startswith(value['query']):
+                        return False
+                elif not test_value.intersection(value):
                     return False
         return True
 
@@ -59,8 +62,16 @@ class PathSource(object):
                                         INavigationQueryBuilder)
         query = query_builder()
 
-        if navigation_tree_query is not None:
-            query.update(navigation_tree_query)
+        if navigation_tree_query is None:
+            navigation_tree_query = {}
+
+        # Copy path from selectable_filter into the navigation_tree_query
+        # normally it does not make sense to show elements that wouldn't be 
+        # selectable anyway and are unneeded to navigate to selectable items
+        if 'path' not in navigation_tree_query and 'path' in selectable_filter.criteria:
+            navigation_tree_query['path'] = selectable_filter.criteria['path']
+
+        query.update(navigation_tree_query)
 
         self.navigation_tree_query = query
         self.selectable_filter = selectable_filter
@@ -105,18 +116,9 @@ class PathSource(object):
 
         try:
             results = (self._term_for_brain(brain, real_value=False)
-                        for brain in self.catalog(**catalog_query)
-                            if self._filter(brain))
+                       for brain in self.catalog(**catalog_query))
         except ParseError:
             return []
-
-        if catalog_query.has_key('path'):
-            path = catalog_query['path']['query']
-            if path != '':
-                return itertools.chain(
-                    (self._term_for_brain(self._brain_for_path(path),
-                                          real_value=False),),
-                    results)
 
         return results
 
