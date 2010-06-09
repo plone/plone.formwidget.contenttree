@@ -54,6 +54,11 @@ class Fetch(BrowserView):
 
         widget = self.context
         context = widget.context
+
+        # Update the widget before accessing the source.
+        # The source was only bound without security applied
+        # during traversal before.
+        self.context.update()
         source = widget.bound_source
 
         directory = self.request.form.get('href', None)

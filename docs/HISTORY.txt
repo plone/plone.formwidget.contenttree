@@ -3,6 +3,11 @@ Changelog
 
 1.0b2 - unreleased
 ------------------
+* Update widget in the contenttree-fetch browser view
+  The widget.update() call rebinds to source which previously
+  was only bound during traversal. This avoids problems with
+  sources that only work after security is applied.
+  [gaudenzius]
 
 
 1.0b1 - 2010-04-19
