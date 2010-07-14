@@ -8,6 +8,10 @@ Changelog
   context is not wrapped into an aquisition chain.
   [dukebody]
 
+* Compute the view name as the request URL left-stripped the content
+  absolute URL.
+  [dukebody]
+
 * Make it possible to restrict the field to objects below a path
   The constructor of ObjPathSource takes a path keyword argument
   with a PathIndex catalog query. This argument filters objects
