@@ -6,6 +6,8 @@ from zope.component import getMultiAdapter
 from zope.schema.interfaces import IContextSourceBinder
 from zope.schema.vocabulary import SimpleTerm
 
+from zope.app.component.hooks import getSite
+
 from plone.app.layout.navigation.interfaces import INavigationQueryBuilder
 from plone.app.vocabularies.catalog import parse_query
 
@@ -166,8 +168,11 @@ class PathSourceBinder(object):
         self.navigation_tree_query = navigation_tree_query
 
     def __call__(self, context):
+        content = context
+        if not hasattr(content, 'aq_chain'):
+            content = getSite()
         return self.path_source(
-            context,
+            content,
             selectable_filter=self.selectable_filter,
             navigation_tree_query=self.navigation_tree_query)
 

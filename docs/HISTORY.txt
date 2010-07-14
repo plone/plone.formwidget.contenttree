@@ -3,6 +3,11 @@ Changelog
 
 1.0b2 - unreleased
 ------------------
+
+* Fall back to the site to perform content-related operations if the
+  context is not wrapped into an aquisition chain.
+  [dukebody]
+
 * Make it possible to restrict the field to objects below a path
   The constructor of ObjPathSource takes a path keyword argument
   with a PathIndex catalog query. This argument filters objects
