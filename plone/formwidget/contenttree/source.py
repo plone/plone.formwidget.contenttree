@@ -1,5 +1,6 @@
 import itertools
 
+from Acquisition.interfaces import IAcquirer
 from zope.interface import implements
 from zope.component import getMultiAdapter
 
@@ -169,7 +170,8 @@ class PathSourceBinder(object):
 
     def __call__(self, context):
         content = context
-        if not hasattr(content, 'aq_chain'):
+
+        if not IAcquirer.providedBy(content):
             content = getSite()
         return self.path_source(
             content,

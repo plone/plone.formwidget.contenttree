@@ -1,5 +1,6 @@
 from AccessControl import getSecurityManager
 from Acquisition import Explicit
+from Acquisition.interfaces import IAcquirer
 
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.interface import implementsOnly, implementer
@@ -35,7 +36,7 @@ class Fetch(BrowserView):
 
         # If the object is not wrapped in an acquisition chain
         # we cannot check any permission.
-        if not hasattr(content, 'aq_chain'):
+        if not IAcquirer.providedBy(content):
             return
         
         url = self.request.getURL()
@@ -79,7 +80,7 @@ class Fetch(BrowserView):
             navtree_query['is_default_page'] = False
 
         content = context
-        if not hasattr(content, 'aq_chain'):
+        if not IAcquirer.providedBy(content):
             content = getSite()
         
         strategy = getMultiAdapter((content, widget), INavtreeStrategy)
@@ -125,7 +126,7 @@ class ContentTreeBase(Explicit):
 
     def render_tree(self):
         content = self.context
-        if not hasattr(content, 'aq_chain'):
+        if not IAcquirer.providedBy(content):
             content = getSite()
 
         source = self.bound_source
