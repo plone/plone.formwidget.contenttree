@@ -1,5 +1,6 @@
 from AccessControl import getSecurityManager
 from Acquisition import Explicit
+from Acquisition.interfaces import IAcquirer
 
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.interface import implementsOnly, implementer
@@ -8,6 +9,8 @@ from zope.component import getMultiAdapter
 import z3c.form.interfaces
 import z3c.form.widget
 import z3c.form.util
+
+from zope.app.component.hooks import getSite
 
 from plone.app.layout.navigation.interfaces import INavtreeStrategy
 from plone.app.layout.navigation.navtree import buildFolderTree
@@ -30,9 +33,15 @@ class Fetch(BrowserView):
     def validate_access(self):
 
         content = self.context.form.context
-        view_name = self.request.getURL().split('/')[-3]
-        # /path/to/obj/++widget++wname/@@contenttree-fetch?q=foo
 
+        # If the object is not wrapped in an acquisition chain
+        # we cannot check any permission.
+        if not IAcquirer.providedBy(content):
+            return
+        
+        url = self.request.getURL()
+        view_name = url[len(content.absolute_url()):].split('/')[1]
+        
         # May raise Unauthorized
 
         # If the view is 'edit', then traversal prefers the view and
@@ -58,7 +67,7 @@ class Fetch(BrowserView):
         # Update the widget before accessing the source.
         # The source was only bound without security applied
         # during traversal before.
-        self.context.update()
+        widget.update()
         source = widget.bound_source
 
         directory = self.request.form.get('href', None)
@@ -70,8 +79,12 @@ class Fetch(BrowserView):
         if 'is_default_page' not in navtree_query:
             navtree_query['is_default_page'] = False
 
-        strategy = getMultiAdapter((context, widget), INavtreeStrategy)
-        catalog = getToolByName(context, 'portal_catalog')
+        content = context
+        if not IAcquirer.providedBy(content):
+            content = getSite()
+        
+        strategy = getMultiAdapter((content, widget), INavtreeStrategy)
+        catalog = getToolByName(content, 'portal_catalog')
 
         children = []
         for brain in catalog(navtree_query):
@@ -112,12 +125,15 @@ class ContentTreeBase(Explicit):
                   '  return row[1] + " (" + row[0] + ")"; }')
 
     def render_tree(self):
-        context = self.context
+        content = self.context
+        if not IAcquirer.providedBy(content):
+            content = getSite()
+
         source = self.bound_source
 
-        strategy = getMultiAdapter((context, self), INavtreeStrategy)
-        data = buildFolderTree(context,
-                               obj=context,
+        strategy = getMultiAdapter((content, self), INavtreeStrategy)
+        data = buildFolderTree(content,
+                               obj=content,
                                query=source.navigation_tree_query,
                                strategy=strategy)
 
@@ -133,6 +149,8 @@ class ContentTreeBase(Explicit):
 
     def js_extra(self):
 
+        site = getSite()
+
         form_url = self.request.getURL()
 
         form_prefix = self.form.prefix + self.__parent__.prefix
@@ -140,8 +158,8 @@ class ContentTreeBase(Explicit):
 
         url = "%s/++widget++%s/@@contenttree-fetch" % (form_url, widget_name,)
 
-        portal_path = getToolByName(self.context, 'portal_url').getPortalPath()
-        ts = getToolByName(self.context, 'translation_service')
+        portal_path = getToolByName(site, 'portal_url').getPortalPath()
+        ts = getToolByName(site, 'translation_service')
         return """\
 
                 $('#%(id)s-widgets-query').after(
