@@ -2,13 +2,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Plone\n"
 "POT-Creation-Date: 2009-12-23 09:31+0000\n"
-"PO-Revision-Date: 2006-11-22 17:15+0100\n"
-"Last-Translator: Philippe gross <info@4teamwork.ch>\n"
+"PO-Revision-Date: 2010-08-24 11:35+0200\n"
+"Last-Translator: Gaudenz Steinlin <gaudenz@soziologie.ch>\n"
 "Language-Team: Deutsch <plone-i18n@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+"Language-Code: de\n"
+"Language-Name: German\n"
 "Preferred-Encodings: utf-8 latin1\n"
 "Domain: plone.formwidget.contenttree\n"
 
@@ -16,6 +18,11 @@ msgstr ""
 #: plone.formwidget.contenttree/plone/formwidget/contenttree/input.pt:10
 msgid "heading_contenttree_browse"
 msgstr "Objekte hinzufügen"
+
+#. Default: "Press Ctrl to select multiple items."
+#: plone.formwidget.contenttree/plone/formwidget/contenttree/input.pt:11
+msgid "heading_contenttree_help"
+msgstr "Drücken Sie die Strg-Taste um mehrere Elemente auszuwählen."
 
 #. Default: "Add"
 #: plone.formwidget.contenttree/plone/formwidget/contenttree/input.pt:20
@@ -31,5 +38,4 @@ msgstr "hinzufügen..."
 #: plone.formwidget.contenttree/plone/formwidget/contenttree/input.pt:20
 msgid "label_contenttree_cancel"
 msgstr "Abbrechen"
-
 

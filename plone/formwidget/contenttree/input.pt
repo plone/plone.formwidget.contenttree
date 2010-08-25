@@ -8,6 +8,9 @@
 	    tal:attributes="id string:${view/id}-contenttree-window">
 	<div class="contenttreeWindowHeader">
 	<h2 i18n:translate="heading_contenttree_browse">Browse for items</h2>
+    <em tal:condition="view/multi_select"
+        i18n:translate="heading_contenttree_help">Press Ctrl to select multiple items.
+    </em>
 	</div>
 	<div class="contenttreeWidget"
 	    tal:attributes="id string:${view/id}-contenttree">
