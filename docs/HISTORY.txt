@@ -1,7 +1,7 @@
 Changelog
 =========
 
-1.0b2 - unreleased
+1.0b2 (2010-08-25)
 ------------------
 
 * Fall back to the site to perform content-related operations if the
