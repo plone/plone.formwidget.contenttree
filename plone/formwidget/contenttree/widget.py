@@ -5,6 +5,7 @@ from Acquisition.interfaces import IAcquirer
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.interface import implementsOnly, implementer
 from zope.component import getMultiAdapter
+from zope.i18n import translate
 
 import z3c.form.interfaces
 import z3c.form.widget
@@ -22,7 +23,6 @@ from Products.CMFCore.utils import getToolByName
 from Products.Five.browser import BrowserView
 
 from plone.formwidget.contenttree.interfaces import IContentTreeWidget
-from plone.formwidget.contenttree import MessageFactory as _
 
 
 class Fetch(BrowserView):
@@ -159,7 +159,6 @@ class ContentTreeBase(Explicit):
         url = "%s/++widget++%s/@@contenttree-fetch" % (form_url, widget_name,)
 
         portal_path = getToolByName(site, 'portal_url').getPortalPath()
-        ts = getToolByName(site, 'translation_service')
         return """\
 
                 $('#%(id)s-widgets-query').after(
@@ -206,10 +205,11 @@ class ContentTreeBase(Explicit):
                    name=self.name,
                    klass=self.klass,
                    title=self.title,
-                   button_val=ts.translate(
+                   button_val=translate(
                        u'label_contenttree_browse',
                        default=u'browse...',
-                       domain='plone.formwidget.contenttree'))
+                       domain='plone.formwidget.contenttree',
+                       context=self.request))
 
 
 class ContentTreeWidget(ContentTreeBase, AutocompleteSelectionWidget):

@@ -1,6 +1,14 @@
 Changelog
 =========
 
+1.0b3 (Unreleased)
+------------------
+
+* Use `zope.i18n.translate` instead of translation_service, since
+  translation_service was removed in plone4.
+  [jbaumann]
+
+
 1.0b2 (2010-08-25)
 ------------------
 
@@ -42,7 +50,7 @@ Changelog
 * Add a template for HIDDEN_MODE.
   [csenger]
 
-* Convert all strings in a new navtree node into unicode using the site 
+* Convert all strings in a new navtree node into unicode using the site
   encoding to render non-ascii characters in the widget.
   [csenger]
 
