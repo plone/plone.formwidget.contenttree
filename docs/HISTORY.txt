@@ -1,7 +1,7 @@
 Changelog
 =========
 
-1.0b3 (Unreleased)
+1.0b3 (2011-02-11)
 ------------------
 
 * Use `zope.i18n.translate` instead of translation_service, since
