@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import os
 
-version = '1.0b3'
+version = '1.0b4'
 
 setup(name='plone.formwidget.contenttree',
       version=version,
@@ -26,8 +26,9 @@ setup(name='plone.formwidget.contenttree',
       install_requires=[
           'setuptools',
           'z3c.formwidget.query',
-          'plone.formwidget.autocomplete',
           'plone.z3cform',
+          'plone.formwidget.autocomplete',
+          'collective.js.jqueryui',
       ],
       entry_points="""
       [z3c.autoinclude.plugin]

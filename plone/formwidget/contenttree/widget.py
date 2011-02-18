@@ -1,6 +1,9 @@
+import json
 from AccessControl import getSecurityManager
 from Acquisition import Explicit
 from Acquisition.interfaces import IAcquirer
+from Products.Five.browser import BrowserView
+from Products.CMFCore.utils import getToolByName
 
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.interface import implementsOnly, implementer
@@ -11,24 +14,18 @@ import z3c.form.interfaces
 import z3c.form.widget
 import z3c.form.util
 
+from z3c.formwidget.query.widget import QuerySourceRadioWidget
+from z3c.formwidget.query.widget import QuerySourceCheckboxWidget
+
 from zope.app.component.hooks import getSite
 
 from plone.app.layout.navigation.interfaces import INavtreeStrategy
 from plone.app.layout.navigation.navtree import buildFolderTree
 
-from plone.formwidget.autocomplete.widget import \
-     AutocompleteSelectionWidget, AutocompleteMultiSelectionWidget
-
-from Products.CMFCore.utils import getToolByName
-from Products.Five.browser import BrowserView
-
 from plone.formwidget.contenttree.interfaces import IContentTreeWidget
 
 
 class Fetch(BrowserView):
-
-    fragment_template = ViewPageTemplateFile('fragment.pt')
-    recurse_template = ViewPageTemplateFile('input_recurse.pt')
 
     def validate_access(self):
 
@@ -51,11 +48,27 @@ class Fetch(BrowserView):
             view_name = '@@' + view_name
 
         view_instance = content.restrictedTraverse(view_name)
-        getSecurityManager().validate(content, content, view_name,
-                                      view_instance)
+        getSecurityManager().validate(content, content, view_name, view_instance)
+
+    def buildJSON(self, children):
+        data = []
+        for node in children:
+            icon = node['item_icon']
+            try:
+                icon = icon.url
+            except:
+                pass
+            data.append(
+                {'title': node['Title'],
+                 'tooltip': node['Description'],
+                 'icon': icon,
+                 'isFolder': node['show_children'],
+                 'isLazy': True,
+                 'key': node['path']})
+
+        return json.dumps(data)        
 
     def __call__(self):
-
         # We want to check that the user was indeed allowed to access the
         # form for this widget. We can only this now, since security isn't
         # applied yet during traversal.
@@ -70,20 +83,28 @@ class Fetch(BrowserView):
         widget.update()
         source = widget.bound_source
 
-        directory = self.request.form.get('href', None)
-        level = self.request.form.get('rel', 0)
+        directory = self.request.form.get('key', None)
+        content = context
+        if not IAcquirer.providedBy(content):
+            content = getSite()
+        strategy = getMultiAdapter((content, widget), INavtreeStrategy)
+        
+        if directory is None:
+            data = buildFolderTree(
+                content,
+                obj=content,
+                query=source.navigation_tree_query,
+                strategy=strategy)
+
+            return self.buildJSON(data.get('children', []))
 
         navtree_query = source.navigation_tree_query.copy()
+        print navtree_query
         navtree_query['path'] = {'depth': 1, 'query': directory}
 
         if 'is_default_page' not in navtree_query:
             navtree_query['is_default_page'] = False
 
-        content = context
-        if not IAcquirer.providedBy(content):
-            content = getSite()
-        
-        strategy = getMultiAdapter((content, widget), INavtreeStrategy)
         catalog = getToolByName(content, 'portal_catalog')
 
         children = []
@@ -97,7 +118,45 @@ class Fetch(BrowserView):
                 newNode = strategy.decoratorFactory(newNode)
                 children.append(newNode)
 
-        return self.fragment_template(children=children, level=int(level))
+        return self.buildJSON(children)
+
+    def search(self):
+        print self.request.form
+        self.validate_access()
+
+        widget = self.context
+        context = widget.context
+
+        widget.update()
+        source = widget.bound_source
+
+        search = self.request.form.get('search', None)
+        if search is None:
+            return self.buildJSON([])
+
+        content = context
+        if not IAcquirer.providedBy(content):
+            content = getSite()
+        strategy = getMultiAdapter((content, widget), INavtreeStrategy)
+        
+        navtree_query = source.navigation_tree_query.copy()
+        query = {'portal_type': navtree_query['portal_type'],
+                 'SearchableText': search}
+
+        catalog = getToolByName(content, 'portal_catalog')
+
+        children = []
+        for brain in catalog(query):
+            newNode = {'item'          : brain,
+                       'depth'         : -1, # not needed here
+                       'currentItem'   : False,
+                       'currentParent' : False,
+                       'children'      : []}
+            if strategy.nodeFilter(newNode):
+                newNode = strategy.decoratorFactory(newNode)
+                children.append(newNode)
+
+        return self.buildJSON(children)
 
 
 class ContentTreeBase(Explicit):
@@ -110,7 +169,6 @@ class ContentTreeBase(Explicit):
     input_template = ViewPageTemplateFile('input.pt')
     hidden_template = ViewPageTemplateFile('hidden.pt')
     display_template = None # set by subclass
-    recurse_template = ViewPageTemplateFile('input_recurse.pt')
 
     # Parameters passed to the JavaScript function
     folderEvent = 'click'
@@ -120,24 +178,15 @@ class ContentTreeBase(Explicit):
     multiFolder = True
     multi_select = False
 
-    # Overrides for autocomplete widget
-    formatItem = ('function(row, idx, count, value) {'
-                  '  return row[1] + " (" + row[0] + ")"; }')
+    def update(self):
+        super(ContentTreeBase, self).update()
+        self.portal_path = getToolByName(getSite(), 'portal_url').getPortalPath()
 
-    def render_tree(self):
-        content = self.context
-        if not IAcquirer.providedBy(content):
-            content = getSite()
-
-        source = self.bound_source
-
-        strategy = getMultiAdapter((content, self), INavtreeStrategy)
-        data = buildFolderTree(content,
-                               obj=content,
-                               query=source.navigation_tree_query,
-                               strategy=strategy)
-
-        return self.recurse_template(children=data.get('children', []), level=1)
+    def getAjaxUrl(self):
+        form_url = self.request.getURL()
+        form_prefix = self.form.prefix + self.__parent__.prefix
+        widget_name = self.name[len(form_prefix):]
+        return "%s/++widget++%s/@@contenttree" % (form_url, widget_name,)
 
     def render(self):
         if self.mode == z3c.form.interfaces.DISPLAY_MODE:
@@ -147,82 +196,16 @@ class ContentTreeBase(Explicit):
         else:
             return self.input_template(self)
 
-    def js_extra(self):
 
-        site = getSite()
-
-        form_url = self.request.getURL()
-
-        form_prefix = self.form.prefix + self.__parent__.prefix
-        widget_name = self.name[len(form_prefix):]
-
-        url = "%s/++widget++%s/@@contenttree-fetch" % (form_url, widget_name,)
-
-        portal_path = getToolByName(site, 'portal_url').getPortalPath()
-        return """\
-
-                $('#%(id)s-widgets-query').after(
-                    $(document.createElement('input'))
-                        .attr({
-                            'type': 'button',
-                            'value': '%(button_val)s'
-                        })
-                        .addClass('searchButton')
-                        .click(function () {
-                            $('#%(id)s-contenttree-window').showDialog();
-                        })
-                );
-                $('#%(id)s-contenttree-window').find('.contentTreeAdd').click(function () {
-                    $(this).contentTreeAdd('%(id)s', '%(name)s', '%(klass)s', '%(title)s', '%(basePath)s', %(multiSelect)s);
-                });
-                $('#%(id)s-contenttree-window').find('.contentTreeCancel').click(function () {
-                    $(this).contentTreeCancel();
-                });
-                $('#%(id)s-widgets-query').after(" ");
-                $('#%(id)s-contenttree').contentTree(
-                    {
-                        script: '%(url)s',
-                        folderEvent: '%(folderEvent)s',
-                        selectEvent: '%(selectEvent)s',
-                        expandSpeed: %(expandSpeed)d,
-                        collapseSpeed: %(collapseSpeed)s,
-                        multiFolder: %(multiFolder)s,
-                        multiSelect: %(multiSelect)s,
-                    },
-                    function(event, selected, data, title) {
-                        // alert(event + ', ' + selected + ', ' + data + ', ' + title);
-                    }
-                );
-        """ % dict(url=url,
-                   id=self.name.replace('.', '-'),
-                   folderEvent=self.folderEvent,
-                   selectEvent=self.selectEvent,
-                   expandSpeed=self.expandSpeed,
-                   collapseSpeed=self.collapseSpeed,
-                   multiFolder=str(self.multiFolder).lower(),
-                   multiSelect=str(self.multi_select).lower(),
-                   basePath=portal_path,
-                   name=self.name,
-                   klass=self.klass,
-                   title=self.title,
-                   button_val=translate(
-                       u'label_contenttree_browse',
-                       default=u'browse...',
-                       domain='plone.formwidget.contenttree',
-                       context=self.request))
-
-
-class ContentTreeWidget(ContentTreeBase, AutocompleteSelectionWidget):
-    """ContentTree widget that allows single selection.
-    """
+class ContentTreeWidget(ContentTreeBase, QuerySourceRadioWidget):
+    """ ContentTree widget that allows single selection. """
 
     klass = u"contenttree-widget"
     display_template = ViewPageTemplateFile('display_single.pt')
 
 
-class MultiContentTreeWidget(ContentTreeBase, AutocompleteMultiSelectionWidget):
-    """ContentTree widget that allows multiple selection
-    """
+class MultiContentTreeWidget(ContentTreeBase, QuerySourceCheckboxWidget):
+    """ContentTree widget that allows multiple selection """
 
     klass = u"contenttree-widget"
     multi_select = True
