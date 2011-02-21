@@ -77,5 +77,12 @@ $(function() {
 			     data: {"search": $('#'+ id + '-search').val()}
 			    });
 	});
+
+	$('#'+ id + '-reloadbtn').click(function() {
+	    var root = tree.dynatree('getRoot');
+	    root.removeChildren();
+	    root.appendAjax({url: loadurl});
+	});
+
     });
 });

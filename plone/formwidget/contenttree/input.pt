@@ -17,6 +17,8 @@
       <input type="text" tal:attributes="id string:${view/id}-search" />
       <input type="button" 
 	     tal:attributes="id string:${view/id}-searchbtn" value="Search" />
+      <input type="button" 
+	     tal:attributes="id string:${view/id}-reloadbtn" value="Reload" />
       <div class="plone-app-contenttree-tree">
       </div>
     </div>
