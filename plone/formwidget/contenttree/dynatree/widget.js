@@ -3,7 +3,7 @@ $(function() {
 	var div = $(this);
 	var id = div.attr('inputid');
 	var name = div.attr('inputname');
-	var multiselect = div.attr('multiselect');
+	var multiselect = div.attr('multiselect') == 'True';
 	var basepath = div.attr('basepath');
 	var tree = div.find('.plone-app-contenttree-tree');
 	var loadurl = div.attr('loadurl');
