@@ -51,6 +51,7 @@ $(function() {
 	    initAjax: {url: loadurl},
 	    checkbox: true,
 	    imagePath: '',
+	    selectMode: multiselect ? 2 : 1,
 	    onLazyRead: function(node){
 		node.appendAjax({url: loadurl,
 				 data: {"key": node.data.key}

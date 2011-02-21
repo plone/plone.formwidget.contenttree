@@ -99,7 +99,6 @@ class Fetch(BrowserView):
             return self.buildJSON(data.get('children', []))
 
         navtree_query = source.navigation_tree_query.copy()
-        print navtree_query
         navtree_query['path'] = {'depth': 1, 'query': directory}
 
         if 'is_default_page' not in navtree_query:
