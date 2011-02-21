@@ -50,6 +50,7 @@ $(function() {
 	tree.dynatree({
 	    initAjax: {url: loadurl},
 	    checkbox: true,
+	    imagePath: '',
 	    onLazyRead: function(node){
 		node.appendAjax({url: loadurl,
 				 data: {"key": node.data.key}
