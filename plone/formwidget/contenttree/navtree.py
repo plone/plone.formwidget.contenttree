@@ -114,7 +114,7 @@ class NavtreeStrategy(SitemapNavtreeStrategy):
                                             False)
 
         # Mark selectable nodes
-        new_node['selectable'] = self.widget.bound_source._filter(
+        new_node['selectable'] = self.widget.bound_source.isBrainSelectable(
             new_node['item'])
 
         # turn all strings to unicode to render non ascii characters

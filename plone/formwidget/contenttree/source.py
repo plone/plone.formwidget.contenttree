@@ -5,7 +5,6 @@ from zope.interface import implements
 from zope.component import getMultiAdapter
 
 from zope.schema.interfaces import IContextSourceBinder
-from zope.schema.vocabulary import SimpleTerm
 
 from zope.app.component.hooks import getSite
 
@@ -18,6 +17,8 @@ from Products.ZCTextIndex.ParseTree import ParseError
 from plone.formwidget.contenttree.interfaces import IContentSource
 from plone.formwidget.contenttree.interfaces import IContentFilter
 
+import plone.app.z3cform.queryselect
+from  plone.formwidget.contenttree.vocabulary import BrainTerm
 
 class CustomFilter(object):
     """A filter that can be used to test simple values in brain metadata and
@@ -92,19 +93,24 @@ class PathSource(object):
     def __contains__(self, value):
         try:
             brain = self._brain_for_path(self._path_for_value(value))
-            return self._filter(brain)
+            return self.isBrainSelectable(brain)
         except KeyError:
             return False
 
     def getTermByToken(self, token):
         brain = self._brain_for_path(self._path_for_token(token))
-        if not self._filter(brain):
+        if not self.isBrainSelectable(brain):
+            raise LookupError(token)
+        return self._term_for_brain(brain)
+
+    def getTermByBrain(self, brain):
+        if not self.isBrainSelectable(brain):
             raise LookupError(token)
         return self._term_for_brain(brain)
 
     def getTerm(self, value):
         brain = self._brain_for_path(self._path_for_value(value))
-        if not self._filter(brain):
+        if not self.isBrainSelectable(brain):
             raise LookupError(value)
         return self._term_for_brain(brain)
 
@@ -125,11 +131,11 @@ class PathSource(object):
 
         return results
 
-    # Helper functions
-
-    def _filter(self, brain):
+    def isBrainSelectable(self, brain):
         index_data = self.catalog.getIndexDataForRID(brain.getRID())
         return self.selectable_filter(brain, index_data)
+
+    # Helper functions
 
     def _path_for_token(self, token):
         return self.portal_path + token
@@ -143,7 +149,7 @@ class PathSource(object):
 
     def _term_for_brain(self, brain, real_value=True):
         path = brain.getPath()[len(self.portal_path):]
-        return SimpleTerm(path, path, brain.Title)
+        return BrainTerm(brain, token=brain.getPath()[len(self.portal_path):])
 
 class ObjPathSource(PathSource):
 
@@ -151,13 +157,11 @@ class ObjPathSource(PathSource):
         return '/'.join(value.getPhysicalPath())
 
     def _term_for_brain(self, brain, real_value=True):
-        path = brain.getPath()[len(self.portal_path):]
         if real_value:
-            return SimpleTerm(brain._unrestrictedGetObject(),
-                              path,
-                              brain.Title)
+            return BrainTerm(brain, token=brain._unrestrictedGetObject())
         else:
-            return SimpleTerm(path, path, brain.Title)
+            return BrainTerm(brain, 
+                             token=brain.getPath()[len(self.portal_path):])
 
 class PathSourceBinder(object):
     implements(IContextSourceBinder)
@@ -180,3 +184,29 @@ class PathSourceBinder(object):
 
 class ObjPathSourceBinder(PathSourceBinder):
     path_source = ObjPathSource
+
+class ArchetypesContentSource(plone.app.z3cform.queryselect.ArchetypesContentSource):
+    implements(IContentSource)
+    """An ArchetypesContentSource that produces Terms containing the brain
+    object, so they can be used later to get paths, etc.
+
+    """
+    def __init__(self, context):
+        super(ArchetypesContentSource, self).__init__(context)
+        self.navigation_tree_query = {}
+
+    def getTermByBrain(self, brain):
+        return self._term_for_brain(brain)
+
+    def _term_for_brain(self, brain):
+        return BrainTerm(brain, token=brain.UID)
+
+    # TODO: should probably generalise the support for this from above
+    def isBrainSelectable(self, brain):
+        return True
+
+class ArchetypesContentSourceBinder(object):
+    implements(IContextSourceBinder)
+
+    def __call__(self, context):
+        return ArchetypesContentSource(context)
