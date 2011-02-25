@@ -14,19 +14,19 @@ if(jQuery) (function($){
                 'top': $(window).height() * 0.125
             })
         },
-        contentTreeAdd: function(id, name, klass, title, base_path, multi_select) {
+        contentTreeAdd: function(id, name, klass, title, multi_select) {
             var termCount = multi_select ? $('#' +id + '-input-fields').children().length : 0;
 
 
             $(this).parents(".contenttreeWindow").find('.navTreeCurrentItem > a').each(function () {
-                var path = $(this).attr('href').substr(base_path.length);
-                var field = $('#' + id + '-input-fields input[value="' + path + '"]');
+                var field_value = $(this).attr('href');
+                var field = $('#' + id + '-input-fields input[value="' + field_value + '"]');
                 if(field.length == 0) {
                     if (multi_select) {
-                        $('#' + id + '-input-fields').append('<span id="' + id + '-' + termCount + '-wrapper" class="option"><label for="' + id + '-' + termCount + '"><input type="checkbox" id="' + id + '-' + termCount + '" name="' + name + ':list" class="' + klass + '" title="' + title + '" checked="checked" value="' + path + '" /><span class="label">' + $.trim($(this).text()) + '</span></label></span>');
+                        $('#' + id + '-input-fields').append('<span id="' + id + '-' + termCount + '-wrapper" class="option"><label for="' + id + '-' + termCount + '"><input type="checkbox" id="' + id + '-' + termCount + '" name="' + name + ':list" class="' + klass + '" title="' + title + '" checked="checked" value="' + field_value + '" /><span class="label">' + $.trim($(this).text()) + '</span></label></span>');
                     } else {
                         $('#' + id + '-input-fields').find(".option").remove();
-                        $('#' + id + '-input-fields').append('<span id="' + id + '-' + termCount + '-wrapper" class="option"><label for="' + id + '-' + termCount + '"><input type="radio" id="' + id + '-' + termCount + '" name="' + name + ':list" class="' + klass + '" title="' + title + '" checked="checked" value="' + path + '" /><span class="label">' + $.trim($(this).text()) + '</span></label></span>');
+                        $('#' + id + '-input-fields').append('<span id="' + id + '-' + termCount + '-wrapper" class="option"><label for="' + id + '-' + termCount + '"><input type="radio" id="' + id + '-' + termCount + '" name="' + name + ':list" class="' + klass + '" title="' + title + '" checked="checked" value="' + field_value + '" /><span class="label">' + $.trim($(this).text()) + '</span></label></span>');
                     }
                 } else {
                     field.each(function() { this.checked = true });
