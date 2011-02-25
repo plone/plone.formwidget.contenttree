@@ -158,7 +158,6 @@ class ContentTreeBase(Explicit):
 
         url = "%s/++widget++%s/@@contenttree-fetch" % (form_url, widget_name,)
 
-        portal_path = getToolByName(site, 'portal_url').getPortalPath()
         return """\
 
                 $('#%(id)s-widgets-query').after(
@@ -173,7 +172,7 @@ class ContentTreeBase(Explicit):
                         })
                 );
                 $('#%(id)s-contenttree-window').find('.contentTreeAdd').click(function () {
-                    $(this).contentTreeAdd('%(id)s', '%(name)s', '%(klass)s', '%(title)s', '%(basePath)s', %(multiSelect)s);
+                    $(this).contentTreeAdd('%(id)s', '%(name)s', '%(klass)s', '%(title)s', %(multiSelect)s);
                 });
                 $('#%(id)s-contenttree-window').find('.contentTreeCancel').click(function () {
                     $(this).contentTreeCancel();
@@ -201,7 +200,6 @@ class ContentTreeBase(Explicit):
                    collapseSpeed=self.collapseSpeed,
                    multiFolder=str(self.multiFolder).lower(),
                    multiSelect=str(self.multi_select).lower(),
-                   basePath=portal_path,
                    name=self.name,
                    klass=self.klass,
                    title=self.title,
