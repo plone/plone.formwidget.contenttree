@@ -104,11 +104,6 @@ class PathSource(object):
             raise LookupError(token)
         return self._term_for_brain(brain)
 
-    def getTermByBrain(self, brain):
-        if not self.isBrainSelectable(brain):
-            raise LookupError(token)
-        return self._term_for_brain(brain)
-
     def getTerm(self, value):
         brain = self._brain_for_path(self._path_for_value(value))
         if not self.isBrainSelectable(brain):
@@ -200,11 +195,8 @@ class ArchetypesContentSource(plone.app.z3cform.queryselect.ArchetypesContentSou
         super(ArchetypesContentSource, self).__init__(context)
         self.navigation_tree_query = {}
 
-    def getTermByBrain(self, brain):
-        return self._term_for_brain(brain)
-
-    def _term_for_brain(self, brain):
-        return BrainTerm(brain, token=brain.UID)
+    # We use the UID as a token
+    token_attribute = 'UID'
 
     # TODO: should probably generalise the support for this from above
     def isBrainSelectable(self, brain):
