@@ -6,6 +6,7 @@ from zope.component import getMultiAdapter
 
 from zope.schema.interfaces import IContextSourceBinder
 
+from zope.app.component.hooks import getSite
 from zope.globalrequest import getRequest
 
 from plone.app.layout.navigation.interfaces import INavigationQueryBuilder
@@ -176,7 +177,7 @@ class PathSourceBinder(object):
         content = context
 
         if not IAcquirer.providedBy(content):
-            content = getRequest()['PUBLISHED'].context
+            content = getattr(getRequest(),'PUBLISHED',getSite())
         self.saved_path_source = self.path_source(
             content,
             selectable_filter=self.selectable_filter,
@@ -215,9 +216,10 @@ class ArchetypesContentSourceBinder(object):
     def __call__(self, context):
         content = context
         if not IAcquirer.providedBy(content):
-            content = getRequest()['PUBLISHED'].context
+            content = getattr(getRequest(),'PUBLISHED',getSite())
         self.saved_path_source = ArchetypesContentSource(content)
         return self.saved_path_source
 
     def __contains__(self, value):
+        # Invoked only if we haven't been bound to a context properly
         return self.saved_path_source.__contains__(value)
