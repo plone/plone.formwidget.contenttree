@@ -124,6 +124,19 @@ class ContentTreeBase(Explicit):
     formatItem = ('function(row, idx, count, value) {'
                   '  return row[1] + " (" + row[0] + ")"; }')
 
+    def brain_to_token(self,brain):
+        # Using an attribute as a token, fetch that
+        if getattr(self,'token_attribute',None):
+            return getattr(brain,getattr(self, 'token_attribute'))
+        # Fall back to fetching path
+        if not(hasattr(self,'portal_path')):
+            content = self.context
+            if not IAcquirer.providedBy(content):
+                content = getSite()
+            portal_tool = getToolByName(content, "portal_url")
+            self.portal_path = portal_tool.getPortalPath()
+        return brain.getPath()[len(self.portal_path):]
+
     def render_tree(self):
         content = self.context
         if not IAcquirer.providedBy(content):
@@ -141,40 +154,43 @@ class ContentTreeBase(Explicit):
 
     def render(self):
         if self.mode == z3c.form.interfaces.DISPLAY_MODE:
+            # Don't set token_attribute, since we want to render useful links
             return self.display_template(self)
         elif self.mode == z3c.form.interfaces.HIDDEN_MODE:
+            self.token_attribute = getattr(self.bound_source,'token_attribute',None)
             return self.hidden_template(self)
         else:
+            self.token_attribute = getattr(self.bound_source,'token_attribute',None)
             return self.input_template(self)
 
-    def js_extra(self):
-
-        site = getSite()
-
+    def contenttree_url(self):
         form_url = self.request.getURL()
 
         form_prefix = self.form.prefix + self.__parent__.prefix
         widget_name = self.name[len(form_prefix):]
+        return "%s/++widget++%s/@@contenttree-fetch" % (form_url, widget_name,)
 
-        url = "%s/++widget++%s/@@contenttree-fetch" % (form_url, widget_name,)
-
+    def js_extra(self):
         return """\
 
-                $('#%(id)s-widgets-query').after(
-                    $(document.createElement('input'))
+                $('#%(id)s-widgets-query').after(function() {
+                    if($(this).siblings('input.searchButton').length > 0) { return; }
+                    return $(document.createElement('input'))
                         .attr({
                             'type': 'button',
                             'value': '%(button_val)s'
                         })
                         .addClass('searchButton')
-                        .click(function () {
-                            $('#%(id)s-contenttree-window').showDialog();
+                        .click( function () {
+                            var parent = $(this).parents("*[id$='-autocomplete']")
+                            var window = parent.siblings("*[id$='-contenttree-window']")
+                            window.showDialog();
                         })
-                );
-                $('#%(id)s-contenttree-window').find('.contentTreeAdd').click(function () {
-                    $(this).contentTreeAdd('%(id)s', '%(name)s', '%(klass)s', '%(title)s', %(multiSelect)s);
                 });
-                $('#%(id)s-contenttree-window').find('.contentTreeCancel').click(function () {
+                $('#%(id)s-contenttree-window').find('.contentTreeAdd').unbind('click').click(function () {
+                    $(this).contentTreeAdd();
+                });
+                $('#%(id)s-contenttree-window').find('.contentTreeCancel').unbind('click').click(function () {
                     $(this).contentTreeCancel();
                 });
                 $('#%(id)s-widgets-query').after(" ");
@@ -192,7 +208,7 @@ class ContentTreeBase(Explicit):
                         // alert(event + ', ' + selected + ', ' + data + ', ' + title);
                     }
                 );
-        """ % dict(url=url,
+        """ % dict(url=self.contenttree_url(),
                    id=self.name.replace('.', '-'),
                    folderEvent=self.folderEvent,
                    selectEvent=self.selectEvent,

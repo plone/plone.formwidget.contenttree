@@ -19,6 +19,13 @@
         permission="zope.Public"
         class=".widget.Fetch"
         />
+
+    <browser:page
+        name="contenttree-fetch"
+        for="*"
+        permission="zope.Public"
+        class=".directlookup.Fetch"
+        />
     
     <browser:resourceDirectory
         name="plone.formwidget.contenttree"

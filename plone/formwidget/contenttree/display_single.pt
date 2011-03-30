@@ -17,7 +17,7 @@
         >
     <div tal:repeat="term view/terms">
         <a tal:content="term/title" 
-           tal:attributes="href term/brain/getPath"
-           />
+           tal:attributes="href term/token"
+           /><!-- TODO: Want the real URL here -->
     </div>
 </span>
