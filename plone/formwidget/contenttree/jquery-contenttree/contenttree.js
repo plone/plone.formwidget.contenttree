@@ -14,23 +14,11 @@ if(jQuery) (function($){
                 'top': $(window).height() * 0.125
             })
         },
-        contentTreeAdd: function(id, name, klass, title, multi_select) {
-            var termCount = multi_select ? $('#' +id + '-input-fields').children().length : 0;
-
-
-            $(this).parents(".contenttreeWindow").find('.navTreeCurrentItem > a').each(function () {
-                var field_value = $(this).attr('href');
-                var field = $('#' + id + '-input-fields input[value="' + field_value + '"]');
-                if(field.length == 0) {
-                    if (multi_select) {
-                        $('#' + id + '-input-fields').append('<span id="' + id + '-' + termCount + '-wrapper" class="option"><label for="' + id + '-' + termCount + '"><input type="checkbox" id="' + id + '-' + termCount + '" name="' + name + ':list" class="' + klass + '" title="' + title + '" checked="checked" value="' + field_value + '" /><span class="label">' + $.trim($(this).text()) + '</span></label></span>');
-                    } else {
-                        $('#' + id + '-input-fields').find(".option").remove();
-                        $('#' + id + '-input-fields').append('<span id="' + id + '-' + termCount + '-wrapper" class="option"><label for="' + id + '-' + termCount + '"><input type="radio" id="' + id + '-' + termCount + '" name="' + name + ':list" class="' + klass + '" title="' + title + '" checked="checked" value="' + field_value + '" /><span class="label">' + $.trim($(this).text()) + '</span></label></span>');
-                    }
-                } else {
-                    field.each(function() { this.checked = true });
-                }
+        contentTreeAdd: function() {
+            var contenttree_window = (this).parents(".contenttreeWindow");
+            var input_box = $('#'+ contenttree_window[0].id.replace(/-contenttree-window$/,"-widgets-query"));
+            contenttree_window.find('.navTreeCurrentItem > a').each(function () {
+                formwidget_autocomplete_new_value(input_box,$(this).attr('href'),$.trim($(this).text()));
             });
 
             $(this).contentTreeCancel();
@@ -56,8 +44,6 @@ if(jQuery) (function($){
                
             if(o.multiFolder == undefined) o.multiFolder = true;
             if(o.multiSelect == undefined) o.multiSelect = false;
-
-            o.root = $(this);
 
             function loadTree(c, t, r) {
                 $(c).addClass('wait');
@@ -92,11 +78,12 @@ if(jQuery) (function($){
             function handleSelectEvent(event) {
                 var li = $(this).parent();
                 var selected = true;
+                var root = $(this).parents('ul.navTree');
                 if(!li.hasClass('navTreeCurrentItem')) {
                     var multi_key = ((event.ctrlKey) || (navigator.userAgent.toLowerCase().indexOf('macintosh') != -1 && event.metaKey));
 
                     if(!o.multiSelect || !multi_key) {
-                        o.root.find('li.navTreeCurrentItem').removeClass('navTreeCurrentItem');
+                        root.find('li.navTreeCurrentItem').removeClass('navTreeCurrentItem');
                     }
 
                     li.addClass('navTreeCurrentItem');
@@ -110,6 +97,8 @@ if(jQuery) (function($){
             }
 
             function bindTree(t) {
+                $(t).find('li.navTreeFolderish a').unbind(o.folderEvent);
+                $(t).find('li.selectable a').unbind(o.selectEvent);
                 $(t).find('li a').bind('click', function() { return false; });
                 $(t).find('li.navTreeFolderish a').bind(o.folderEvent, handleFolderEvent);
                 $(t).find('li.selectable a').bind(o.selectEvent, handleSelectEvent);
