@@ -209,6 +209,8 @@ class ArchetypesContentSourceBinder(object):
         content = context
         if not IAcquirer.providedBy(content):
             content = getattr(getRequest(),'PUBLISHED',getSite())
+            if not IAcquirer.providedBy(content):
+                content = getSite()
         self.saved_path_source = ArchetypesContentSource(content)
         return self.saved_path_source
 
