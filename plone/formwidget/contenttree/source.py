@@ -214,4 +214,4 @@ class ArchetypesContentSourceBinder(object):
 
     def __contains__(self, value):
         # Invoked only if we haven't been bound to a context properly
-        return self.saved_path_source.__contains__(value)
+        return self(None).__contains__(value)
