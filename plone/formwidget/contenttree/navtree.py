@@ -5,6 +5,7 @@ from Products.CMFCore.utils import getToolByName
 
 try:
     from Products.CMFPlone.browser.navtree import SitemapNavtreeStrategy
+    SitemapNavtreeStrategy  # pyflakes
 except ImportError:
     # Plone trunk
     from plone.app.layout.navigation.sitemap import SitemapNavtreeStrategy
@@ -31,12 +32,9 @@ class QueryBuilder(object):
 
     def __call__(self):
         context = self.context
-        source = self.source
 
         portal_properties = getToolByName(context, 'portal_properties')
         navtree_properties = getattr(portal_properties, 'navtree_properties')
-
-        portal_url = getToolByName(context, 'portal_url')
 
         query = {}
 
@@ -80,14 +78,15 @@ class NavtreeStrategy(SitemapNavtreeStrategy):
         self.context = context
         self.widget = widget
 
-        # set rootPath to the query path if the source query is not a navtree query
-        # in this case we want the widget to only show elements below the query path
+        # set rootPath to the query path if the source query is not a
+        # navtree query in this case we want the widget to only show
+        # elements below the query path
         if 'path' in widget.source.navigation_tree_query:
             queryPath = widget.source.navigation_tree_query['path']
             if 'navtree' not in queryPath or not queryPath['navtree']:
                 self.rootPath = queryPath['query']
 
-        self.showAllParents = False # override from base class
+        self.showAllParents = False  # override from base class
         self.site_encoding = utils.getSiteEncoding(self.context)
 
     def subtreeFilter(self, node):
