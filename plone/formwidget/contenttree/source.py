@@ -69,7 +69,7 @@ class PathSource(object):
             navigation_tree_query = {}
 
         # Copy path from selectable_filter into the navigation_tree_query
-        # normally it does not make sense to show elements that wouldn't be 
+        # normally it does not make sense to show elements that wouldn't be
         # selectable anyway and are unneeded to navigate to selectable items
         if 'path' not in navigation_tree_query and 'path' in selectable_filter.criteria:
             navigation_tree_query['path'] = selectable_filter.criteria['path']

@@ -38,10 +38,10 @@ class Fetch(BrowserView):
         # we cannot check any permission.
         if not IAcquirer.providedBy(content):
             return
-        
+
         url = self.request.getURL()
         view_name = url[len(content.absolute_url()):].split('/')[1]
-        
+
         # May raise Unauthorized
 
         # If the view is 'edit', then traversal prefers the view and
@@ -82,7 +82,7 @@ class Fetch(BrowserView):
         content = context
         if not IAcquirer.providedBy(content):
             content = getSite()
-        
+
         strategy = getMultiAdapter((content, widget), INavtreeStrategy)
         catalog = getToolByName(content, 'portal_catalog')
 

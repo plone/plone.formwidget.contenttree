@@ -10,7 +10,7 @@ testing_zcml_layer = ZCMLLayer(testing_zcml_path, 'plone.formwidget.contenttree'
 def test_suite():
     readme_txt = doctest.DocFileSuite('README.txt')
     readme_txt.layer = testing_zcml_layer
-    
+
     return unittest.TestSuite([
         readme_txt,
         ])

@@ -17,7 +17,7 @@
         tal:define="portal_url context/@@plone_portal_state/portal_url"
         >
     <div tal:repeat="item view/items">
-        <a tal:content="item/label" 
+        <a tal:content="item/label"
            tal:attributes="href string:${portal_url}${item/value}"
            />
     </div>

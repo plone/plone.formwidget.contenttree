@@ -21,7 +21,7 @@
                 </a>
               </tal:block>
               <ul tal:attributes="class python:'navTree navTreeLevel'+str(level)"
-                  tal:condition="python: len(children) > 0 and show_children">  
+                  tal:condition="python: len(children) > 0 and show_children">
                   <span tal:replace="structure python:view.recurse_template(children=children, level=level+1)" />
               </ul>
             </tal:level>
