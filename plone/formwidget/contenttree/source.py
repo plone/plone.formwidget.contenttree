@@ -1,5 +1,3 @@
-import itertools
-
 from Acquisition.interfaces import IAcquirer
 from zope.interface import implements
 from zope.component import getMultiAdapter
@@ -25,14 +23,15 @@ class CustomFilter(object):
 
     Limitations:
 
-        - Will probably only work on FieldIndex, KeywordIndex and PathIndex indexes
+    - Will probably only work on FieldIndex, KeywordIndex and PathIndex indexes
     """
     implements(IContentFilter)
 
     def __init__(self, **kw):
         self.criteria = {}
         for key, value in kw.items():
-            if not isinstance(value, (list, tuple, set, frozenset)) and not key == 'path':
+            if (not isinstance(value, (list, tuple, set, frozenset)) and
+                not key == 'path'):
                 self.criteria[key] = [value]
             elif isinstance(value, (set, frozenset)):
                 self.criteria[key] = list(value)
@@ -43,7 +42,8 @@ class CustomFilter(object):
         for key, value in self.criteria.items():
             test_value = index_data.get(key, None)
             if test_value is not None:
-                if not isinstance(test_value, (list, tuple, set, frozenset)) and not key == 'path':
+                if (not isinstance(test_value, (list, tuple, set, frozenset))
+                    and not key == 'path'):
                     test_value = set([test_value])
                 elif isinstance(value, (list, tuple)):
                     test_value = set(test_value)
@@ -71,7 +71,8 @@ class PathSource(object):
         # Copy path from selectable_filter into the navigation_tree_query
         # normally it does not make sense to show elements that wouldn't be
         # selectable anyway and are unneeded to navigate to selectable items
-        if 'path' not in navigation_tree_query and 'path' in selectable_filter.criteria:
+        if ('path' not in navigation_tree_query and
+            'path' in selectable_filter.criteria):
             navigation_tree_query['path'] = selectable_filter.criteria['path']
 
         query.update(navigation_tree_query)
@@ -145,6 +146,7 @@ class PathSource(object):
         path = brain.getPath()[len(self.portal_path):]
         return SimpleTerm(path, path, brain.Title)
 
+
 class ObjPathSource(PathSource):
 
     def _path_for_value(self, value):
@@ -158,6 +160,7 @@ class ObjPathSource(PathSource):
                               brain.Title)
         else:
             return SimpleTerm(path, path, brain.Title)
+
 
 class PathSourceBinder(object):
     implements(IContextSourceBinder)
@@ -177,6 +180,7 @@ class PathSourceBinder(object):
             content,
             selectable_filter=self.selectable_filter,
             navigation_tree_query=self.navigation_tree_query)
+
 
 class ObjPathSourceBinder(PathSourceBinder):
     path_source = ObjPathSource
