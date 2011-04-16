@@ -1,6 +1,13 @@
 Changelog
 =========
 
+1.0 (unreleased)
+----------------
+
+* Add content type CSS class to items in the navtree so that icons are shown
+  in Plone 4.
+  [davisagli]
+
 1.0b3 (2011-02-11)
 ------------------
 
@@ -13,7 +20,7 @@ Changelog
 ------------------
 
 * Fall back to the site to perform content-related operations if the
-  context is not wrapped into an aquisition chain.
+  context is not wrapped into an acquisition chain.
   [dukebody]
 
 * Compute the view name as the request URL left-stripped the content
