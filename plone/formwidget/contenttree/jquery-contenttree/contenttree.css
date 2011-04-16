@@ -4,7 +4,6 @@
     left: 0px;
     overflow-y: auto;
     margin: 0em 1em;
-    padding-right: 1em;
     position: absolute;
     right: 0px;
     top: 6em;
@@ -26,6 +25,33 @@
 
 .contenttreeWidget li a {
     border-bottom: solid 1px transparent;
+}
+
+.contenttreeWidget .navTreeItem a {
+    border: none;
+    display: block;
+    text-decoration: none;
+    padding-top: 0.2em;
+    padding-bottom: 0.25em;
+}
+.contenttreeWidget .navTreeItem a:hover {
+    border: 1px dotted #205C90;
+}
+.contenttreeWidget li.navTreeCurrentItem {
+    border: none !important;
+    background-color: transparent;
+}
+.contenttreeWidget li.navTreeCurrentItem > a,
+.contenttreeWidget li.navTreeCurrentItem > a:hover {
+    border: none;
+    background-color: #205C90;
+    color: #fff !important;
+}
+
+/* Another workaround for broken Internet Explorer */
+* html .contentTreeWidget li.navTreeCurrentItem a,
+* html .contentTreeWidget li.navTreeCurrentItem a:hover {
+    height: 1.6em;
 }
 
 .contenttreeWindow {

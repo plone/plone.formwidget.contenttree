@@ -4,6 +4,10 @@ Changelog
 1.0 (unreleased)
 ----------------
 
+* Improved CSS for selected items to make them more evident in the Sunburst
+  theme.
+  [davisagli]
+
 * Add content type CSS class to items in the navtree so that icons are shown
   in Plone 4.
   [davisagli]
