@@ -4,6 +4,11 @@ Changelog
 1.0 (unreleased)
 ----------------
 
+* Made compatible with Plone 4.1 by loading the permissions.zcml from
+  Products.CMFCore (only when plone.app.upgrade is available, to keep
+  compatibility with Plone 3, if we currently have that).
+  [maurits]
+
 * Improved CSS for selected items to make them more evident in the Sunburst
   theme.
   [davisagli]
