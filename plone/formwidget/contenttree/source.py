@@ -93,19 +93,19 @@ class PathSource(object):
     def __contains__(self, value):
         try:
             brain = self._brain_for_path(self._path_for_value(value))
-            return self._filter(brain)
+            return self.isBrainSelectable(brain)
         except KeyError:
             return False
 
     def getTermByToken(self, token):
         brain = self._brain_for_path(self._path_for_token(token))
-        if not self._filter(brain):
+        if not self.isBrainSelectable(brain):
             raise LookupError(token)
         return self._term_for_brain(brain)
 
     def getTerm(self, value):
         brain = self._brain_for_path(self._path_for_value(value))
-        if not self._filter(brain):
+        if not self.isBrainSelectable(brain):
             raise LookupError(value)
         return self._term_for_brain(brain)
 
@@ -126,11 +126,11 @@ class PathSource(object):
 
         return results
 
-    # Helper functions
-
-    def _filter(self, brain):
+    def isBrainSelectable(self, brain):
         index_data = self.catalog.getIndexDataForRID(brain.getRID())
         return self.selectable_filter(brain, index_data)
+
+    # Helper functions
 
     def _path_for_token(self, token):
         return self.portal_path + token

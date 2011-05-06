@@ -27,6 +27,11 @@ class IContentSource(IQuerySource):
                             description=u"The filter will be applied to any returned search results",
                             schema=IContentFilter)
 
+    def isBrainSelectable(self, brain):
+        """Return True iff the brain represents a page that can be selected
+        in the navigation tree
+        """
+
 class IContentTreeWidget(Interface):
     """Marker interface for the content tree widget
     """

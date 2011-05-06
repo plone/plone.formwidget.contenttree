@@ -4,6 +4,9 @@ Changelog
 1.0.1 (unreleased)
 ------------------
 
+* _filter is used outside the source, so not an internal helper function
+  anymore.
+  [lentinj]
 
 1.0 (2011-04-30)
 ----------------
