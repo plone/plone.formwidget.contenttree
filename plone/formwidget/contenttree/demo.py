@@ -49,6 +49,8 @@ class TestForm(form.Form):
     fields = field.Fields(ITestForm)
     fields['buddy'].widgetFactory = ContentTreeFieldWidget
     fields['friends'].widgetFactory = MultiContentTreeFieldWidget
+    # To check display mode still works, uncomment this and hit refresh.
+    #mode = 'display'
 
     @button.buttonAndHandler(u'Ok')
     def handle_ok(self, action):
