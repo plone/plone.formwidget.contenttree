@@ -30,9 +30,9 @@ class Fetch(BrowserView):
     fragment_template = ViewPageTemplateFile('fragment.pt')
     recurse_template = ViewPageTemplateFile('input_recurse.pt')
 
-    def brain_to_term(self,brain):
+    def getTermByBrain(self,brain):
         # Ask the widget
-        return self.context.brain_to_term(brain)
+        return self.context.getTermByBrain(brain)
 
     def validate_access(self):
 
@@ -74,7 +74,10 @@ class Fetch(BrowserView):
         widget.update()
         source = widget.bound_source
 
-        directory = self.request.form.get('href', None)
+        # Convert token from request to the path to the object (a no-op for
+        # PathSource, but necessary for UUIDSource)
+        token = self.request.form.get('href', None)
+        directory = self.context.bound_source.getBrainByToken(token).getPath()
         level = self.request.form.get('rel', 0)
 
         navtree_query = source.navigation_tree_query.copy()
@@ -128,9 +131,8 @@ class ContentTreeBase(Explicit):
     formatItem = ('function(row, idx, count, value) {'
                   '  return row[1] + " (" + row[0] + ")"; }')
 
-    def brain_to_term(self,brain):
-        # TODO: This is currently private
-        return self.bound_source._term_for_brain(brain)
+    def getTermByBrain(self,brain):
+        return self.bound_source.getTermByBrain(brain)
 
     def render_tree(self):
         content = self.context

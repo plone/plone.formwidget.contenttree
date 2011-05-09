@@ -92,22 +92,19 @@ class PathSource(object):
 
     def __contains__(self, value):
         try:
-            brain = self._brain_for_path(self._path_for_value(value))
+            brain = self.getBrainByToken(self._token_for_value(value))
             return self.isBrainSelectable(brain)
         except KeyError:
             return False
 
     def getTermByToken(self, token):
-        brain = self._brain_for_path(self._path_for_token(token))
+        brain = self.getBrainByToken(token)
         if not self.isBrainSelectable(brain):
             raise LookupError(token)
-        return self._term_for_brain(brain)
+        return self.getTermByBrain(brain)
 
     def getTerm(self, value):
-        brain = self._brain_for_path(self._path_for_value(value))
-        if not self.isBrainSelectable(brain):
-            raise LookupError(value)
-        return self._term_for_brain(brain)
+        return self.getTermByToken(self._token_for_value(value))
 
     # Query API - used to locate content, e.g. in non-JS mode
 
@@ -119,7 +116,7 @@ class PathSource(object):
             catalog_query['sort_limit'] = limit
 
         try:
-            results = (self._term_for_brain(brain, real_value=False)
+            results = (self.getTermByBrain(brain, real_value=False)
                        for brain in self.catalog(**catalog_query))
         except ParseError:
             return []
@@ -130,36 +127,48 @@ class PathSource(object):
         index_data = self.catalog.getIndexDataForRID(brain.getRID())
         return self.selectable_filter(brain, index_data)
 
-    # Helper functions
-
-    def _path_for_token(self, token):
-        # TODO: This shouldn't be needed, and 'path' below can be replaced with 'token'
-        return token
-
-    def _path_for_value(self, value):
-        return self.portal_path + value
-
-    def _brain_for_path(self, path):
-        rid = self.catalog.getrid(path)
+    def getBrainByToken(self, token):
+        rid = self.catalog.getrid(token)
         return self.catalog._catalog[rid]
 
-    def _term_for_brain(self, brain, real_value=True):
+    def getTermByBrain(self, brain, real_value=True):
         value = brain.getPath()[len(self.portal_path):]
         return SimpleTerm(value, token=brain.getPath(), title=brain.Title)
+
+    # Helper functions
+
+    def _token_for_value(self, value):
+        return self.portal_path + value
 
 
 class ObjPathSource(PathSource):
 
-    def _path_for_value(self, value):
+    def _token_for_value(self, value):
         return '/'.join(value.getPhysicalPath())
 
-    def _term_for_brain(self, brain, real_value=True):
+    def getTermByBrain(self, brain, real_value=True):
         if real_value:
             value = brain._unrestrictedGetObject()
         else:
             value = brain.getPath()[len(self.portal_path):]
         return SimpleTerm(value, token=brain.getPath(), title=brain.Title)
 
+class UUIDSource(PathSource):
+    """
+    A source that stores UUIDs as values, so references don't get broken if
+    content is moved. Uses resolveuid URLs as tokens.
+    """
+
+    def _token_for_value(self, value):
+        return self.portal_path + '/resolveuid/'+ value
+
+    def getBrainByToken(self, token):
+        uid = token[token.rindex('/resolveuid/')+len('/resolveuid/'):]
+        return self.catalog(UID=uid)[0]
+
+    def getTermByBrain(self, brain, real_value=True):
+        value = brain.UID
+        return SimpleTerm(value, token=self._token_for_value(value), title=brain.Title)
 
 class PathSourceBinder(object):
     implements(IContextSourceBinder)
@@ -183,3 +192,6 @@ class PathSourceBinder(object):
 
 class ObjPathSourceBinder(PathSourceBinder):
     path_source = ObjPathSource
+
+class UUIDSourceBinder(PathSourceBinder):
+    path_source = UUIDSource

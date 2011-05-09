@@ -4,6 +4,12 @@ Changelog
 1.0.1 (unreleased)
 ------------------
 
+* Add a UUIDSource that has plone.uuid values.
+  [lentinj]
+
+* Rename methods so that actually-public methods have public names
+  [lentinj]
+
 * Alter terms so that token is the full path to an item, value is the path
   without portal_url that is stored in the DB. This means all the path parsing
   can be kept within the source.
