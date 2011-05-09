@@ -30,6 +30,10 @@ class Fetch(BrowserView):
     fragment_template = ViewPageTemplateFile('fragment.pt')
     recurse_template = ViewPageTemplateFile('input_recurse.pt')
 
+    def brain_to_term(self,brain):
+        # Ask the widget
+        return self.context.brain_to_term(brain)
+
     def validate_access(self):
 
         content = self.context.form.context
@@ -124,9 +128,9 @@ class ContentTreeBase(Explicit):
     formatItem = ('function(row, idx, count, value) {'
                   '  return row[1] + " (" + row[0] + ")"; }')
 
-    def term_to_path(self,term):
-        portal_url = (getSite().restrictedTraverse('@@plone_portal_state/portal_url'))()
-        return portal_url + term.token
+    def brain_to_term(self,brain):
+        # TODO: This is currently private
+        return self.bound_source._term_for_brain(brain)
 
     def render_tree(self):
         content = self.context

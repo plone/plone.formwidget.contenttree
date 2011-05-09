@@ -133,7 +133,8 @@ class PathSource(object):
     # Helper functions
 
     def _path_for_token(self, token):
-        return self.portal_path + token
+        # TODO: This shouldn't be needed, and 'path' below can be replaced with 'token'
+        return token
 
     def _path_for_value(self, value):
         return self.portal_path + value
@@ -143,8 +144,8 @@ class PathSource(object):
         return self.catalog._catalog[rid]
 
     def _term_for_brain(self, brain, real_value=True):
-        path = brain.getPath()[len(self.portal_path):]
-        return SimpleTerm(path, path, brain.Title)
+        value = brain.getPath()[len(self.portal_path):]
+        return SimpleTerm(value, token=brain.getPath(), title=brain.Title)
 
 
 class ObjPathSource(PathSource):
@@ -153,13 +154,11 @@ class ObjPathSource(PathSource):
         return '/'.join(value.getPhysicalPath())
 
     def _term_for_brain(self, brain, real_value=True):
-        path = brain.getPath()[len(self.portal_path):]
         if real_value:
-            return SimpleTerm(brain._unrestrictedGetObject(),
-                              path,
-                              brain.Title)
+            value = brain._unrestrictedGetObject()
         else:
-            return SimpleTerm(path, path, brain.Title)
+            value = brain.getPath()[len(self.portal_path):]
+        return SimpleTerm(value, token=brain.getPath(), title=brain.Title)
 
 
 class PathSourceBinder(object):

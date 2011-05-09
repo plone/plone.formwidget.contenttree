@@ -4,6 +4,11 @@ Changelog
 1.0.1 (unreleased)
 ------------------
 
+* Alter terms so that token is the full path to an item, value is the path
+  without portal_url that is stored in the DB. This means all the path parsing
+  can be kept within the source.
+  [lentinj]
+
 * _filter is used outside the source, so not an internal helper function
   anymore.
   [lentinj]

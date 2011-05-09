@@ -17,7 +17,7 @@
         >
     <div tal:repeat="term view/terms">
         <a tal:content="term/title"
-           tal:attributes="href python:view.term_to_path(term)"
+           tal:attributes="href term/token"
            />
     </div>
 </span>
