@@ -124,6 +124,10 @@ class ContentTreeBase(Explicit):
     formatItem = ('function(row, idx, count, value) {'
                   '  return row[1] + " (" + row[0] + ")"; }')
 
+    def term_to_path(self,term):
+        portal_url = getToolByName(getSite(), 'portal_url').getPortalUrl()
+        return portal_url + term.token
+
     def render_tree(self):
         content = self.context
         if not IAcquirer.providedBy(content):

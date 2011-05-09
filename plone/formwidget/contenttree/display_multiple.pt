@@ -14,11 +14,10 @@
                       onkeypress view/onkeypress;
                       onkeydown view/onkeydown;
                       onkeyup view/onkeyup"
-        tal:define="portal_url context/@@plone_portal_state/portal_url"
         >
-    <div tal:repeat="item view/items">
-        <a tal:content="item/label"
-           tal:attributes="href string:${portal_url}${item/value}"
+    <div tal:repeat="term view/terms">
+        <a tal:content="term/title"
+           tal:attributes="href python:view.term_to_path(term)"
            />
     </div>
 </span>
