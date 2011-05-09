@@ -125,7 +125,7 @@ class ContentTreeBase(Explicit):
                   '  return row[1] + " (" + row[0] + ")"; }')
 
     def term_to_path(self,term):
-        portal_url = getToolByName(getSite(), 'portal_url').getPortalUrl()
+        portal_url = (getSite().restrictedTraverse('@@plone_portal_state/portal_url'))()
         return portal_url + term.token
 
     def render_tree(self):
