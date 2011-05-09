@@ -57,8 +57,6 @@ if(jQuery) (function($){
             if(o.multiFolder == undefined) o.multiFolder = true;
             if(o.multiSelect == undefined) o.multiSelect = false;
 
-            o.root = $(this);
-
             function loadTree(c, t, r) {
                 $(c).addClass('wait');
                 $.post(o.script, { href: t, rel: r}, function(data) {
@@ -92,11 +90,12 @@ if(jQuery) (function($){
             function handleSelectEvent(event) {
                 var li = $(this).parent();
                 var selected = true;
+                var root = $(this).parents('ul.navTree');
                 if(!li.hasClass('navTreeCurrentItem')) {
                     var multi_key = ((event.ctrlKey) || (navigator.userAgent.toLowerCase().indexOf('macintosh') != -1 && event.metaKey));
 
                     if(!o.multiSelect || !multi_key) {
-                        o.root.find('li.navTreeCurrentItem').removeClass('navTreeCurrentItem');
+                        root.find('li.navTreeCurrentItem').removeClass('navTreeCurrentItem');
                     }
 
                     li.addClass('navTreeCurrentItem');
