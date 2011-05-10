@@ -4,6 +4,16 @@ Changelog
 1.0.1 (unreleased)
 ------------------
 
+* Use javascript function from plone.formwidget.autocomplete to add new input
+  boxes, make javascript as clone-safe (when making new rows in datagridfield)
+  as possible
+  [lentinj]
+
+* Just use full widget name in ++widget++ URL, don't try and strip form prefix
+  off. If within a subform, this is the wrong thing to do and the traverser now
+  supports stripping the initial 'form.widgets'
+  [lentinj]
+
 * Workaround for sources being used without being bound first.
   [lentinj]
 

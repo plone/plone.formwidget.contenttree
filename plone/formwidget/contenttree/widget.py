@@ -157,34 +157,29 @@ class ContentTreeBase(Explicit):
             return self.input_template(self)
 
     def js_extra(self):
-
-        site = getSite()
-
         form_url = self.request.getURL()
-
-        form_prefix = self.form.prefix + self.__parent__.prefix
-        widget_name = self.name[len(form_prefix):]
-
-        url = "%s/++widget++%s/@@contenttree-fetch" % (form_url, widget_name,)
-
-        portal_path = getToolByName(site, 'portal_url').getPortalPath()
+        url = "%s/++widget++%s/@@contenttree-fetch" % (form_url, self.name)
+        
         return """\
 
-                $('#%(id)s-widgets-query').after(
-                    $(document.createElement('input'))
+                $('#%(id)s-widgets-query').after(function() {
+                    if($(this).siblings('input.searchButton').length > 0) { return; }
+                    return $(document.createElement('input'))
                         .attr({
                             'type': 'button',
                             'value': '%(button_val)s'
                         })
                         .addClass('searchButton')
-                        .click(function () {
-                            $('#%(id)s-contenttree-window').showDialog();
+                        .click( function () {
+                            var parent = $(this).parents("*[id$='-autocomplete']")
+                            var window = parent.siblings("*[id$='-contenttree-window']")
+                            window.showDialog();
                         })
-                );
-                $('#%(id)s-contenttree-window').find('.contentTreeAdd').click(function () {
-                    $(this).contentTreeAdd('%(id)s', '%(name)s', '%(klass)s', '%(title)s', '%(basePath)s', %(multiSelect)s);
                 });
-                $('#%(id)s-contenttree-window').find('.contentTreeCancel').click(function () {
+                $('#%(id)s-contenttree-window').find('.contentTreeAdd').unbind('click').click(function () {
+                    $(this).contentTreeAdd();
+                });
+                $('#%(id)s-contenttree-window').find('.contentTreeCancel').unbind('click').click(function () {
                     $(this).contentTreeCancel();
                 });
                 $('#%(id)s-widgets-query').after(" ");
@@ -210,7 +205,6 @@ class ContentTreeBase(Explicit):
                    collapseSpeed=self.collapseSpeed,
                    multiFolder=str(self.multiFolder).lower(),
                    multiSelect=str(self.multi_select).lower(),
-                   basePath=portal_path,
                    name=self.name,
                    klass=self.klass,
                    title=self.title,
@@ -219,7 +213,6 @@ class ContentTreeBase(Explicit):
                        default=u'browse...',
                        domain='plone.formwidget.contenttree',
                        context=self.request))
-
 
 class ContentTreeWidget(ContentTreeBase, AutocompleteSelectionWidget):
     """ContentTree widget that allows single selection.
