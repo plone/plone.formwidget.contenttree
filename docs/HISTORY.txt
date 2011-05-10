@@ -4,6 +4,9 @@ Changelog
 1.0.1 (unreleased)
 ------------------
 
+* Check the request for context before falling back to getSite()
+  [lentinj]
+
 * Add a UUIDSource that has plone.uuid values.
   [lentinj]
 

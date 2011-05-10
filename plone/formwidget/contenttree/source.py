@@ -6,6 +6,7 @@ from zope.schema.interfaces import IContextSourceBinder
 from zope.schema.vocabulary import SimpleTerm
 
 from zope.app.component.hooks import getSite
+from zope.globalrequest import getRequest
 
 from plone.app.layout.navigation.interfaces import INavigationQueryBuilder
 from plone.app.vocabularies.catalog import parse_query
@@ -183,7 +184,9 @@ class PathSourceBinder(object):
         content = context
 
         if not IAcquirer.providedBy(content):
-            content = getSite()
+            content = getattr(getRequest(),'PUBLISHED',getSite())
+            if not IAcquirer.providedBy(content):
+                content = getSite()
         return self.path_source(
             content,
             selectable_filter=self.selectable_filter,
