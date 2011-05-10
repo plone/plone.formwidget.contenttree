@@ -4,6 +4,9 @@ Changelog
 1.0.1 (unreleased)
 ------------------
 
+* Workaround for sources being used without being bound first.
+  [lentinj]
+
 * Check the request for context before falling back to getSite()
   [lentinj]
 

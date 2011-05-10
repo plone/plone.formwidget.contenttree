@@ -181,17 +181,35 @@ class PathSourceBinder(object):
         self.navigation_tree_query = navigation_tree_query
 
     def __call__(self, context):
-        content = context
-
-        if not IAcquirer.providedBy(content):
-            content = getattr(getRequest(),'PUBLISHED',getSite())
-            if not IAcquirer.providedBy(content):
-                content = getSite()
         return self.path_source(
-            content,
+            self._find_page_context(context),
             selectable_filter=self.selectable_filter,
             navigation_tree_query=self.navigation_tree_query)
 
+    def __contains__(self, value):
+        # If used without being properly bound (looks at DataGridField), bind
+        # now and pass through to the bound version
+        if not(hasattr(self,'bound_source')):
+            self.bound_source = self(None)
+        return self.bound_source.__contains__(value)
+
+    def _find_page_context(self,given_context=None):
+        """Try to find a usable context, with increasing agression"""
+        # Normally, we should be given a useful context (e.g the page)
+        c = given_context
+        if IAcquirer.providedBy(c): return c
+        # Subforms (e.g. DataGridField) may not have a context set, find out
+        # what page is being published
+        c = getattr(getRequest(),'PUBLISHED',None)
+        if IAcquirer.providedBy(c): return c
+        # During kss_z3cform_inline_validation, PUBLISHED returns a
+        # Z3CFormValidation object. What we want is it's context.
+        c = getattr(c,'context',None)
+        if IAcquirer.providedBy(c): return c
+        # During widget traversal nothing is being published yet, use getSite()
+        c = getSite()
+        if IAcquirer.providedBy(c): return c
+        raise ValueError('Cannot find suitable context to bind to source')
 
 class ObjPathSourceBinder(PathSourceBinder):
     path_source = ObjPathSource
