@@ -33,10 +33,6 @@ class IContentSource(IQuerySource):
         in the navigation tree. Base implementation should be sufficient
         """
 
-    def getBrainByToken(self, token):
-        """Given a token, find the corresponding brain
-        """
-
     def getTermByBrain(self, brain, real_value=True):
         """Given a brain, generate a Term that represents this brain
         """

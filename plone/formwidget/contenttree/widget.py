@@ -74,10 +74,9 @@ class Fetch(BrowserView):
         widget.update()
         source = widget.bound_source
 
-        # Convert token from request to the path to the object (a no-op for
-        # PathSource, but necessary for UUIDSource)
+        # Convert token from request to the path to the object
         token = self.request.form.get('href', None)
-        directory = self.context.bound_source.getBrainByToken(token).getPath()
+        directory = self.context.bound_source.tokenToPath(token)
         level = self.request.form.get('rel', 0)
 
         navtree_query = source.navigation_tree_query.copy()

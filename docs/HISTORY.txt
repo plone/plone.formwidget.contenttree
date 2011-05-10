@@ -10,7 +10,7 @@ Changelog
 * Check the request for context before falling back to getSite()
   [lentinj]
 
-* Add a UUIDSource that has plone.uuid values.
+* Add a UUIDSource that stores plone.uuid pointers to content.
   [lentinj]
 
 * Use tokens as full URL of content, move all token<->value operations into the
