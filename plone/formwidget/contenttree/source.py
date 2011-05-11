@@ -95,7 +95,7 @@ class PathSource(object):
         try:
             brain = self._getBrainByValue(value)
             return self.isBrainSelectable(brain)
-        except KeyError:
+        except (KeyError, IndexError):
             return False
 
     def getTermByToken(self, token):
