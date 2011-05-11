@@ -107,7 +107,7 @@ class PathSource(object):
     def getTerm(self, value):
         brain = self._getBrainByValue(value)
         if not self.isBrainSelectable(brain):
-            raise LookupError(token)
+            raise LookupError(value)
         return self.getTermByBrain(brain)
 
     # Query API - used to locate content, e.g. in non-JS mode
