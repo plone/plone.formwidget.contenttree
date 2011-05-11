@@ -1,4 +1,7 @@
+import logging
+
 from Acquisition.interfaces import IAcquirer
+import Missing
 from zope.interface import implements
 from zope.component import getMultiAdapter
 
@@ -16,6 +19,8 @@ from Products.ZCTextIndex.ParseTree import ParseError
 
 from plone.formwidget.contenttree.interfaces import IContentSource
 from plone.formwidget.contenttree.interfaces import IContentFilter
+
+logger = logging.getLogger(__name__)
 
 
 class CustomFilter(object):
@@ -172,6 +177,11 @@ class UUIDSource(PathSource):
 
     def getTermByBrain(self, brain, real_value=True):
         value = brain.UID
+        if value is Missing.Value:
+            # This is likely to give problems at some point.
+            logger.warn("Brain in UUIDSource has missing UID value. Maybe you "
+                        "need to enable plone.app.referenceablebehavior on "
+                        "portal type %s?", brain.portal_type)
         return SimpleTerm(value, token=brain.getPath(), title=brain.Title)
 
 
