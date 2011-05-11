@@ -135,7 +135,7 @@ class PathSource(object):
         value = brain.getPath()[len(self.portal_path):]
         return SimpleTerm(value, token=brain.getPath(), title=brain.Title)
 
-    def tokenToPath(self,token):
+    def tokenToPath(self, token):
         # token==path for existing sources, but may not be true in future
         return token
 
@@ -146,6 +146,7 @@ class PathSource(object):
 
     def _getBrainByValue(self, value):
         return self._getBrainByToken(self.portal_path + value)
+
 
 class ObjPathSource(PathSource):
 
@@ -159,6 +160,7 @@ class ObjPathSource(PathSource):
             value = brain.getPath()[len(self.portal_path):]
         return SimpleTerm(value, token=brain.getPath(), title=brain.Title)
 
+
 class UUIDSource(PathSource):
     """
     A source that stores UUIDs as values, so references don't get broken if
@@ -171,6 +173,7 @@ class UUIDSource(PathSource):
     def getTermByBrain(self, brain, real_value=True):
         value = brain.UID
         return SimpleTerm(value, token=brain.getPath(), title=brain.Title)
+
 
 class PathSourceBinder(object):
     implements(IContextSourceBinder)
@@ -190,30 +193,36 @@ class PathSourceBinder(object):
     def __contains__(self, value):
         # If used without being properly bound (looks at DataGridField), bind
         # now and pass through to the bound version
-        if not(hasattr(self,'bound_source')):
+        if not(hasattr(self, 'bound_source')):
             self.bound_source = self(None)
         return self.bound_source.__contains__(value)
 
-    def _find_page_context(self,given_context=None):
+    def _find_page_context(self, given_context=None):
         """Try to find a usable context, with increasing agression"""
         # Normally, we should be given a useful context (e.g the page)
         c = given_context
-        if IAcquirer.providedBy(c): return c
+        if IAcquirer.providedBy(c):
+            return c
         # Subforms (e.g. DataGridField) may not have a context set, find out
         # what page is being published
-        c = getattr(getRequest(),'PUBLISHED',None)
-        if IAcquirer.providedBy(c): return c
+        c = getattr(getRequest(), 'PUBLISHED', None)
+        if IAcquirer.providedBy(c):
+            return c
         # During kss_z3cform_inline_validation, PUBLISHED returns a
         # Z3CFormValidation object. What we want is it's context.
-        c = getattr(c,'context',None)
-        if IAcquirer.providedBy(c): return c
+        c = getattr(c, 'context', None)
+        if IAcquirer.providedBy(c):
+            return c
         # During widget traversal nothing is being published yet, use getSite()
         c = getSite()
-        if IAcquirer.providedBy(c): return c
+        if IAcquirer.providedBy(c):
+            return c
         raise ValueError('Cannot find suitable context to bind to source')
+
 
 class ObjPathSourceBinder(PathSourceBinder):
     path_source = ObjPathSource
+
 
 class UUIDSourceBinder(PathSourceBinder):
     path_source = UUIDSource

@@ -159,7 +159,7 @@ class ContentTreeBase(Explicit):
     def js_extra(self):
         form_url = self.request.getURL()
         url = "%s/++widget++%s/@@contenttree-fetch" % (form_url, self.name)
-        
+
         return """\
 
                 $('#%(id)s-widgets-query').after(function() {
