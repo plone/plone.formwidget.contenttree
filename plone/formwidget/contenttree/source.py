@@ -176,7 +176,11 @@ class UUIDSource(PathSource):
 
     def _getBrainByValue(self, value):
         try:
-            return self.catalog(UID=value)[0]
+            # Since we can only get here if wealready have the value,
+            # it seems fine to use unrestrictedSearchResults here, as
+            # authentication and authorization have not always kicked in
+            # yet at this point.
+            return self.catalog.unrestrictedSearchResults(UID=value)[0]
         except (KeyError, IndexError):
             return None
 
