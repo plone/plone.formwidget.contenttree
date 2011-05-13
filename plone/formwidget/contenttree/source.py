@@ -133,6 +133,8 @@ class PathSource(object):
         return results
 
     def isBrainSelectable(self, brain):
+        if brain is None:
+            return False
         index_data = self.catalog.getIndexDataForRID(brain.getRID())
         return self.selectable_filter(brain, index_data)
 
@@ -173,7 +175,10 @@ class UUIDSource(PathSource):
     """
 
     def _getBrainByValue(self, value):
-        return self.catalog(UID=value)[0]
+        try:
+            return self.catalog(UID=value)[0]
+        except (KeyError, IndexError):
+            return None
 
     def getTermByBrain(self, brain, real_value=True):
         value = brain.UID
