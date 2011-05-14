@@ -9,7 +9,12 @@ from zope.schema.interfaces import IContextSourceBinder
 from zope.schema.vocabulary import SimpleTerm
 
 from zope.app.component.hooks import getSite
-from zope.globalrequest import getRequest
+try:
+    from zope.globalrequest import getRequest
+    getRequest  # pyflakes
+except ImportError:
+    # Fake it
+    getRequest = object
 
 from plone.app.layout.navigation.interfaces import INavigationQueryBuilder
 from plone.app.vocabularies.catalog import parse_query
