@@ -217,9 +217,7 @@ class PathSourceBinder(object):
     def __contains__(self, value):
         # If used without being properly bound (looks at DataGridField), bind
         # now and pass through to the bound version
-        if not(hasattr(self, 'bound_source')):
-            self.bound_source = self(None)
-        return self.bound_source.__contains__(value)
+        return self(None).__contains__(value)
 
     def _find_page_context(self, given_context=None):
         """Try to find a usable context, with increasing agression"""
