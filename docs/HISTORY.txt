@@ -4,6 +4,11 @@ Changelog
 1.0.1 (unreleased)
 ------------------
 
+* Make placeholder terms for hidden / missing items, so that you can still see
+  something in the editing interface and not accidentally remove them. Ideally
+  we should say if a page is invisible or missing, but not today.
+  [lentinj]
+
 * Use javascript function from plone.formwidget.autocomplete to add new input
   boxes, make javascript as clone-safe (when making new rows in datagridfield)
   as possible

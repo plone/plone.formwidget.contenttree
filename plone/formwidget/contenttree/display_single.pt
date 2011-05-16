@@ -18,6 +18,7 @@
     <div tal:repeat="term view/terms">
         <a tal:content="term/title"
            tal:attributes="href term/token"
+           tal:condition="python:not(term.token.startswith('#error-'))"
            />
     </div>
 </span>

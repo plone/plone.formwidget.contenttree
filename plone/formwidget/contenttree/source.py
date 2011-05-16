@@ -104,11 +104,23 @@ class PathSource(object):
     def __contains__(self, value):
         try:
             brain = self._getBrainByValue(value)
+            # If brain was not found, assume item is still good. This seems 
+            # somewhat nonsensical, but:-
+            #  (a) If an item is invisible to the current editor, they should
+            #      be able to keep the item there.
+            #  (b) If using PathSource and an item the path points to was
+            #      deleted by mistake, I may want save my changes then restore
+            #      this page, rather than remove the relation.
+            if brain is None:
+                return True
             return self.isBrainSelectable(brain)
         except (KeyError, IndexError):
             return False
 
     def getTermByToken(self, token):
+        if token.startswith('#error-missing-'):
+            value = token.partition('#error-missing-')[2]
+            return self._placeholderTerm(value)
         brain = self._getBrainByToken(token)
         if not self.isBrainSelectable(brain):
             raise LookupError(token)
@@ -116,6 +128,8 @@ class PathSource(object):
 
     def getTerm(self, value):
         brain = self._getBrainByValue(value)
+        if brain is None:
+            return self._placeholderTerm(value)
         if not self.isBrainSelectable(brain):
             raise LookupError(value)
         return self.getTermByBrain(brain)
@@ -154,11 +168,19 @@ class PathSource(object):
     # Helper functions
     def _getBrainByToken(self, token):
         rid = self.catalog.getrid(token)
+        if not(rid):
+            return None
         return self.catalog._catalog[rid]
 
     def _getBrainByValue(self, value):
         return self._getBrainByToken(self.portal_path + value)
 
+    # Generate a term to persist the value, even when we can't resolve the
+    # brain. These will get hidden in the display templates
+    def _placeholderTerm(self, value):
+        return SimpleTerm(str(value),
+                          token='#error-missing-'+value,
+                          title=u"Hidden or missing item '%s'" % value)
 
 class ObjPathSource(PathSource):
 
@@ -181,11 +203,7 @@ class UUIDSource(PathSource):
 
     def _getBrainByValue(self, value):
         try:
-            # Since we can only get here if wealready have the value,
-            # it seems fine to use unrestrictedSearchResults here, as
-            # authentication and authorization have not always kicked in
-            # yet at this point.
-            return self.catalog.unrestrictedSearchResults(UID=value)[0]
+            return self.catalog(UID=value)[0]
         except (KeyError, IndexError):
             return None
 
