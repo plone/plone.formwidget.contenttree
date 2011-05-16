@@ -1,7 +1,7 @@
 Changelog
 =========
 
-1.0.1 (unreleased)
+1.0.1 (2011-05-16)
 ------------------
 
 * Make placeholder terms for hidden / missing items, so that you can still see
