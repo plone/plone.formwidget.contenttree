@@ -232,13 +232,13 @@ class PathSourceBinder(object):
         c = getattr(getRequest(), 'PUBLISHED', None)
         if IAcquirer.providedBy(c):
             return c
-        # During kss_z3cform_inline_validation, PUBLISHED returns a
-        # Z3CFormValidation object. What we want is it's context.
-        c = getattr(c, 'context', None)
-        if IAcquirer.providedBy(c):
-            return c
         # During widget traversal nothing is being published yet, use getSite()
         c = getSite()
+        if IAcquirer.providedBy(c):
+            return c
+        # During kss_z3cform_inline_validation, PUBLISHED and getSite() return
+        # a Z3CFormValidation object. What we want is it's context.
+        c = getattr(getattr(getRequest(), 'PUBLISHED', None), 'context', None)
         if IAcquirer.providedBy(c):
             return c
         raise ValueError('Cannot find suitable context to bind to source')
