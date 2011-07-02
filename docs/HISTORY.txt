@@ -1,6 +1,12 @@
 Changelog
 =========
 
+1.0.2 (unreleased)
+------------------
+
+* Fix regression that broke the browsing with JQuery < 1.4.
+  [davisagli]
+
 1.0.1 (2011-05-16)
 ------------------
 

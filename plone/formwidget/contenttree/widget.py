@@ -162,9 +162,9 @@ class ContentTreeBase(Explicit):
 
         return """\
 
-                $('#%(id)s-widgets-query').after(function() {
+                $('#%(id)s-widgets-query').each(function() {
                     if($(this).siblings('input.searchButton').length > 0) { return; }
-                    return $(document.createElement('input'))
+                    $(document.createElement('input'))
                         .attr({
                             'type': 'button',
                             'value': '%(button_val)s'
@@ -174,7 +174,7 @@ class ContentTreeBase(Explicit):
                             var parent = $(this).parents("*[id$='-autocomplete']")
                             var window = parent.siblings("*[id$='-contenttree-window']")
                             window.showDialog();
-                        })
+                        }).insertAfter($(this));
                 });
                 $('#%(id)s-contenttree-window').find('.contentTreeAdd').unbind('click').click(function () {
                     $(this).contentTreeAdd();
