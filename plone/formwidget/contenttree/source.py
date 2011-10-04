@@ -25,6 +25,8 @@ from Products.ZCTextIndex.ParseTree import ParseError
 from plone.formwidget.contenttree.interfaces import IContentSource
 from plone.formwidget.contenttree.interfaces import IContentFilter
 
+from OFS.interfaces import ITraversable
+
 logger = logging.getLogger(__name__)
 
 
@@ -104,7 +106,7 @@ class PathSource(object):
     def __contains__(self, value):
         try:
             brain = self._getBrainByValue(value)
-            # If brain was not found, assume item is still good. This seems 
+            # If brain was not found, assume item is still good. This seems
             # somewhat nonsensical, but:-
             #  (a) If an item is invisible to the current editor, they should
             #      be able to keep the item there.
@@ -173,14 +175,19 @@ class PathSource(object):
         return self.catalog._catalog[rid]
 
     def _getBrainByValue(self, value):
-        return self._getBrainByToken(self.portal_path + value)
+        if ITraversable.providedBy(value):
+            token = '/'.join(value.getPhysicalPath())
+        else:
+            token = self.portal_path + value
+        return self._getBrainByToken(token)
 
     # Generate a term to persist the value, even when we can't resolve the
     # brain. These will get hidden in the display templates
     def _placeholderTerm(self, value):
         return SimpleTerm(str(value),
-                          token='#error-missing-'+value,
+                          token='#error-missing-' + value,
                           title=u"Hidden or missing item '%s'" % value)
+
 
 class ObjPathSource(PathSource):
 

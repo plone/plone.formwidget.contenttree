@@ -4,6 +4,9 @@ Changelog
 1.0.4 (unreleased)
 ------------------
 
+* fix _getBrainByValue to check if value is traversable
+  first so we can provide the correct token.
+  [vangheem]
 
 1.0.3 (2011-09-24)
 ------------------
