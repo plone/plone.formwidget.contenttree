@@ -1,1 +1,3 @@
 *.mo
+*.py?
+/*.egg-info
