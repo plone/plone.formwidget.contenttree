@@ -1,0 +1,41 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Plone\n"
+"POT-Creation-Date: 2009-12-23 09:31+0000\n"
+"PO-Revision-Date: 2011-12-14 14:52-0600\n"
+"Last-Translator: Héctor Velarde <hector.velarde@gmail.com>\n"
+"Language-Team: Deutsch <plone-i18n@lists.sourceforge.net>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"Language-Code: de\n"
+"Language-Name: German\n"
+"Preferred-Encodings: utf-8 latin1\n"
+"Domain: plone.formwidget.contenttree\n"
+
+#. Default: "Browse for items"
+#: plone.formwidget.contenttree/plone/formwidget/contenttree/input.pt:10
+msgid "heading_contenttree_browse"
+msgstr "Examinar elementos"
+
+#. Default: "Press Ctrl to select multiple items."
+#: plone.formwidget.contenttree/plone/formwidget/contenttree/input.pt:11
+msgid "heading_contenttree_help"
+msgstr "Presione Ctrl para seleccionar múltiples elementos"
+
+#. Default: "Add"
+#: plone.formwidget.contenttree/plone/formwidget/contenttree/input.pt:20
+msgid "label_contenttree_add"
+msgstr "Agregar"
+
+#. Default: "browse..."
+#: plone.formwidget.contenttree/plone/formwidget/contenttree/input.pt:11
+msgid "label_contenttree_browse"
+msgstr "Examinar…"
+
+#. Default: "Cancel"
+#: plone.formwidget.contenttree/plone/formwidget/contenttree/input.pt:20
+msgid "label_contenttree_cancel"
+msgstr "Cancelar"
+
