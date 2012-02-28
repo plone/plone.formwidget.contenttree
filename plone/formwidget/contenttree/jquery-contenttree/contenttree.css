@@ -1,3 +1,14 @@
+.contenttreePreview {
+    width: 30%;
+    position: absolute;
+    height: auto;
+    border: 1px solid #8CACBB;
+    margin: 0em 1em;
+    right: 0px;
+    top: 6em;
+    bottom: 3.5em;
+}
+
 .contenttreeWidget {
     bottom: 3.5em;
     height: auto;
@@ -7,7 +18,7 @@
     position: absolute;
     right: 0px;
     top: 6em;
-    width: auto;
+    width: 65%;
     border: 1px solid #8CACBB;
 }
 
