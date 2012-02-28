@@ -35,6 +35,7 @@ if(jQuery) (function($){
             // Defaults
             if(!o) var o = {};
             if(o.script == undefined) o.script = 'fetch';
+            if(o.previewScript == undefined) o.previewScript = 'preview';
                
             if(o.folderEvent == undefined) o.folderEvent = 'click';
             if(o.selectEvent == undefined) o.selectEvent = 'click';
@@ -87,6 +88,8 @@ if(jQuery) (function($){
                     }
 
                     li.addClass('navTreeCurrentItem');
+                    var preview_window = $('.contenttreePreview',$(li).parents('.contenttreeWindow')[0])[0];
+                    loadPreview(preview_window, escape($(this).attr('href')), escape($(this).attr('rel')));
                     selected = true;
                 } else {
                     li.removeClass('navTreeCurrentItem');
@@ -94,6 +97,14 @@ if(jQuery) (function($){
                 }
 
                 h(event, true, $(this).attr('href'), $.trim($(this).text()));
+            }
+
+            function loadPreview(c,t,r) {
+                $(c).addClass('wait');
+                $.post(o.previewScript, { href: t, rel: r}, function(data) {
+                    $('.contenttreePreviewPane',c).replaceWith(data);
+                    $(c).removeClass('wait');
+                });                
             }
 
             function bindTree(t) {
