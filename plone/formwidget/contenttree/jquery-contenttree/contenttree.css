@@ -1,5 +1,5 @@
 .contenttreePreview {
-    width: 30%;
+    width: 40%;
     position: absolute;
     height: auto;
     border: 1px solid #8CACBB;
@@ -7,6 +7,11 @@
     right: 0px;
     top: 6em;
     bottom: 3.5em;
+    overflow-y: scroll;
+}
+
+.contenttreePreview > * {
+    margin: 1em;
 }
 
 .contenttreeWidget {
@@ -18,7 +23,7 @@
     position: absolute;
     right: 0px;
     top: 6em;
-    width: 65%;
+    width: 55%;
     border: 1px solid #8CACBB;
 }
 
