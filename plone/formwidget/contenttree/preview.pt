@@ -1,0 +1,7 @@
+<div class="contenttreePreviewPane">
+  <h4 tal:content="options/node/pretty_title_or_id"></h4>
+  <p class="description" tal:content="options/node/Description"></p>
+  <tal:image condition="python:options['node'].portal_type == 'Image'">
+    <img tal:replace="structure options/node/@@images/image/preview | nothing" />
+  </tal:image>
+</div>
