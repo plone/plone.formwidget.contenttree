@@ -4,6 +4,9 @@ Changelog
 1.0.6 (unreleased)
 ------------------
 
+* Added Dutch translation.
+  [maurits]
+
 1.0.5 (2012-02-20)
 ------------------
 
