@@ -4,6 +4,10 @@ Changelog
 1.0.6 (unreleased)
 ------------------
 
+* By default filter out nodes that are not selectable and not folderish.
+  This can be overridden on the widget by setting show_all_nodes to True.
+  [maurits]
+
 * Added Dutch translation.
   [maurits]
 

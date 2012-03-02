@@ -100,8 +100,14 @@ class NavtreeStrategy(SitemapNavtreeStrategy):
         return True
 
     def nodeFilter(self, node):
-        # Don't filter any nodes.
-        return True
+        # Returns True when the node should not be filtered.
+        if self.widget.show_all_nodes:
+            return True
+        # Show folderish nodes.
+        if getattr(node['item'], 'is_folderish', False):
+            return True
+        # Show selectable nodes.
+        return self.widget.bound_source.isBrainSelectable(node['item'])
 
     def decoratorFactory(self, node):
         new_node = super(NavtreeStrategy, self).decoratorFactory(node)

@@ -130,6 +130,10 @@ class ContentTreeBase(Explicit):
     formatItem = ('function(row, idx, count, value) {'
                   '  return row[1] + " (" + row[0] + ")"; }')
 
+    # By default, only show 'interesting' nodes, that is: nodes that
+    # are selectable or that are folders.
+    show_all_nodes = False
+
     def getTermByBrain(self,brain):
         return self.bound_source.getTermByBrain(brain)
 
