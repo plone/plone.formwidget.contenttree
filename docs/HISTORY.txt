@@ -4,6 +4,9 @@ Changelog
 1.0.6 (unreleased)
 ------------------
 
+* Added Italian translation.
+  [gborelli]
+
 * Added Finnish (fi) translation.
   [dokai]
 
