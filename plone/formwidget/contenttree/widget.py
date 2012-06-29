@@ -137,7 +137,6 @@ class ContentTreeBase(Explicit):
         return self.bound_source.getTermByBrain(brain)
 
     def render_tree(self):
-        import pdb; pdb.set_trace( )
         content = self.context
         if not IAcquirer.providedBy(content):
             content = getSite()
@@ -162,6 +161,8 @@ class ContentTreeBase(Explicit):
             return self.input_template(self)
 
     def js_extra(self):
+        # Get bound source to extract path
+        source = self.bound_source
         form_url = self.request.getURL()
         url = "%s/++widget++%s/@@contenttree-fetch" % (form_url, self.name)
 
@@ -212,7 +213,7 @@ class ContentTreeBase(Explicit):
                    collapseSpeed=self.collapseSpeed,
                    multiFolder=str(self.multiFolder).lower(),
                    multiSelect=str(self.multi_select).lower(),
-                   rootUrl='/Plone',
+                   rootUrl=source.navigation_tree_query['path']['query'],
                    name=self.name,
                    klass=self.klass,
                    title=self.title,
