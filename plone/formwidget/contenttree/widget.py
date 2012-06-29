@@ -137,7 +137,6 @@ class ContentTreeBase(Explicit):
         return self.bound_source.getTermByBrain(brain)
 
     def render_tree(self):
-        import pdb; pdb.set_trace( )
         content = self.context
         if not IAcquirer.providedBy(content):
             content = getSite()
