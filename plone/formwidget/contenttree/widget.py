@@ -30,7 +30,7 @@ class Fetch(BrowserView):
     fragment_template = ViewPageTemplateFile('fragment.pt')
     recurse_template = ViewPageTemplateFile('input_recurse.pt')
 
-    def getTermByBrain(self,brain):
+    def getTermByBrain(self, brain):
         # Ask the widget
         return self.context.getTermByBrain(brain)
 
@@ -93,11 +93,11 @@ class Fetch(BrowserView):
 
         children = []
         for brain in catalog(navtree_query):
-            newNode = {'item'          : brain,
-                       'depth'         : -1, # not needed here
-                       'currentItem'   : False,
-                       'currentParent' : False,
-                       'children'      : []}
+            newNode = {'item': brain,
+                       'depth': -1,  # not needed here
+                       'currentItem': False,
+                       'currentParent': False,
+                       'children': []}
             if strategy.nodeFilter(newNode):
                 newNode = strategy.decoratorFactory(newNode)
                 children.append(newNode)
@@ -114,7 +114,7 @@ class ContentTreeBase(Explicit):
 
     input_template = ViewPageTemplateFile('input.pt')
     hidden_template = ViewPageTemplateFile('hidden.pt')
-    display_template = None # set by subclass
+    display_template = None  # set by subclass
     recurse_template = ViewPageTemplateFile('input_recurse.pt')
 
     # Parameters passed to the JavaScript function
@@ -133,11 +133,10 @@ class ContentTreeBase(Explicit):
     # are selectable or that are folders.
     show_all_nodes = False
 
-    def getTermByBrain(self,brain):
+    def getTermByBrain(self, brain):
         return self.bound_source.getTermByBrain(brain)
 
     def render_tree(self):
-        import pdb; pdb.set_trace( )
         content = self.context
         if not IAcquirer.providedBy(content):
             content = getSite()
@@ -161,6 +160,8 @@ class ContentTreeBase(Explicit):
             return self.input_template(self)
 
     def js_extra(self):
+        # Get bound source to extract path
+        source = self.bound_source
         form_url = self.request.getURL()
         url = "%s/++widget++%s/@@contenttree-fetch" % (form_url, self.name)
 
@@ -211,7 +212,7 @@ class ContentTreeBase(Explicit):
                    collapseSpeed=self.collapseSpeed,
                    multiFolder=str(self.multiFolder).lower(),
                    multiSelect=str(self.multi_select).lower(),
-                   rootUrl='/Plone',
+                   rootUrl=source.navigation_tree_query['path']['query'],
                    name=self.name,
                    klass=self.klass,
                    title=self.title,
@@ -220,6 +221,7 @@ class ContentTreeBase(Explicit):
                        default=u'browse...',
                        domain='plone.formwidget.contenttree',
                        context=self.request))
+
 
 class ContentTreeWidget(ContentTreeBase, AutocompleteSelectionWidget):
     """ContentTree widget that allows single selection.
