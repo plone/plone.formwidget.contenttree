@@ -1,6 +1,6 @@
 // This is based on jQueryFileTree by   Cory S.N. LaViska
 if(jQuery) (function($){
-    
+
     $.extend($.fn, {
         showDialog: function() {
             $(document.body).append($(document.createElement("div")).addClass("contenttreeWindowBlocker"))
@@ -12,7 +12,7 @@ if(jQuery) (function($){
             $(this).css({
                 'left': $(window).width() * 0.125,
                 'top': $(window).height() * 0.125
-            })
+            });
         },
         contentTreeAdd: function() {
             var contenttree_window = (this).parents(".contenttreeWindow");
@@ -35,13 +35,13 @@ if(jQuery) (function($){
             // Defaults
             if(!o) var o = {};
             if(o.script == undefined) o.script = 'fetch';
-               
+
             if(o.folderEvent == undefined) o.folderEvent = 'click';
             if(o.selectEvent == undefined) o.selectEvent = 'click';
-               
+
             if(o.expandSpeed == undefined) o.expandSpeed = -1;
             if(o.collapseSpeed == undefined) o.collapseSpeed = -1;
-               
+
             if(o.multiFolder == undefined) o.multiFolder = true;
             if(o.multiSelect == undefined) o.multiSelect = false;
 
@@ -53,7 +53,7 @@ if(jQuery) (function($){
                     bindTree(c);
                 });
             }
-            
+
             function handleFolderEvent() {
                 var li = $(this).parent();
                 if(li.hasClass('collapsed')) {
@@ -61,12 +61,12 @@ if(jQuery) (function($){
                         li.parent().find('ul:visible').slideUp({ duration: o.collapseSpeed });
                         li.parent().find('li.navTreeFolderish').removeClass('expanded').addClass('collapsed');
                     }
-                    
+
                     if(li.find('ul').length == 0)
                         loadTree(li, escape($(this).attr('href')), escape($(this).attr('rel')));
                     else
                         li.find('ul:hidden').slideDown({ duration: o.expandSpeed });
-                    
+
                     li.removeClass('collapsed').addClass('expanded');
                 } else {
                     li.find('ul').slideUp({ duration: o.collapseSpeed });
@@ -74,7 +74,7 @@ if(jQuery) (function($){
                 }
                 return false;
             }
-            
+
             function handleSelectEvent(event) {
                 var li = $(this).parent();
                 var selected = true;
@@ -105,9 +105,10 @@ if(jQuery) (function($){
             }
 
             $(this).each(function() {
-                bindTree($(this));
+
+                loadTree(this, o.rootUrl, 0);
             });
         }
     });
-    
+
 })(jQuery);
