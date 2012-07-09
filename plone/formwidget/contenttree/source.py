@@ -43,8 +43,8 @@ class CustomFilter(object):
     def __init__(self, **kw):
         self.criteria = {}
         for key, value in kw.items():
-            if (not isinstance(value, (list, tuple, set, frozenset)) and
-                not key == 'path'):
+            if (not isinstance(value, (list, tuple, set, frozenset))
+                    and not key == 'path'):
                 self.criteria[key] = [value]
             elif isinstance(value, (set, frozenset)):
                 self.criteria[key] = list(value)
@@ -56,7 +56,7 @@ class CustomFilter(object):
             test_value = index_data.get(key, None)
             if test_value is not None:
                 if (not isinstance(test_value, (list, tuple, set, frozenset))
-                    and not key == 'path'):
+                        and not key == 'path'):
                     test_value = set([test_value])
                 elif isinstance(value, (list, tuple)):
                     test_value = set(test_value)
@@ -84,8 +84,8 @@ class PathSource(object):
         # Copy path from selectable_filter into the navigation_tree_query
         # normally it does not make sense to show elements that wouldn't be
         # selectable anyway and are unneeded to navigate to selectable items
-        if ('path' not in navigation_tree_query and
-            'path' in selectable_filter.criteria):
+        if ('path' not in navigation_tree_query
+                and 'path' in selectable_filter.criteria):
             navigation_tree_query['path'] = selectable_filter.criteria['path']
 
         query.update(navigation_tree_query)
@@ -133,7 +133,8 @@ class PathSource(object):
         if brain is None:
             return self._placeholderTerm(value)
         if not self.isBrainSelectable(brain):
-            raise LookupError('Value "%s" does not match criteria for field' % str(value))
+            raise LookupError('Value "%s" does not match criteria for field'
+                              % str(value))
         return self.getTermByBrain(brain)
 
     # Query API - used to locate content, e.g. in non-JS mode
@@ -161,7 +162,8 @@ class PathSource(object):
 
     def getTermByBrain(self, brain, real_value=True):
         value = brain.getPath()[len(self.portal_path):]
-        return SimpleTerm(value, token=brain.getPath(), title=brain.Title)
+        return SimpleTerm(value, token=brain.getPath(), title=brain.Title or
+                          brain.id)
 
     def tokenToPath(self, token):
         # token==path for existing sources, but may not be true in future
@@ -199,7 +201,8 @@ class ObjPathSource(PathSource):
             value = brain._unrestrictedGetObject()
         else:
             value = brain.getPath()[len(self.portal_path):]
-        return SimpleTerm(value, token=brain.getPath(), title=brain.Title)
+        return SimpleTerm(value, token=brain.getPath(), title=brain.Title or
+                          brain.id)
 
 
 class UUIDSource(PathSource):
@@ -221,7 +224,8 @@ class UUIDSource(PathSource):
             logger.warn("Brain in UUIDSource has missing UID value. Maybe you "
                         "need to enable plone.app.referenceablebehavior on "
                         "portal type %s?", brain.portal_type)
-        return SimpleTerm(value, token=brain.getPath(), title=brain.Title)
+        return SimpleTerm(value, token=brain.getPath(), title=brain.Title or
+                          brain.id)
 
 
 class PathSourceBinder(object):

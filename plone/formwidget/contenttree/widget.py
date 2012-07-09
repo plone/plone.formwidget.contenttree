@@ -17,7 +17,7 @@ from plone.app.layout.navigation.interfaces import INavtreeStrategy
 from plone.app.layout.navigation.navtree import buildFolderTree
 
 from plone.formwidget.autocomplete.widget import \
-     AutocompleteSelectionWidget, AutocompleteMultiSelectionWidget
+    AutocompleteSelectionWidget, AutocompleteMultiSelectionWidget
 
 from Products.CMFCore.utils import getToolByName
 from Products.Five.browser import BrowserView
@@ -30,7 +30,7 @@ class Fetch(BrowserView):
     fragment_template = ViewPageTemplateFile('fragment.pt')
     recurse_template = ViewPageTemplateFile('input_recurse.pt')
 
-    def getTermByBrain(self,brain):
+    def getTermByBrain(self, brain):
         # Ask the widget
         return self.context.getTermByBrain(brain)
 
@@ -94,11 +94,11 @@ class Fetch(BrowserView):
 
         children = []
         for brain in catalog(navtree_query):
-            newNode = {'item'          : brain,
-                       'depth'         : -1, # not needed here
-                       'currentItem'   : False,
-                       'currentParent' : False,
-                       'children'      : []}
+            newNode = {'item': brain,
+                       'depth': -1,  # not needed here
+                       'currentItem': False,
+                       'currentParent': False,
+                       'children': []}
             if strategy.nodeFilter(newNode):
                 newNode = strategy.decoratorFactory(newNode)
                 children.append(newNode)
@@ -115,7 +115,7 @@ class ContentTreeBase(Explicit):
 
     input_template = ViewPageTemplateFile('input.pt')
     hidden_template = ViewPageTemplateFile('hidden.pt')
-    display_template = None # set by subclass
+    display_template = None  # set by subclass
     recurse_template = ViewPageTemplateFile('input_recurse.pt')
 
     # Parameters passed to the JavaScript function
@@ -134,7 +134,7 @@ class ContentTreeBase(Explicit):
     # are selectable or that are folders.
     show_all_nodes = False
 
-    def getTermByBrain(self,brain):
+    def getTermByBrain(self, brain):
         return self.bound_source.getTermByBrain(brain)
 
     def render_tree(self):
@@ -150,7 +150,8 @@ class ContentTreeBase(Explicit):
                                query=source.navigation_tree_query,
                                strategy=strategy)
 
-        return self.recurse_template(children=data.get('children', []), level=1)
+        return self.recurse_template(children=data.get('children', []),
+                                     level=1)
 
     def render(self):
         if self.mode == z3c.form.interfaces.DISPLAY_MODE:
@@ -217,6 +218,7 @@ class ContentTreeBase(Explicit):
                        default=u'browse...',
                        domain='plone.formwidget.contenttree',
                        context=self.request))
+
 
 class ContentTreeWidget(ContentTreeBase, AutocompleteSelectionWidget):
     """ContentTree widget that allows single selection.

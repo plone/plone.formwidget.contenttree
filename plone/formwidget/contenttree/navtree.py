@@ -16,8 +16,8 @@ from plone.app.layout.navigation.interfaces import INavigationQueryBuilder
 
 from plone.app.layout.navigation.root import getNavigationRoot
 
-from plone.formwidget.contenttree.interfaces  import IContentSource
-from plone.formwidget.contenttree.interfaces  import IContentTreeWidget
+from plone.formwidget.contenttree.interfaces import IContentSource
+from plone.formwidget.contenttree.interfaces import IContentTreeWidget
 
 
 class QueryBuilder(object):

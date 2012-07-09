@@ -4,6 +4,12 @@ Changelog
 1.0.6 (unreleased)
 ------------------
 
+* pep8
+  [joka]
+
+* Fix term title genration to use the brain id if there is not brain title 
+  [joka]
+
 * Added Italian translation.
   [gborelli]
 
