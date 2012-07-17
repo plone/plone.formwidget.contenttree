@@ -22,6 +22,7 @@ if(jQuery) (function($){
             });
 
             $(this).contentTreeCancel();
+            input_box.parents('.datagridwidget-cell').triggerHandler('change');
         },
         contentTreeCancel: function() {
             $(".contenttreeWindowBlocker").remove();

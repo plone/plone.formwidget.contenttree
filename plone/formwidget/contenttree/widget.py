@@ -179,7 +179,7 @@ class ContentTreeBase(Explicit):
                             var parent = $(this).parents("*[id$='-autocomplete']")
                             var window = parent.siblings("*[id$='-contenttree-window']")
                             window.showDialog('%(url)s', %(expandSpeed)d);
-                                $('#%(id)s-contenttree').contentTree(
+                            $('#' + parent.attr('id').replace('autocomplete', 'contenttree')).contentTree(
                     {
                         script: '%(url)s',
                         folderEvent: '%(folderEvent)s',
