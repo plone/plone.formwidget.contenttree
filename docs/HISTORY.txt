@@ -4,6 +4,12 @@ Changelog
 1.0.6 (unreleased)
 ------------------
 
+* Trigger change handler when used with datagrid
+  [kingel]
+
+* Use an ajax fetch for the initial call
+  [kingel]
+
 * Fix url in display templates, so that it uses absolute urls.
   [phgross]
 
