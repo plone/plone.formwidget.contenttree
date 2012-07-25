@@ -1,4 +1,8 @@
 <span id="" class=""
+      tal:define="url_tool context/@@plone_tools/url;
+                  portal_url url_tool/portal_url;
+                  portal_path url_tool/getPortalPath"
+
       tal:attributes="id view/id;
                       class view/klass;
                       style view/style;
@@ -17,7 +21,7 @@
         >
     <div tal:repeat="term view/terms">
         <a tal:content="term/title"
-           tal:attributes="href term/token"
+           tal:attributes="href python: term.token.replace(portal_path, portal_url, 1)"
            tal:condition="python:not(term.token.startswith('#error-'))"
            />
     </div>

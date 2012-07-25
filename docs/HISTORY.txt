@@ -4,10 +4,13 @@ Changelog
 1.0.6 (unreleased)
 ------------------
 
+* Fix url in display templates, so that it uses absolute urls.
+  [phgross]
+
 * pep8
   [joka]
 
-* Fix term title genration to use the brain id if there is not brain title 
+* Fix term title genration to use the brain id if there is not brain title
   [joka]
 
 * Added Italian translation.
