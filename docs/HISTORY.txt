@@ -4,10 +4,16 @@ Changelog
 1.0.6 (unreleased)
 ------------------
 
+* Trigger change handler when used with datagrid
+  [kingel]
+
+* Use an ajax fetch for the initial call
+  [kingel]
+
 * pep8
   [joka]
 
-* Fix term title genration to use the brain id if there is not brain title 
+* Fix term title genration to use the brain id if there is not brain title
   [joka]
 
 * Added Italian translation.

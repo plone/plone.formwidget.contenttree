@@ -59,7 +59,6 @@ class Fetch(BrowserView):
                                       view_instance)
 
     def __call__(self):
-
         # We want to check that the user was indeed allowed to access the
         # form for this widget. We can only this now, since security isn't
         # applied yet during traversal.
@@ -162,6 +161,8 @@ class ContentTreeBase(Explicit):
             return self.input_template(self)
 
     def js_extra(self):
+        # Get bound source to extract path
+        source = self.bound_source
         form_url = self.request.getURL()
         url = "%s/++widget++%s/@@contenttree-fetch" % (form_url, self.name)
 
@@ -178,7 +179,22 @@ class ContentTreeBase(Explicit):
                         .click( function () {
                             var parent = $(this).parents("*[id$='-autocomplete']")
                             var window = parent.siblings("*[id$='-contenttree-window']")
-                            window.showDialog();
+                            window.showDialog('%(url)s', %(expandSpeed)d);
+                            $('#' + parent.attr('id').replace('autocomplete', 'contenttree')).contentTree(
+                    {
+                        script: '%(url)s',
+                        folderEvent: '%(folderEvent)s',
+                        selectEvent: '%(selectEvent)s',
+                        expandSpeed: %(expandSpeed)d,
+                        collapseSpeed: %(collapseSpeed)s,
+                        multiFolder: %(multiFolder)s,
+                        multiSelect: %(multiSelect)s,
+                        rootUrl: '%(rootUrl)s'
+                    },
+                    function(event, selected, data, title) {
+                        // alert(event + ', ' + selected + ', ' + data + ', ' + title);
+                    }
+                );
                         }).insertAfter($(this));
                 });
                 $('#%(id)s-contenttree-window').find('.contentTreeAdd').unbind('click').click(function () {
@@ -188,20 +204,7 @@ class ContentTreeBase(Explicit):
                     $(this).contentTreeCancel();
                 });
                 $('#%(id)s-widgets-query').after(" ");
-                $('#%(id)s-contenttree').contentTree(
-                    {
-                        script: '%(url)s',
-                        folderEvent: '%(folderEvent)s',
-                        selectEvent: '%(selectEvent)s',
-                        expandSpeed: %(expandSpeed)d,
-                        collapseSpeed: %(collapseSpeed)s,
-                        multiFolder: %(multiFolder)s,
-                        multiSelect: %(multiSelect)s,
-                    },
-                    function(event, selected, data, title) {
-                        // alert(event + ', ' + selected + ', ' + data + ', ' + title);
-                    }
-                );
+
         """ % dict(url=url,
                    id=self.name.replace('.', '-'),
                    folderEvent=self.folderEvent,
@@ -210,6 +213,7 @@ class ContentTreeBase(Explicit):
                    collapseSpeed=self.collapseSpeed,
                    multiFolder=str(self.multiFolder).lower(),
                    multiSelect=str(self.multi_select).lower(),
+                   rootUrl=source.navigation_tree_query['path']['query'],
                    name=self.name,
                    klass=self.klass,
                    title=self.title,
