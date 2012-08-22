@@ -1,0 +1,3 @@
+<ul class="navTree navTreeLevel0">
+        <li tal:replace="structure view/render_tree" />
+</ul>

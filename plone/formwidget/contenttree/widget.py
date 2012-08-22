@@ -24,6 +24,11 @@ from Products.Five.browser import BrowserView
 
 from plone.formwidget.contenttree.interfaces import IContentTreeWidget
 
+class FetchInit(BrowserView):
+
+    def render_tree(self):
+        widget = self.context
+        return widget.render_tree()
 
 class Fetch(BrowserView):
 
@@ -105,7 +110,6 @@ class Fetch(BrowserView):
 
         return self.fragment_template(children=children, level=int(level))
 
-
 class ContentTreeBase(Explicit):
     implementsOnly(IContentTreeWidget)
 
@@ -164,6 +168,7 @@ class ContentTreeBase(Explicit):
     def js_extra(self):
         form_url = self.request.getURL()
         url = "%s/++widget++%s/@@contenttree-fetch" % (form_url, self.name)
+        urlinit = "%s/++widget++%s/@@contenttree-fetch-init" % (form_url, self.name)
 
         return """\
 
@@ -178,31 +183,39 @@ class ContentTreeBase(Explicit):
                         .click( function () {
                             var parent = $(this).parents("*[id$='-autocomplete']")
                             var window = parent.siblings("*[id$='-contenttree-window']")
-                            window.showDialog();
+                            var content = window.siblings("*[id$='-contenttree']")
+                            $.ajax({'url' : '%(urlinit)s',
+                                    'success' : function(data) {
+                                    $('#%(id)s-contenttree').html(data);
+
+                                    $('#%(id)s-contenttree-window').find('.contentTreeAdd').unbind('click').click(function () {
+                                       $(this).contentTreeAdd();
+                                    });
+                                    $('#%(id)s-contenttree-window').find('.contentTreeCancel').unbind('click').click(function () {
+                                      $(this).contentTreeCancel();
+                                    });
+                                    $('#%(id)s-widgets-query').after(" ");
+                                    $('#%(id)s-contenttree').contentTree({
+                                        script: '%(url)s',
+                                        folderEvent: '%(folderEvent)s',
+                                        selectEvent: '%(selectEvent)s',
+                                        expandSpeed: %(expandSpeed)d,
+                                        collapseSpeed: %(collapseSpeed)s,
+                                        multiFolder: %(multiFolder)s,
+                                        multiSelect: %(multiSelect)s,
+                                      },
+                                      function(event, selected, data, title) {
+                                        // alert(event + ', ' + selected + ', ' + data + ', ' + title);
+                                      }
+                                    );
+                                    window.showDialog();
+                                }
+                            });
                         }).insertAfter($(this));
                 });
-                $('#%(id)s-contenttree-window').find('.contentTreeAdd').unbind('click').click(function () {
-                    $(this).contentTreeAdd();
-                });
-                $('#%(id)s-contenttree-window').find('.contentTreeCancel').unbind('click').click(function () {
-                    $(this).contentTreeCancel();
-                });
-                $('#%(id)s-widgets-query').after(" ");
-                $('#%(id)s-contenttree').contentTree(
-                    {
-                        script: '%(url)s',
-                        folderEvent: '%(folderEvent)s',
-                        selectEvent: '%(selectEvent)s',
-                        expandSpeed: %(expandSpeed)d,
-                        collapseSpeed: %(collapseSpeed)s,
-                        multiFolder: %(multiFolder)s,
-                        multiSelect: %(multiSelect)s,
-                    },
-                    function(event, selected, data, title) {
-                        // alert(event + ', ' + selected + ', ' + data + ', ' + title);
-                    }
-                );
+
         """ % dict(url=url,
+                   urlinit=urlinit,
                    id=self.name.replace('.', '-'),
                    folderEvent=self.folderEvent,
                    selectEvent=self.selectEvent,
@@ -245,3 +258,5 @@ def ContentTreeFieldWidget(field, request):
 @implementer(z3c.form.interfaces.IFieldWidget)
 def MultiContentTreeFieldWidget(field, request):
     return z3c.form.widget.FieldWidget(field, MultiContentTreeWidget(request))
+
+

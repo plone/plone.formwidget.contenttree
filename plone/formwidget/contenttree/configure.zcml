@@ -20,6 +20,14 @@
         class=".widget.Fetch"
         />
 
+   <browser:page
+        name="contenttree-fetch-init"
+        for=".interfaces.IContentTreeWidget"
+        permission="zope.Public"
+        class=".widget.FetchInit"
+        template="fragment_init.pt"
+        />
+
     <browser:resourceDirectory
         name="plone.formwidget.contenttree"
         directory="jquery-contenttree"
