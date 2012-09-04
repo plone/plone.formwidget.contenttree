@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2012-08-06 08:31+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI +ZONE\n"
+"POT-Creation-Date: 2009-12-23 09:31+0000\n"
+"PO-Revision-Date: 2010-08-24 11:33 +0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -18,26 +18,27 @@ msgstr ""
 "Domain: plone.formwidget.contenttree\n"
 
 #. Default: "Browse for items"
-#: ./../input.pt:10
+#: plone.formwidget.contenttree/plone/formwidget/contenttree/input.pt:10
 msgid "heading_contenttree_browse"
 msgstr ""
 
 #. Default: "Press Ctrl to select multiple items."
-#: ./../input.pt:11
+#: plone.formwidget.contenttree/plone/formwidget/contenttree/input.pt:11
 msgid "heading_contenttree_help"
 msgstr ""
 
 #. Default: "Add"
-#: ./../input.pt:19
+#: plone.formwidget.contenttree/plone/formwidget/contenttree/input.pt:20
 msgid "label_contenttree_add"
 msgstr ""
 
+#. Default: "browse..."
+#: plone.formwidget.contenttree/plone/formwidget/contenttree/input.pt:11
+msgid "label_contenttree_browse"
+msgstr ""
+
 #. Default: "Cancel"
-#: ./../input.pt:19
+#: plone.formwidget.contenttree/plone/formwidget/contenttree/input.pt:20
 msgid "label_contenttree_cancel"
 msgstr ""
 
-#. Default: "browse..."
-#: ./../widget.py:19
-msgid "label_contenttree_browse"
-msgstr ""

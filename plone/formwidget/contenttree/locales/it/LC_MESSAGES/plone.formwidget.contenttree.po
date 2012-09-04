@@ -3,7 +3,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
-"POT-Creation-Date: 2012-08-06 08:46+0000\n"
+"POT-Creation-Date: 2012-06-14 14:31+0000\n"
 "PO-Revision-Date: 2012-06-14 14:33 +0200\n"
 "Last-Translator: Giorgio Borelli <giorgio@giorgioborelli.it>\n"
 "Language-Team: Plone Italian Translation <plone-italian-translation-discussion@lists.coactivate.org>\n"
@@ -13,27 +13,31 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0\n"
 "Language-Code: it\n"
 "Language-Name: Italian\n"
+"X-Is-Fallback-For: it-it it-ch it-sm it-hr it-si\n"
 "Preferred-Encodings: utf-8 latin1\n"
 "Domain: plone.formwidget.contenttree\n"
-"X-Is-Fallback-For: it-it it-ch it-sm it-hr it-si\n"
 
 #. Default: "Browse for items"
-#: ./../input.pt:10
+#: plone.formwidget.contenttree/plone/formwidget/contenttree/input.pt:10
 msgid "heading_contenttree_browse"
 msgstr "Seleziona gli elementi da referenziare"
 
 #. Default: "Press Ctrl to select multiple items."
-#: ./../input.pt:11
+#: plone.formwidget.contenttree/plone/formwidget/contenttree/input.pt:11
 msgid "heading_contenttree_help"
 msgstr "Tieni premuto il tasto ctrl per selezionare più elementi"
 
 #. Default: "Add"
-#: ./../input.pt:19
+#: plone.formwidget.contenttree/plone/formwidget/contenttree/input.pt:20
 msgid "label_contenttree_add"
 msgstr "Aggiungi"
 
+#. Default: "browse..."
+#: plone.formwidget.contenttree/plone/formwidget/contenttree/input.pt:11
+msgid "label_contenttree_browse"
+msgstr "Sfoglia..."
+
 #. Default: "Cancel"
-#: ./../input.pt:19
+#: plone.formwidget.contenttree/plone/formwidget/contenttree/input.pt:20
 msgid "label_contenttree_cancel"
 msgstr "Annulla"
-
