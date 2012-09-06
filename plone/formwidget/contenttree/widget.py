@@ -23,7 +23,7 @@ from Products.CMFCore.utils import getToolByName
 from Products.Five.browser import BrowserView
 
 from plone.formwidget.contenttree.interfaces import IContentTreeWidget
-
+from plone.formwidget.contenttree import MessageFactory as _
 
 class Fetch(BrowserView):
 
@@ -218,9 +218,7 @@ class ContentTreeBase(Explicit):
                    klass=self.klass,
                    title=self.title,
                    button_val=translate(
-                       u'label_contenttree_browse',
-                       default=u'browse...',
-                       domain='plone.formwidget.contenttree',
+                       _(u'label_contenttree_browse', default=u'browse...'),
                        context=self.request))
 
 

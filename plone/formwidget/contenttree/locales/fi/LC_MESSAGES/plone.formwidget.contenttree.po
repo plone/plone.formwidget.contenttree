@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Plone\n"
-"POT-Creation-Date: 2012-08-06 08:46+0000\n"
+"POT-Creation-Date: 2012-09-04 18:31+0000\n"
 "PO-Revision-Date: 2010-08-24 11:35+0200\n"
 "Last-Translator: Kai Lautaportti <kai.lautaportti@hexagonit.fi>\n"
 "Language-Team: Suomi <plone-i18n@lists.sourceforge.net>\n"
@@ -9,28 +9,32 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"Language-Code: fi\n"
-"Language-Name: Finnish\n"
 "Preferred-Encodings: utf-8 latin1\n"
 "Domain: plone.formwidget.contenttree\n"
 
 #. Default: "Browse for items"
-#: ./../input.pt:10
+#: ./plone/formwidget/contenttree/input.pt:10
 msgid "heading_contenttree_browse"
 msgstr "Selaa sivustoa"
 
 #. Default: "Press Ctrl to select multiple items."
-#: ./../input.pt:11
+#: ./plone/formwidget/contenttree/input.pt:11
 msgid "heading_contenttree_help"
 msgstr "Paina Ctrl-näppäintä (Command-näppäintä Mac-koneessa) valitaksesi useita kohteita."
 
 #. Default: "Add"
-#: ./../input.pt:19
+#: ./plone/formwidget/contenttree/input.pt:19
 msgid "label_contenttree_add"
 msgstr "Lisää"
 
+#. Default: "browse..."
+#: ./plone/formwidget/contenttree/widget.py:221
+msgid "label_contenttree_browse"
+msgstr "Selaa..."
+
 #. Default: "Cancel"
-#: ./../input.pt:19
+#: ./plone/formwidget/contenttree/input.pt:19
 msgid "label_contenttree_cancel"
 msgstr "Peru"
+
 
