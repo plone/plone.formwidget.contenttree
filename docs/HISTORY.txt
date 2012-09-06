@@ -4,6 +4,9 @@ Changelog
 1.0.6 (unreleased)
 ------------------
 
+* Added french translation.
+  [phgross]
+
 * Trigger change handler when used with datagrid
   [kingel]
 

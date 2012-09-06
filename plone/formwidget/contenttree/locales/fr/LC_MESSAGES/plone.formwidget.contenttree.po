@@ -1,0 +1,40 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2012-09-04 18:31+0000\n"
+"PO-Revision-Date: 2012-09-06 15:07+0200\n"
+"Last-Translator: Philippe Gross <philppe.gross@4teamwork.ch>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+"Preferred-Encodings: utf-8 latin1\n"
+"Domain: DOMAIN\n"
+
+#. Default: "Browse for items"
+#: ./plone/formwidget/contenttree/input.pt:10
+msgid "heading_contenttree_browse"
+msgstr "Chercher des éléments"
+
+#. Default: "Press Ctrl to select multiple items."
+#: ./plone/formwidget/contenttree/input.pt:11
+msgid "heading_contenttree_help"
+msgstr "Cliquer sur CTRL pour sélectionner plusieurs éléments"
+
+#. Default: "Add"
+#: ./plone/formwidget/contenttree/input.pt:19
+msgid "label_contenttree_add"
+msgstr "Ajouter"
+
+#. Default: "browse..."
+#: ./plone/formwidget/contenttree/widget.py:221
+msgid "label_contenttree_browse"
+msgstr "Chercher..."
+
+#. Default: "Cancel"
+#: ./plone/formwidget/contenttree/input.pt:19
+msgid "label_contenttree_cancel"
+msgstr "Annuler"
+
+
