@@ -2,7 +2,7 @@ from AccessControl import getSecurityManager
 from Acquisition import Explicit
 from Acquisition.interfaces import IAcquirer
 
-from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
+from zope.browserpage.viewpagetemplatefile import ViewPageTemplateFile
 from zope.interface import implementsOnly, implementer
 from zope.component import getMultiAdapter
 from zope.i18n import translate
@@ -24,6 +24,7 @@ from Products.Five.browser import BrowserView
 
 from plone.formwidget.contenttree.interfaces import IContentTreeWidget
 from plone.formwidget.contenttree import MessageFactory as _
+
 
 class Fetch(BrowserView):
 
