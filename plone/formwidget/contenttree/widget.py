@@ -11,7 +11,7 @@ import z3c.form.interfaces
 import z3c.form.widget
 import z3c.form.util
 
-from zope.app.component.hooks import getSite
+from zope.component.hooks import getSite
 
 from plone.app.layout.navigation.interfaces import INavtreeStrategy
 from plone.app.layout.navigation.navtree import buildFolderTree

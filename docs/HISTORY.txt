@@ -4,6 +4,9 @@ Changelog
 1.0.6 (unreleased)
 ------------------
 
+* Import getSite from zope.component to avoid dependency on zope.app.component.
+  [hvelarde]
+
 * Import ViewPageTemplateFile from zope.browserpage to avoid dependency on
   zope.app.pagetemplate.
   [hvelarde]
