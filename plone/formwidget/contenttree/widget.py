@@ -101,6 +101,8 @@ class Fetch(BrowserView):
                 newNode = strategy.decoratorFactory(newNode)
                 children.append(newNode)
 
+        self.request.response.setHeader('X-Theme-Disabled', 'True')
+
         return self.fragment_template(children=children, level=int(level))
 
 

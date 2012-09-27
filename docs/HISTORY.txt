@@ -4,6 +4,9 @@ Changelog
 1.0.6 (unreleased)
 ------------------
 
+* Avoid theming ajax response.
+  [elro]
+
 * Ensure context is a content item of some sort.
   [elro]
 
