@@ -11,8 +11,6 @@ import z3c.form.interfaces
 import z3c.form.widget
 import z3c.form.util
 
-from zope.component.hooks import getSite
-
 from plone.app.layout.navigation.interfaces import INavtreeStrategy
 from plone.app.layout.navigation.navtree import buildFolderTree
 
@@ -24,6 +22,7 @@ from Products.Five.browser import BrowserView
 
 from plone.formwidget.contenttree.interfaces import IContentTreeWidget
 from plone.formwidget.contenttree import MessageFactory as _
+from plone.formwidget.contenttree.utils import closest_content
 
 
 class Fetch(BrowserView):
@@ -80,14 +79,13 @@ class Fetch(BrowserView):
         level = self.request.form.get('rel', 0)
 
         navtree_query = source.navigation_tree_query.copy()
-        navtree_query['path'] = {'depth': 1, 'query': directory}
+        if directory is not None:
+            navtree_query['path'] = {'depth': 1, 'query': directory}
 
         if 'is_default_page' not in navtree_query:
             navtree_query['is_default_page'] = False
 
-        content = context
-        if not IAcquirer.providedBy(content):
-            content = getSite()
+        content = closest_content(context)
 
         strategy = getMultiAdapter((content, widget), INavtreeStrategy)
         catalog = getToolByName(content, 'portal_catalog')
@@ -138,10 +136,7 @@ class ContentTreeBase(Explicit):
         return self.bound_source.getTermByBrain(brain)
 
     def render_tree(self):
-        content = self.context
-        if not IAcquirer.providedBy(content):
-            content = getSite()
-
+        content = closest_content(self.context)
         source = self.bound_source
 
         strategy = getMultiAdapter((content, self), INavtreeStrategy)
