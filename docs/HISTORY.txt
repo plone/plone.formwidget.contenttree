@@ -1,7 +1,7 @@
 Changelog
 =========
 
-1.0.6 (unreleased)
+1.0.6 (2012-09-28)
 ------------------
 
 * Tweak CSS to use outline instead of border.
