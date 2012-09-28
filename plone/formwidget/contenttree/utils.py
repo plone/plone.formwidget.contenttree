@@ -33,10 +33,10 @@ def closest_content(context=None):
 
 def _valid_context(context):
     """Walk up until finding a content item."""
-    # Avoid loops
+    # Avoid loops. The object id is used as context may not be hashable
     seen = set()
-    while context is not None and aq_base(context) not in seen:
-        seen.add(aq_base(context))
+    while context is not None and id(aq_base(context)) not in seen:
+        seen.add(id(aq_base(context)))
         if (IContentish.providedBy(context)
             or IFolderish.providedBy(context)):
             return context
