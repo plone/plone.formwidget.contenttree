@@ -4,6 +4,9 @@ Changelog
 1.0.7 (unreleased)
 ------------------
 
+* Added check in tree generation if it allready exists (reopening the contenttree window).
+  [phgross]
+
 1.0.6 (2012-09-28)
 ------------------
 

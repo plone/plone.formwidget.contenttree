@@ -105,10 +105,12 @@ if(jQuery) (function($){
                 $(t).find('li.selectable a').bind(o.selectEvent, handleSelectEvent);
             }
 
-            $(this).each(function() {
+            if ($(this).children('ul.navTree').length <= 0) {
+              $(this).each(function() {
+                  loadTree(this, o.rootUrl, 0);
+              });
+            }
 
-                loadTree(this, o.rootUrl, 0);
-            });
         }
     });
 
