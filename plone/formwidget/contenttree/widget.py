@@ -26,6 +26,7 @@ from plone.formwidget.contenttree.utils import closest_content
 
 
 class BaseView(BrowserView):
+
     def validate_access(self):
 
         content = self.context.form.context
@@ -98,7 +99,7 @@ class Fetch(BaseView):
     fragment_template = ViewPageTemplateFile('fragment.pt')
     recurse_template = ViewPageTemplateFile('input_recurse.pt')
 
-    def getTermByBrain(self,brain):
+    def getTermByBrain(self, brain):
         # Ask the widget
         return self.context.getTermByBrain(brain)
 
