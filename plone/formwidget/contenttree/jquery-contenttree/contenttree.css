@@ -51,7 +51,7 @@
     padding-bottom: 0.25em;
 }
 .contenttreeWidget .navTreeItem a:hover {
-    border: 1px dotted #205C90;
+    outline: 1px dotted #205C90;
 }
 .contenttreeWidget li.navTreeCurrentItem {
     border: none !important;
@@ -60,6 +60,7 @@
 .contenttreeWidget li.navTreeCurrentItem > a,
 .contenttreeWidget li.navTreeCurrentItem > a:hover {
     border: none;
+    outline: none;
     background-color: #205C90;
     color: #fff !important;
 }

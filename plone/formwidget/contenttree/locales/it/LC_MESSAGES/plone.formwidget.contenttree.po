@@ -1,44 +1,43 @@
-# --- PLEASE EDIT THE LINES BELOW CORRECTLY ---
-# SOME DESCRIPTIVE TITLE.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# plone.formwidget.contenttree
+# Giorgio Borelli <giorgio@giorgioborelli.it>, 2012.
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: 1.0\n"
 "POT-Creation-Date: 2012-09-04 18:31+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI +ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"PO-Revision-Date: 2012-06-14 14:33 +0200\n"
+"Last-Translator: Giorgio Borelli <giorgio@giorgioborelli.it>\n"
+"Language-Team: Plone Italian Translation <plone-italian-translation-discussion@lists.coactivate.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0\n"
-"Language-Code: en\n"
-"Language-Name: English\n"
 "Preferred-Encodings: utf-8 latin1\n"
 "Domain: plone.formwidget.contenttree\n"
+"X-Is-Fallback-For: it-it it-ch it-sm it-hr it-si\n"
 
 #. Default: "Browse for items"
 #: ./plone/formwidget/contenttree/input.pt:10
 msgid "heading_contenttree_browse"
-msgstr ""
+msgstr "Seleziona gli elementi da referenziare"
 
 #. Default: "Press Ctrl to select multiple items."
 #: ./plone/formwidget/contenttree/input.pt:11
 msgid "heading_contenttree_help"
-msgstr ""
+msgstr "Tieni premuto il tasto ctrl per selezionare più elementi"
 
 #. Default: "Add"
 #: ./plone/formwidget/contenttree/input.pt:19
 msgid "label_contenttree_add"
-msgstr ""
+msgstr "Aggiungi"
 
 #. Default: "browse..."
 #: ./plone/formwidget/contenttree/widget.py:221
 msgid "label_contenttree_browse"
-msgstr ""
+msgstr "Sfoglia..."
 
 #. Default: "Cancel"
 #: ./plone/formwidget/contenttree/input.pt:19
 msgid "label_contenttree_cancel"
-msgstr ""
+msgstr "Annulla"
+
 

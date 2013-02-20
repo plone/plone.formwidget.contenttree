@@ -41,6 +41,6 @@
         />
 
     <!-- Demo -->
-    <include file="demo.zcml" />
+    <!-- <include file="demo.zcml" /> -->
 
 </configure>

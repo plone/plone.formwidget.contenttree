@@ -1,8 +1,61 @@
 Changelog
 =========
 
-1.0.6 (unreleased)
+1.0.7 (unreleased)
 ------------------
+
+* Added check in tree generation if it allready exists (reopening the contenttree window).
+  [phgross]
+
+1.0.6 (2012-09-28)
+------------------
+
+* Tweak CSS to use outline instead of border.
+  [elro]
+
+* Avoid theming ajax response.
+  [elro]
+
+* Ensure context is a content item of some sort.
+  [elro]
+
+* Import getSite from zope.component to avoid dependency on zope.app.component.
+  [hvelarde]
+
+* Import ViewPageTemplateFile from zope.browserpage to avoid dependency on
+  zope.app.pagetemplate.
+  [hvelarde]
+
+* Added french translation.
+  [phgross]
+
+* Trigger change handler when used with datagrid
+  [kingel]
+
+* Use an ajax fetch for the initial call
+  [kingel]
+
+* Fix url in display templates, so that it uses absolute urls.
+  [phgross]
+
+* pep8
+  [joka]
+
+* Fix term title genration to use the brain id if there is not brain title
+  [joka]
+
+* Added Italian translation.
+  [gborelli]
+
+* Added Finnish (fi) translation.
+  [dokai]
+
+* By default filter out nodes that are not selectable and not folderish.
+  This can be overridden on the widget by setting show_all_nodes to True.
+  [maurits]
+
+* Added Dutch translation.
+  [maurits]
 
 1.0.5 (2012-02-20)
 ------------------
