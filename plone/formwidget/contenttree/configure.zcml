@@ -20,6 +20,13 @@
         class=".widget.Fetch"
         />
 
+    <browser:page
+        name="contenttree-preview"
+        for=".interfaces.IContentTreeWidget"
+        permission="zope.Public"
+        class=".widget.Preview"
+        />
+
     <browser:resourceDirectory
         name="plone.formwidget.contenttree"
         directory="jquery-contenttree"

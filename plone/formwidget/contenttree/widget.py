@@ -25,14 +25,7 @@ from plone.formwidget.contenttree import MessageFactory as _
 from plone.formwidget.contenttree.utils import closest_content
 
 
-class Fetch(BrowserView):
-
-    fragment_template = ViewPageTemplateFile('fragment.pt')
-    recurse_template = ViewPageTemplateFile('input_recurse.pt')
-
-    def getTermByBrain(self, brain):
-        # Ask the widget
-        return self.context.getTermByBrain(brain)
+class BaseView(BrowserView):
 
     def validate_access(self):
 
@@ -57,6 +50,58 @@ class Fetch(BrowserView):
         view_instance = content.restrictedTraverse(view_name)
         getSecurityManager().validate(content, content, view_name,
                                       view_instance)
+
+
+class Preview(BaseView):
+    template = ViewPageTemplateFile('preview.pt')
+
+    def __call__(self):
+
+        # We want to check that the user was indeed allowed to access the
+        # form for this widget. We can only this now, since security isn't
+        # applied yet during traversal.
+        self.validate_access()
+
+        widget = self.context
+        context = widget.context
+
+        # Update the widget before accessing the source.
+        # The source was only bound without security applied
+        # during traversal before.
+        widget.update()
+        source = widget.bound_source
+
+        # Convert token from request to the path to the object
+        token = self.request.form.get('href', None)
+        directory = self.context.bound_source.tokenToPath(token)
+        level = self.request.form.get('rel', 0)
+
+        navtree_query = source.navigation_tree_query.copy()
+        navtree_query['path'] = {'query': directory}
+
+        if 'is_default_page' not in navtree_query:
+            navtree_query['is_default_page'] = False
+
+        content = context
+        if not IAcquirer.providedBy(content):
+            content = closest_content(context)
+
+        strategy = getMultiAdapter((content, widget), INavtreeStrategy)
+        catalog = getToolByName(content, 'portal_catalog')
+        results = catalog(navtree_query)
+
+        if len(results) > 0:
+            return self.template(node=results[0].getObject())
+
+
+class Fetch(BaseView):
+
+    fragment_template = ViewPageTemplateFile('fragment.pt')
+    recurse_template = ViewPageTemplateFile('input_recurse.pt')
+
+    def getTermByBrain(self, brain):
+        # Ask the widget
+        return self.context.getTermByBrain(brain)
 
     def __call__(self):
         # We want to check that the user was indeed allowed to access the
@@ -163,6 +208,7 @@ class ContentTreeBase(Explicit):
         source = self.bound_source
         form_url = self.request.getURL()
         url = "%s/++widget++%s/@@contenttree-fetch" % (form_url, self.name)
+        preview_url = "%s/++widget++%s/@@contenttree-preview" % (form_url, self.name)
 
         return """\
 
@@ -181,6 +227,7 @@ class ContentTreeBase(Explicit):
                             $('#' + parent.attr('id').replace('autocomplete', 'contenttree')).contentTree(
                     {
                         script: '%(url)s',
+                        previewScript: '%(preview_url)s',
                         folderEvent: '%(folderEvent)s',
                         selectEvent: '%(selectEvent)s',
                         expandSpeed: %(expandSpeed)d,
@@ -204,6 +251,7 @@ class ContentTreeBase(Explicit):
                 $('#%(id)s-widgets-query').after(" ");
 
         """ % dict(url=url,
+                   preview_url=preview_url,
                    id=self.name.replace('.', '-'),
                    folderEvent=self.folderEvent,
                    selectEvent=self.selectEvent,
