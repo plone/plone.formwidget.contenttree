@@ -83,6 +83,14 @@ class PathSource(object):
 
         query.update(navigation_tree_query)
 
+        # If we filter by portal_type, make sure those portal types are present
+        # in the query, even if they would not appear in the navigation
+        if ('portal_type' in query
+                and 'portal_type' in selectable_filter.criteria):
+            for ptype in selectable_filter.criteria['portal_type']:
+                if ptype not in query['portal_type']:
+                    query['portal_type'].append(ptype)
+
         self.navigation_tree_query = query
         self.selectable_filter = selectable_filter
 
