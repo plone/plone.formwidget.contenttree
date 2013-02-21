@@ -120,7 +120,11 @@ if(jQuery) (function($){
               $(this).each(function() {
                   loadTree(this, o.rootUrl, 0);
               });
-            }
+            } else {
+                $(this).each(function() {
+                bindTree($(this));
+            });
+           }
 
         }
     });
