@@ -201,6 +201,22 @@ class ContentTreeBase(Explicit):
         elif self.mode == z3c.form.interfaces.HIDDEN_MODE:
             return self.hidden_template(self)
         else:
+            # Dirty hack: We need to ensure that all items have the same name.
+            # in z3c.form.browser.RadioWidget.update, no ":list" is appended
+            # to the existing value. 
+            # But in z3c.formwidget.query.QuerySourceRadioWidget.update ":list"
+            # is appended to the radio box's name that holds the "no value".
+            # Also, this widget appends ":list" to all newly chosen values.
+            # Therefore, we append ":list" to all names where it's missing.
+            items = self.items
+            changed = False
+            for item in items:
+                if item.get('name', None) and \
+                        not item['name'].endswith(":list"):
+                    item['name'] = item['name'] + ':list'
+                    changed = True
+            if changed:
+                self.items = items
             return self.input_template(self)
 
     def js_extra(self):
