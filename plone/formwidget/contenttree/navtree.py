@@ -52,6 +52,9 @@ class QueryBuilder(object):
         else:
             query['path'] = {'query': currentPath, 'navtree': 1}
 
+        # Only list the applicable types
+        query['portal_type'] = utils.typesToList(context)
+
         # Apply the desired sort
         sortAttribute = navtree_properties.getProperty('sortAttribute', None)
         if sortAttribute is not None:
