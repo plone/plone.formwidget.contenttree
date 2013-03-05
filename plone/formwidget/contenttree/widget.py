@@ -79,6 +79,10 @@ class Fetch(BrowserView):
         level = self.request.form.get('rel', 0)
 
         navtree_query = source.navigation_tree_query.copy()
+
+        if widget.show_all_content_types and 'portal_type' in navtree_query:
+            del navtree_query['portal_type']
+
         if directory is not None:
             navtree_query['path'] = {'depth': 1, 'query': directory}
 
@@ -133,6 +137,10 @@ class ContentTreeBase(Explicit):
     # By default, only show 'interesting' nodes, that is: nodes that
     # are selectable or that are folders.
     show_all_nodes = False
+
+    # By default, show all content types, even those not allowed in
+    # the navigation
+    show_all_content_types = True
 
     def getTermByBrain(self, brain):
         return self.bound_source.getTermByBrain(brain)

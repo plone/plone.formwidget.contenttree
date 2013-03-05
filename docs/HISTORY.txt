@@ -7,6 +7,8 @@ Changelog
 * Added check in tree generation if it allready exists (reopening the contenttree window).
   [phgross]
 
+* Do not exclude content types which are not allowed in navigation [ebrehault]
+
 1.0.6 (2012-09-28)
 ------------------
 
