@@ -88,15 +88,22 @@ Example Usage::
 
     TestView = layout.wrap_form(TestForm)
 
+<<<<<<< HEAD
 <<<<<<< HEAD:README.rst
 
 .. include:: docs/INSTALL.txt
 =======
 .. include:: docs/INSTALL.txt
+=======
+.. include:: docs/INSTALL.txt
+>>>>>>> Switch to .rst file and update documentation
 
 .. include:: TODO.txt
 
 .. _`z3c.formwidget.query`: https://pypi.python.org/pypi/z3c.formwidget.query
 .. _`z3c.form`: https://pypi.python.org/pypi/z3c.form
 .. _`jQuery Autocomplete widget`: https://github.com/plone/plone.formwidget.autocomplete
+<<<<<<< HEAD
 >>>>>>> Switch to .rst file and update documentation:README.rst
+=======
+>>>>>>> Switch to .rst file and update documentation
