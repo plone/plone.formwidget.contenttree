@@ -1,6 +1,8 @@
 .. image:: https://travis-ci.org/saily/plone.formwidget.contenttree.png
     :target: http://travis-ci.org/saily/plone.formwidget.contenttree
 
+.. contents::
+
 Introduction
 ============
 
@@ -14,6 +16,10 @@ for collection fields (e.g. List, Tuple) with a value_type of Choice.
 
 When using this widget, the vocabulary/source has to provide the IQuerySource
 interface from z3c.formwidget.query and have a search() method.
+
+
+How to use it
+=============
 
 Example Usage::
 
@@ -77,3 +83,6 @@ Example Usage::
             print data, errors
 
     TestView = layout.wrap_form(TestForm)
+
+
+.. include:: docs/INSTALL.txt

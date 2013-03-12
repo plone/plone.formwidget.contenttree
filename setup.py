@@ -7,7 +7,7 @@ setup(name='plone.formwidget.contenttree',
       version=version,
       description="AJAX selection widget for Plone",
       long_description="\n".join([
-          open("README.txt").read(),
+          open("README.rst").read(),
           open(os.path.join("docs", "HISTORY.txt")).read(),
       ]),
       # Get more strings from
