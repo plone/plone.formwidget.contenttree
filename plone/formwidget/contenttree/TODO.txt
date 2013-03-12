@@ -1,5 +1,5 @@
-plone.formwidget.contenttree to-do
-==================================
+TODO
+====
 
  - Add favorites and recent items
  - Add search to dialog box
@@ -12,41 +12,40 @@ The design:
 - Both for values selection (user/group/tags) and content selection
 - Multi-select and single select
 
-Tags/users/groups use case (aka.autocomplete - flat namespace):
+Tags/users/groups use case (aka.autocomplete - flat namespace)::
 
-Tags: [x] Plone
-      [x] Zope
-      [x] Python
-     [Search...       ]
-      | autocomplete | 
-      | autocomplete | 
-      | autocomplete | 
-      |______________|
+    Tags: [x] Plone
+          [x] Zope
+          [x] Python
+         [Search...       ]
+          | autocomplete |
+          | autocomplete |
+          | autocomplete |
+          |______________|
 
 
-Content selection use case (autocomplete + browse - nested namespace)
+Content selection use case (autocomplete + browse - nested namespace)::
 
-Tags: [x] Document 1
-      [x] Document 2
-      [x] Image 1
-     [Search...       ] [Browse...]
-      | autocomplete | 
-      | autocomplete | 
-      | autocomplete | 
-      |______________|
+    Tags: [x] Document 1
+          [x] Document 2
+          [x] Image 1
+         [Search...       ] [Browse...]
+          | autocomplete |
+          | autocomplete |
+          | autocomplete |
+          |______________|
 
 Clicking [Browse...] gives you a lightbox-style (ie. not a real window)
-pop-up dialog box that resembles a standard file system picker:
+pop-up dialog box that resembles a standard file system picker::
 
-
- ___________________________________________
-| Favorites |_________________[Search...  ]|
-| - Folder1 |                              |
-| - Folder2 |  Tree selection goes here    |
-| - Folder3 |                              |
-|           |                              |
-|           |               [Add] [Close]  |
-|__________________________________________|
+     ___________________________________________
+    | Favorites |_________________[Search...  ]|
+    | - Folder1 |                              |
+    | - Folder2 |  Tree selection goes here    |
+    | - Folder3 |                              |
+    |           |                              |
+    |           |               [Add] [Close]  |
+    |__________________________________________|
 
 
 Note that it also supports search, since very often people's first instinct
@@ -57,7 +56,7 @@ Other notes:
  - Multiselect is still hard, but for now: if multiselect is supported, the
    buttons are: [Add] and [Close], if it's single-select, they are [Add] and
    [Cancel].
-   
- - Adding an item in the multiselect case shows a "Item X added" status 
+
+ - Adding an item in the multiselect case shows a "Item X added" status
    message, but doesn't close the window. Adding in the single-select case
    closes the window.
