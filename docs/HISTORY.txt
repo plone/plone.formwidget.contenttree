@@ -4,6 +4,12 @@ Changelog
 1.0.7 (unreleased)
 ------------------
 
+* Switch to ``plone.app.testing``
+  [saily]
+
+* Add js and css registration tests
+  [saily]
+
 * Added check in tree generation if it allready exists (reopening the contenttree window).
   [phgross]
 
