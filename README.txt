@@ -1,3 +1,6 @@
+.. image:: https://travis-ci.org/saily/plone.formwidget.contenttree.png
+    :target: http://travis-ci.org/saily/plone.formwidget.contenttree
+
 Introduction
 ============
 
