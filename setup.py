@@ -34,7 +34,7 @@ setup(name='plone.formwidget.contenttree',
       ],
       extras_require={
           'test': [
-              'zope.app.testing',
+              'plone.app.testing',
           ],
       },
       entry_points="""

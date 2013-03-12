@@ -33,7 +33,4 @@
         provides="Products.GenericSetup.interfaces.EXTENSION"
         />
 
-    <!-- Demo -->
-    <!-- <include file="demo.zcml" /> -->
-
 </configure>

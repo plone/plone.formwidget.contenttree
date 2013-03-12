@@ -9,4 +9,6 @@
     <include package="plone.z3cform" file="testing.zcml" />
     <include package="plone.formwidget.contenttree" file="configure.zcml" />
 
+    <include file="demo.zcml" />
+
 </configure>
