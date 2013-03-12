@@ -209,6 +209,22 @@ class ContentTreeBase(Explicit):
         elif self.mode == z3c.form.interfaces.HIDDEN_MODE:
             return self.hidden_template(self)
         else:
+            # Dirty hack: We need to ensure that all items have the same name.
+            # in z3c.form.browser.RadioWidget.update, no ":list" is appended
+            # to the existing value.
+            # But in z3c.formwidget.query.QuerySourceRadioWidget.update ":list"
+            # is appended to the radio box's name that holds the "no value".
+            # Also, this widget appends ":list" to all newly chosen values.
+            # Therefore, we append ":list" to all names where it's missing.
+            items = self.items
+            changed = False
+            for item in items:
+                if item.get('name', None) and \
+                        not item['name'].endswith(":list"):
+                    item['name'] = item['name'] + ':list'
+                    changed = True
+            if changed:
+                self.items = items
             return self.input_template(self)
 
     def js_extra(self):
@@ -217,6 +233,7 @@ class ContentTreeBase(Explicit):
         form_url = self.request.getURL()
         url = "%s/++widget++%s/@@contenttree-fetch" % (form_url, self.name)
         preview_url = "%s/++widget++%s/@@contenttree-preview" % (form_url, self.name)
+        ptool = getToolByName(self.context, 'portal_url')
 
         return """\
 
@@ -267,13 +284,18 @@ class ContentTreeBase(Explicit):
                    collapseSpeed=self.collapseSpeed,
                    multiFolder=str(self.multiFolder).lower(),
                    multiSelect=str(self.multi_select).lower(),
-                   rootUrl=source.navigation_tree_query['path']['query'],
+                   rootUrl=ptool.getPortalPath(),
                    name=self.name,
                    klass=self.klass,
                    title=self.title,
                    button_val=translate(
                        _(u'label_contenttree_browse', default=u'browse...'),
                        context=self.request))
+        # XXX: we hard-code the rootUrl to the Plone root, since due to
+        # p.a.mutlilingual, we now have 2 root folders, the language root
+        # and the neutral shared folder.
+        # Old:
+        # rootUrl=source.navigation_tree_query['path']['query']
 
 
 class ContentTreeWidget(ContentTreeBase, AutocompleteSelectionWidget):
