@@ -1,8 +1,13 @@
+.. image:: https://travis-ci.org/saily/plone.formwidget.contenttree.png
+    :target: http://travis-ci.org/saily/plone.formwidget.contenttree
+
+.. contents::
+
 Introduction
 ============
 
-plone.formwidget.contenttree is a z3c.form widget for use with Plone. It
-uses the jQuery Autocomplete widget, and has graceful fallback for non-
+plone.formwidget.contenttree is a `z3c.form`_ widget for use with Plone. It
+uses the `jQuery Autocomplete widget`_, and has graceful fallback for non-
 Javascript browsers.
 
 There is a single-select version (AutocompleteSelectionFieldWidget) for
@@ -10,7 +15,11 @@ Choice fields, and a multi-select one (AutocompleteMultiSelectionFieldWidget)
 for collection fields (e.g. List, Tuple) with a value_type of Choice.
 
 When using this widget, the vocabulary/source has to provide the IQuerySource
-interface from z3c.formwidget.query and have a search() method.
+interface from `z3c.formwidget.query`_ and have a search() method.
+
+
+How to use it
+=============
 
 Example Usage::
 
@@ -74,3 +83,12 @@ Example Usage::
             print data, errors
 
     TestView = layout.wrap_form(TestForm)
+
+
+.. include:: docs/INSTALL.txt
+
+.. include:: TODO.txt
+
+.. _`z3c.formwidget.query`: https://pypi.python.org/pypi/z3c.formwidget.query
+.. _`z3c.form`: https://pypi.python.org/pypi/z3c.form
+.. _`jQuery Autocomplete widget`: https://github.com/plone/plone.formwidget.autocomplete
