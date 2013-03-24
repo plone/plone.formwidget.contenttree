@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from setuptools import setup, find_packages
 import os
 
@@ -34,7 +35,8 @@ setup(name='plone.formwidget.contenttree',
       ],
       extras_require={
           'test': [
-              'plone.app.testing',
+              'plone.app.testing [robot] >= 4.2.2',
+              'plone.app.multilingual [archetypes]',
           ],
       },
       entry_points="""
