@@ -19,3 +19,5 @@
 /.Python
 /.project
 /.pydevproject
+/devsrc/
+/.codeintel/
