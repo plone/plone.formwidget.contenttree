@@ -126,14 +126,11 @@ if(jQuery) (function($){
                     $('li a.selected', ctwindow).removeClass('selected');
                     $(this).addClass('selected');
 
-                    // Get the widget
-                    var widget = $('.contenttreeWidget', ctwindow);
-
-                    // Remove all child nodes
-                    widget.empty();
+                    // Remove old tree
+                    $('.contenttreeWidget>ul', ctwindow).remove();
 
                     // Append new tree
-                    loadTree(widget, escape($(this).attr('href')), 0);
+                    loadTree($('.contenttreeWidget', ctwindow), escape($(this).attr('href')), 0);
                     return false;
                 });
             });
