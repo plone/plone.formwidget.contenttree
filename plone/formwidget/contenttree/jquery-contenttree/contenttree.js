@@ -105,7 +105,7 @@ if(jQuery) (function($){
                 $.post(o.previewScript, { href: t, rel: r}, function(data) {
                     $('.contenttreePreviewPane',c).replaceWith(data);
                     $(c).removeClass('wait');
-                });                
+                });
             }
 
             function bindTree(t) {
@@ -116,14 +116,36 @@ if(jQuery) (function($){
                 $(t).find('li.selectable a').bind(o.selectEvent, handleSelectEvent);
             }
 
+            // ----------------------------------------------------------------
+            // Libarary selection event handling
+            // ----------------------------------------------------------------
+            // We need the contenttree window
+            var ctwindow = $(this).parent('.contenttreeWindow');
+            $('ul.formTabs li a', ctwindow).each(function() {
+                $(this).bind('click', function() {
+                    $('li a.selected', ctwindow).removeClass('selected');
+                    $(this).addClass('selected');
+
+                    // Get the widget
+                    var widget = $('.contenttreeWidget', ctwindow);
+
+                    // Remove all child nodes
+                    widget.empty();
+
+                    // Append new tree
+                    loadTree(widget, escape($(this).attr('href')), 0);
+                    return false;
+                });
+            });
+
             if ($(this).children('ul.navTree').length <= 0) {
-              $(this).each(function() {
-                  loadTree(this, o.rootUrl, 0);
-              });
+                $(this).each(function() {
+                    loadTree(this, o.rootUrl, 0);
+                });
             } else {
                 $(this).each(function() {
-                bindTree($(this));
-            });
+                    bindTree($(this));
+                });
            }
 
         }

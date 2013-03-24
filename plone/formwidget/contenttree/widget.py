@@ -1,28 +1,31 @@
+# -*- coding: utf-8 -*-
 from AccessControl import getSecurityManager
 from Acquisition import Explicit
 from Acquisition.interfaces import IAcquirer
+from Products.CMFCore.utils import getToolByName
+from Products.Five.browser import BrowserView
 
+from plone.memoize import view
+from plone.app.layout.navigation.interfaces import INavtreeStrategy
+from plone.app.layout.navigation.navtree import buildFolderTree
+from plone.formwidget.autocomplete.widget import (
+    AutocompleteMultiSelectionWidget, AutocompleteSelectionWidget
+)
+from plone.formwidget.contenttree.interfaces import (
+    IContentTreeWidget, IContentTreeWidgetPreview, ILibraryProvider
+)
+from plone.formwidget.contenttree import MessageFactory as _
+from plone.formwidget.contenttree.utils import closest_content
 from zope.browserpage.viewpagetemplatefile import ViewPageTemplateFile
-from zope.interface import implementsOnly, implementer
 from zope.component import getMultiAdapter
+from zope.component import queryMultiAdapter
 from zope.i18n import translate
+from zope.interface import implementer
+from zope.interface import implementsOnly
 
 import z3c.form.interfaces
 import z3c.form.widget
 import z3c.form.util
-
-from plone.app.layout.navigation.interfaces import INavtreeStrategy
-from plone.app.layout.navigation.navtree import buildFolderTree
-
-from plone.formwidget.autocomplete.widget import \
-    AutocompleteSelectionWidget, AutocompleteMultiSelectionWidget
-
-from Products.CMFCore.utils import getToolByName
-from Products.Five.browser import BrowserView
-
-from plone.formwidget.contenttree.interfaces import IContentTreeWidget
-from plone.formwidget.contenttree import MessageFactory as _
-from plone.formwidget.contenttree.utils import closest_content
 
 
 class BaseView(BrowserView):
@@ -53,7 +56,6 @@ class BaseView(BrowserView):
 
 
 class Preview(BaseView):
-    template = ViewPageTemplateFile('preview.pt')
 
     def __call__(self):
 
@@ -74,7 +76,6 @@ class Preview(BaseView):
         # Convert token from request to the path to the object
         token = self.request.form.get('href', None)
         directory = self.context.bound_source.tokenToPath(token)
-        level = self.request.form.get('rel', 0)
 
         navtree_query = source.navigation_tree_query.copy()
         navtree_query['path'] = {'query': directory}
@@ -86,12 +87,19 @@ class Preview(BaseView):
         if not IAcquirer.providedBy(content):
             content = closest_content(context)
 
-        strategy = getMultiAdapter((content, widget), INavtreeStrategy)
         catalog = getToolByName(content, 'portal_catalog')
         results = catalog(navtree_query)
 
         if len(results) > 0:
-            return self.template(node=results[0].getObject())
+            obj = results[0].getObject()
+
+            preview = queryMultiAdapter(
+                (obj, self.context), IContentTreeWidgetPreview)
+
+            if preview is None:
+                return _(u"No preview available.")
+
+            return preview()
 
 
 class Fetch(BaseView):
@@ -190,8 +198,35 @@ class ContentTreeBase(Explicit):
     def getTermByBrain(self, brain):
         return self.bound_source.getTermByBrain(brain)
 
+    @property
+    @view.memoize
+    def closest_content(self):
+        return closest_content(self.context)
+
+    @property
+    @view.memoize
+    def libraries(self):
+        libraries = ILibraryProvider(self)
+
+        # check content is already in libraries
+        content = self.closest_content
+        path = '/'.join(content.getPhysicalPath())
+        for item in reversed(libraries):
+            if item.get('query') == path:
+                item['selected'] = True
+
+                return libraries
+
+        libraries.insert(0, {
+            'label': content.title_or_id(),
+            'query': path,
+            'selected': True,
+        })
+
+        return libraries
+
     def render_tree(self):
-        content = closest_content(self.context)
+        content = self.closest_content
         source = self.bound_source
 
         strategy = getMultiAdapter((content, self), INavtreeStrategy)
@@ -228,74 +263,62 @@ class ContentTreeBase(Explicit):
             return self.input_template(self)
 
     def js_extra(self):
-        # Get bound source to extract path
-        source = self.bound_source
         form_url = self.request.getURL()
         url = "%s/++widget++%s/@@contenttree-fetch" % (form_url, self.name)
         preview_url = "%s/++widget++%s/@@contenttree-preview" % (form_url, self.name)
-        ptool = getToolByName(self.context, 'portal_url')
 
         return """\
-
-                $('#%(id)s-widgets-query').each(function() {
-                    if($(this).siblings('input.searchButton').length > 0) { return; }
-                    $(document.createElement('input'))
-                        .attr({
-                            'type': 'button',
-                            'value': '%(button_val)s'
-                        })
-                        .addClass('searchButton')
-                        .click( function () {
-                            var parent = $(this).parents("*[id$='-autocomplete']")
-                            var window = parent.siblings("*[id$='-contenttree-window']")
-                            window.showDialog('%(url)s', %(expandSpeed)d);
-                            $('#' + parent.attr('id').replace('autocomplete', 'contenttree')).contentTree(
-                    {
-                        script: '%(url)s',
-                        previewScript: '%(preview_url)s',
-                        folderEvent: '%(folderEvent)s',
-                        selectEvent: '%(selectEvent)s',
-                        expandSpeed: %(expandSpeed)d,
-                        collapseSpeed: %(collapseSpeed)s,
-                        multiFolder: %(multiFolder)s,
-                        multiSelect: %(multiSelect)s,
-                        rootUrl: '%(rootUrl)s'
-                    },
-                    function(event, selected, data, title) {
-                        // alert(event + ', ' + selected + ', ' + data + ', ' + title);
-                    }
-                );
-                        }).insertAfter($(this));
-                });
-                $('#%(id)s-contenttree-window').find('.contentTreeAdd').unbind('click').click(function () {
-                    $(this).contentTreeAdd();
-                });
-                $('#%(id)s-contenttree-window').find('.contentTreeCancel').unbind('click').click(function () {
-                    $(this).contentTreeCancel();
-                });
-                $('#%(id)s-widgets-query').after(" ");
-
-        """ % dict(url=url,
-                   preview_url=preview_url,
-                   id=self.name.replace('.', '-'),
-                   folderEvent=self.folderEvent,
-                   selectEvent=self.selectEvent,
-                   expandSpeed=self.expandSpeed,
-                   collapseSpeed=self.collapseSpeed,
-                   multiFolder=str(self.multiFolder).lower(),
-                   multiSelect=str(self.multi_select).lower(),
-                   rootUrl=ptool.getPortalPath(),
-                   name=self.name,
-                   klass=self.klass,
-                   title=self.title,
-                   button_val=translate(
-                       _(u'label_contenttree_browse', default=u'browse...'),
-                       context=self.request))
-        # XXX: we hard-code the rootUrl to the Plone root, since due to
-        # p.a.mutlilingual, we now have 2 root folders, the language root
-        # and the neutral shared folder.
-        # Old:
-        # rootUrl=source.navigation_tree_query['path']['query']
+$('#%(id)s-widgets-query').each(function() {
+    if($(this).siblings('input.searchButton').length > 0) { return; }
+    $(document.createElement('input'))
+        .attr({
+            'type': 'button',
+            'value': '%(button_val)s'
+        })
+        .addClass('searchButton')
+        .click( function () {
+            var parent = $(this).parents("*[id$='-autocomplete']")
+            var window = parent.siblings("*[id$='-contenttree-window']")
+            window.showDialog('%(url)s', %(expandSpeed)d);
+            $('#' + parent.attr('id').replace('autocomplete', 'contenttree')).contentTree({
+                script: '%(url)s',
+                previewScript: '%(preview_url)s',
+                folderEvent: '%(folderEvent)s',
+                selectEvent: '%(selectEvent)s',
+                expandSpeed: %(expandSpeed)d,
+                collapseSpeed: %(collapseSpeed)s,
+                multiFolder: %(multiFolder)s,
+                multiSelect: %(multiSelect)s,
+                rootUrl: '%(rootUrl)s'
+            },
+            function(event, selected, data, title) {
+                // alert(event + ', ' + selected + ', ' + data + ', ' + title);
+            });
+        }).insertAfter($(this));
+});
+$('#%(id)s-contenttree-window').find('.contentTreeAdd').unbind('click').click(function () {
+    $(this).contentTreeAdd();
+});
+$('#%(id)s-contenttree-window').find('.contentTreeCancel').unbind('click').click(function () {
+    $(this).contentTreeCancel();
+});
+$('#%(id)s-widgets-query').after(" ");\
+""" % dict(url=url,
+           preview_url=preview_url,
+           id=self.name.replace('.', '-'),
+           folderEvent=self.folderEvent,
+           selectEvent=self.selectEvent,
+           expandSpeed=self.expandSpeed,
+           collapseSpeed=self.collapseSpeed,
+           multiFolder=str(self.multiFolder).lower(),
+           multiSelect=str(self.multi_select).lower(),
+           rootUrl=self.libraries[0]['query'],
+           name=self.name,
+           klass=self.klass,
+           title=self.title,
+           button_val=translate(
+               _(u'label_contenttree_browse', default=u'browse...'),
+               context=self.request))
 
 
 class ContentTreeWidget(ContentTreeBase, AutocompleteSelectionWidget):

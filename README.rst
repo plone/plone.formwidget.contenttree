@@ -1,7 +1,9 @@
 .. image:: https://travis-ci.org/saily/plone.formwidget.contenttree.png
-    :target: http://travis-ci.org/saily/plone.formwidget.contenttree
+   :target: http://travis-ci.org/saily/plone.formwidget.contenttree
 
 .. contents::
+
+!!! THIS IS AN EXPERIMENTAL FORK - DO NOT USE FOR PRODUCTION !!!
 
 Introduction
 ============
@@ -16,6 +18,83 @@ for collection fields (e.g. List, Tuple) with a value_type of Choice.
 
 When using this widget, the vocabulary/source has to provide the IQuerySource
 interface from `z3c.formwidget.query`_ and have a search() method.
+
+
+New Features
+============
+
+Pictures say more than words do - so first a screenshot of current work:
+
+.. image:: https://raw.github.com/saily/plone.formwidget.contenttree/master/docs/features-libraries-preview.png
+
+
+Shared libraries
+----------------
+
+This fork tries to handle several issues we discovered (and still discovering)
+while building a huge multilingual site on ``plone.app.contenttypes`` and
+``plone.app.multilingual`` and Plone 4.3.
+
+You'll have multiple content objects providing *INavigationRoot* when using
+``plone.app.multilingual`` because of it's shared folder.
+
+Idea is to implement a library like selection to switch between *Language folders*
+and  *Shared folders*. You can register your own library folders by adapting
+``ILibraryProvider`` interface and register in zcml as an adapter.::
+
+    @adapter(IContentTreeWidget)
+    @implementer(ILibraryProvider)
+    def shared_libs(widget):
+        """TODO: Refactor to allow binding on special fields"""
+
+        catalog = getToolByName(widget.context, 'portal_catalog')
+        return [{'label': item.Title, 'query': item.getPath()}
+                for item in catalog(object_provides=INavigationRoot.__identifier__)]
+
+
+See ``adapters/libraries.py`` for more details.
+
+
+Preview pane
+------------
+
+Preview pane was refactored to support registering custom Preview adapters on
+different types. I really would like to see new multiadapters for File and
+Images displaying contenttype and size information.::
+
+
+    class DefaultPreviewAdapter(object):
+        implements(IContentTreeWidgetPreview)
+
+        template = ViewPageTemplateFile('default.pt')
+
+        def __init__(self, context, widget):
+            self.context = context
+            self.request = widget.request
+            self.widget = widget
+
+        def title(self):
+            return self.context.Title()
+
+        def description(self):
+            return self.context.Description()
+
+        def __call__(self):
+            return self.template()
+
+
+See ``adapters/preview.py`` for more details.
+
+
+Demo
+----
+
+* Run egg-contained buildout
+* Start up your instance
+* Create new plone site
+* Setup up some languages in ``plone.app.multilingual`` controlpanel
+* Create some Demo content
+* Open browser and go to http://localhost:8080/Plone/en/@@test-tree-widget
 
 
 How to use it

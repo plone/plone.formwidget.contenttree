@@ -9,6 +9,18 @@
     <div class="contenttreeWindow"
          tal:attributes="id string:${view/id}-contenttree-window">
 
+        <ul class="formTabs"
+            tal:define="libraries view/libraries"
+            tal:condition="python:len(libraries) > 1">
+            <li class="formTab"
+                tal:repeat="lib libraries"><a href=""
+                tal:attributes="href lib/query;
+                                class python:lib.get('selected') and 'selected' or nothing"
+                tal:content="lib/label">
+                Library
+            </a></li>
+        </ul>
+
         <div class="contenttreeWindowHeader">
             <h2 i18n:translate="heading_contenttree_browse">
                 Browse for items

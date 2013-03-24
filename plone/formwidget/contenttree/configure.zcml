@@ -10,6 +10,8 @@
 
     <i18n:registerTranslations directory="locales" />
 
+    <include package=".adapters" />
+
     <adapter factory=".navtree.QueryBuilder" />
     <adapter factory=".navtree.NavtreeStrategy" />
 
