@@ -15,4 +15,5 @@ def shared_libs(widget):
 
     catalog = getToolByName(widget.context, 'portal_catalog')
     return [{'label': item.Title, 'query': item.getPath()}
-            for item in catalog(object_provides=INavigationRoot.__identifier__)]
+            for item in catalog(object_provides=INavigationRoot.__identifier__,
+                                Language='all')]
