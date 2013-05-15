@@ -15,6 +15,8 @@ Changelog
 
 * Do not exclude content types which are not allowed in navigation [ebrehault]
 
+* Add support for plone.formwidget.autocomplete 2.0 [do3cc]
+
 1.0.6 (2012-09-28)
 ------------------
 

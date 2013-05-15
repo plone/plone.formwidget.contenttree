@@ -1,7 +1,12 @@
 <i18n:domain i18n:domain="plone.formwidget.contenttree">
-	<div tal:attributes="id string:${view/id}-autocomplete">
+	<div tal:attributes="id string:${view/id}-autocomplete;
+                         class view/css_class_for_autocomplete_initalization">
 	    <div tal:attributes="id string:${view/id}-input-fields" class="autocompleteInputWidget"
 	         tal:content="structure view/renderQueryWidget" />
+        <span class="autocomplete_options hidden_structure"
+            tal:attributes="data-source view/autocomplete_url;
+                            data-minLength view/minLength"/>
+
 	    <tal:block replace="structure view/subform/render" />
 	</div>
 	<div class="contenttreeWindow"
