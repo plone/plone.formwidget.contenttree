@@ -82,6 +82,8 @@ class Preview(BaseView):
 
         if 'is_default_page' not in navtree_query:
             navtree_query['is_default_page'] = False
+        if True in navtree_query['is_default_page'] and False in navtree_query['is_default_page']:
+            del navtree_query['is_default_page']
 
         content = context
         if not IAcquirer.providedBy(content):
@@ -141,6 +143,8 @@ class Fetch(BaseView):
 
         if 'is_default_page' not in navtree_query:
             navtree_query['is_default_page'] = False
+        if True in navtree_query['is_default_page'] and False in navtree_query['is_default_page']:
+            del navtree_query['is_default_page']
 
         content = closest_content(context)
 
