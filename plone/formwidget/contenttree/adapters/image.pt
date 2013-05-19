@@ -1,0 +1,21 @@
+<div class="contenttreePreviewPane">
+
+    <h4 tal:content="context/title">
+        Title
+    </h4>
+
+    <img tal:replace="structure view/image" />
+
+    <ul>
+        <li i18n:translate="">
+            Size <span i18n:name="size" tal:content="view/size">15.3 KB</span>
+        </li>
+    </ul>
+
+    <p class="documentDescription"
+       tal:condition="view/description"
+       tal:content="view/description">
+       Description
+    </p>
+
+</div>

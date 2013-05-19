@@ -9,20 +9,29 @@ from z3c.form import form, button, field
 from plone.formwidget.contenttree import ContentTreeFieldWidget
 from plone.formwidget.contenttree import MultiContentTreeFieldWidget
 from plone.formwidget.contenttree import PathSourceBinder
+from plone.formwidget.contenttree import ObjPathSourceBinder
 
 
 class ITestForm(Interface):
 
     buddy = schema.Choice(title=u"Buddy object",
-                          description=u"Select one, please",
-                          source=PathSourceBinder(portal_type='Document'))
+                          description=u"Select one, please - no content "
+                                      u"filtering is done here.",
+                          source=PathSourceBinder())
 
     friends = schema.List(
         title=u"Friend objects",
-        description=u"Select as many as you want",
+        description=u"Select as many Pages types as you want.",
         value_type=schema.Choice(
             title=u"Selection",
             source=PathSourceBinder(portal_type='Document')))
+
+    images = schema.List(
+        title=u"Image objects",
+        description=u"Select as many images as you want.",
+        value_type=schema.Choice(
+            title=u"Selection",
+            source=ObjPathSourceBinder(portal_type='Image')))
 
 
 class TestAdapter(object):
@@ -51,6 +60,7 @@ class TestForm(form.Form):
     fields = field.Fields(ITestForm)
     fields['buddy'].widgetFactory = ContentTreeFieldWidget
     fields['friends'].widgetFactory = MultiContentTreeFieldWidget
+    fields['images'].widgetFactory = MultiContentTreeFieldWidget
     # To check display mode still works, uncomment this and hit refresh.
     #mode = 'display'
 

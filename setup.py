@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from setuptools import setup, find_packages
 import os
 
@@ -7,7 +8,7 @@ setup(name='plone.formwidget.contenttree',
       version=version,
       description="AJAX selection widget for Plone",
       long_description="\n".join([
-          open("README.txt").read(),
+          open("README.rst").read(),
           open(os.path.join("docs", "HISTORY.txt")).read(),
       ]),
       # Get more strings from
@@ -34,7 +35,8 @@ setup(name='plone.formwidget.contenttree',
       ],
       extras_require={
           'test': [
-              'plone.app.testing',
+              'plone.app.testing [robot] >= 4.2.2',
+              'plone.app.multilingual [archetypes]',
           ],
       },
       entry_points="""

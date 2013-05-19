@@ -1,28 +1,63 @@
 <i18n:domain i18n:domain="plone.formwidget.contenttree">
-	<div tal:attributes="id string:${view/id}-autocomplete;
+    <div tal:attributes="id string:${view/id}-autocomplete;
                          class view/css_class_for_autocomplete_initalization">
-	    <div tal:attributes="id string:${view/id}-input-fields" class="autocompleteInputWidget"
-	         tal:content="structure view/renderQueryWidget" />
+        <div tal:attributes="id string:${view/id}-input-fields" class="autocompleteInputWidget"
+             tal:content="structure view/renderQueryWidget" />
         <span class="autocomplete_options hidden_structure"
             tal:attributes="data-source view/autocomplete_url;
                             data-minLength view/minLength"/>
 
-	    <tal:block replace="structure view/subform/render" />
-	</div>
-	<div class="contenttreeWindow"
-	    tal:attributes="id string:${view/id}-contenttree-window">
-	<div class="contenttreeWindowHeader">
-	<h2 i18n:translate="heading_contenttree_browse">Browse for items</h2>
-    <em tal:condition="view/multi_select"
-        i18n:translate="heading_contenttree_help">Press Ctrl to select multiple items.
-    </em>
-	</div>
-	<div class="contenttreeWidget"
-	    tal:attributes="id string:${view/id}-contenttree">
-	</div>
-	<div class="contenttreeWindowActions">
-	<input class="context contentTreeAdd" type="button" i18n:attributes="value label_contenttree_add" value="Add"/> <input class="standalone contentTreeCancel" i18n:attributes="value label_contenttree_cancel" type="button" value="Cancel"/>
-	</div>
-	</div>
-	<script type="text/javascript" tal:content="structure view/js"></script>
+        <tal:block replace="structure view/subform/render" />
+    </div>
+
+    <div class="contenttreeWindow"
+         tal:attributes="id string:${view/id}-contenttree-window">
+
+        <ul class="formTabs"
+            tal:define="libraries view/libraries"
+            tal:condition="python:len(libraries) > 1">
+            <li class="formTab"
+                tal:repeat="lib libraries"><a href=""
+                tal:attributes="href lib/query;
+                                class python:lib.get('selected') and 'selected' or nothing"
+                tal:content="lib/label">
+                Library
+            </a></li>
+        </ul>
+
+        <div class="contenttreeWindowHeader">
+            <h2 i18n:translate="heading_contenttree_browse">
+                Browse for items
+            </h2>
+        </div>
+
+        <div class="contenttreeWidget"
+             tal:attributes="id string:${view/id}-contenttree">
+            <ul class="navTree navTreeLevel0">
+                <li tal:replace="structure view/render_tree" />
+            </ul>
+        </div>
+
+        <div class="contenttreePreview"
+             tal:attributes="id string:${view/id}-contenttree-preview">
+            <div class="contenttreePreviewPane"></div>
+        </div>
+
+        <div class="contenttreeWindowActions">
+            <p tal:condition="view/multi_select">
+                <em i18n:translate="heading_contenttree_help">
+                    Press Ctrl to select multiple items.
+                </em>
+            </p>
+
+            <input class="context contentTreeAdd" type="button" value="Add"
+                   i18n:attributes="value label_contenttree_add" />
+
+            <input class="standalone contentTreeCancel" type="button" value="Cancel"
+                   i18n:attributes="value label_contenttree_cancel" />
+        </div>
+    </div>
+
+    <script type="text/javascript"
+            tal:content="structure view/js" />
 </i18n:domain>

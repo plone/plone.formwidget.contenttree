@@ -1,38 +1,34 @@
+# -*- coding: utf-8 -*-
 from AccessControl import getSecurityManager
 from Acquisition import Explicit
 from Acquisition.interfaces import IAcquirer
+from Products.CMFCore.utils import getToolByName
+from Products.Five.browser import BrowserView
 
+from plone.memoize import view
+from plone.app.layout.navigation.interfaces import INavtreeStrategy
+from plone.app.layout.navigation.navtree import buildFolderTree
+from plone.formwidget.autocomplete.widget import (
+    AutocompleteMultiSelectionWidget, AutocompleteSelectionWidget
+)
+from plone.formwidget.contenttree.interfaces import (
+    IContentTreeWidget, IContentTreeWidgetPreview, ILibraryProvider
+)
+from plone.formwidget.contenttree import MessageFactory as _
+from plone.formwidget.contenttree.utils import closest_content
 from zope.browserpage.viewpagetemplatefile import ViewPageTemplateFile
-from zope.interface import implementsOnly, implementer
 from zope.component import getMultiAdapter
+from zope.component import queryMultiAdapter
 from zope.i18n import translate
+from zope.interface import implementer
+from zope.interface import implementsOnly
 
 import z3c.form.interfaces
 import z3c.form.widget
 import z3c.form.util
 
-from plone.app.layout.navigation.interfaces import INavtreeStrategy
-from plone.app.layout.navigation.navtree import buildFolderTree
 
-from plone.formwidget.autocomplete.widget import \
-    AutocompleteSelectionWidget, AutocompleteMultiSelectionWidget
-
-from Products.CMFCore.utils import getToolByName
-from Products.Five.browser import BrowserView
-
-from plone.formwidget.contenttree.interfaces import IContentTreeWidget
-from plone.formwidget.contenttree import MessageFactory as _
-from plone.formwidget.contenttree.utils import closest_content
-
-
-class Fetch(BrowserView):
-
-    fragment_template = ViewPageTemplateFile('fragment.pt')
-    recurse_template = ViewPageTemplateFile('input_recurse.pt')
-
-    def getTermByBrain(self, brain):
-        # Ask the widget
-        return self.context.getTermByBrain(brain)
+class BaseView(BrowserView):
 
     def validate_access(self):
 
@@ -57,6 +53,65 @@ class Fetch(BrowserView):
         view_instance = content.restrictedTraverse(view_name)
         getSecurityManager().validate(content, content, view_name,
                                       view_instance)
+
+
+class Preview(BaseView):
+
+    def __call__(self):
+
+        # We want to check that the user was indeed allowed to access the
+        # form for this widget. We can only this now, since security isn't
+        # applied yet during traversal.
+        self.validate_access()
+
+        widget = self.context
+        context = widget.context
+
+        # Update the widget before accessing the source.
+        # The source was only bound without security applied
+        # during traversal before.
+        widget.update()
+        source = widget.bound_source
+
+        # Convert token from request to the path to the object
+        token = self.request.form.get('href', None)
+        directory = self.context.bound_source.tokenToPath(token)
+
+        navtree_query = source.navigation_tree_query.copy()
+        navtree_query['path'] = {'query': directory}
+
+        if 'is_default_page' not in navtree_query:
+            navtree_query['is_default_page'] = False
+        if True in navtree_query['is_default_page'] and False in navtree_query['is_default_page']:
+            del navtree_query['is_default_page']
+
+        content = context
+        if not IAcquirer.providedBy(content):
+            content = closest_content(context)
+
+        catalog = getToolByName(content, 'portal_catalog')
+        results = catalog(navtree_query)
+
+        if len(results) > 0:
+            obj = results[0].getObject()
+
+            preview = queryMultiAdapter(
+                (obj, self.context), IContentTreeWidgetPreview)
+
+            if preview is None:
+                return _(u"No preview available.")
+
+            return preview()
+
+
+class Fetch(BaseView):
+
+    fragment_template = ViewPageTemplateFile('fragment.pt')
+    recurse_template = ViewPageTemplateFile('input_recurse.pt')
+
+    def getTermByBrain(self, brain):
+        # Ask the widget
+        return self.context.getTermByBrain(brain)
 
     def __call__(self):
         # We want to check that the user was indeed allowed to access the
@@ -88,6 +143,8 @@ class Fetch(BrowserView):
 
         if 'is_default_page' not in navtree_query:
             navtree_query['is_default_page'] = False
+        if True in navtree_query['is_default_page'] and False in navtree_query['is_default_page']:
+            del navtree_query['is_default_page']
 
         content = closest_content(context)
 
@@ -145,8 +202,35 @@ class ContentTreeBase(Explicit):
     def getTermByBrain(self, brain):
         return self.bound_source.getTermByBrain(brain)
 
+    @property
+    @view.memoize
+    def closest_content(self):
+        return closest_content(self.context)
+
+    @property
+    @view.memoize
+    def libraries(self):
+        libraries = ILibraryProvider(self)
+
+        # check content is already in libraries
+        content = self.closest_content
+        path = '/'.join(content.getPhysicalPath())
+        for item in reversed(libraries):
+            if item.get('query') == path:
+                item['selected'] = True
+
+                return libraries
+
+        libraries.insert(0, {
+            'label': content.title_or_id(),
+            'query': path,
+            'selected': True,
+        })
+
+        return libraries
+
     def render_tree(self):
-        content = closest_content(self.context)
+        content = self.closest_content
         source = self.bound_source
 
         strategy = getMultiAdapter((content, self), INavtreeStrategy)
@@ -164,68 +248,81 @@ class ContentTreeBase(Explicit):
         elif self.mode == z3c.form.interfaces.HIDDEN_MODE:
             return self.hidden_template(self)
         else:
+            # Dirty hack: We need to ensure that all items have the same name.
+            # in z3c.form.browser.RadioWidget.update, no ":list" is appended
+            # to the existing value.
+            # But in z3c.formwidget.query.QuerySourceRadioWidget.update ":list"
+            # is appended to the radio box's name that holds the "no value".
+            # Also, this widget appends ":list" to all newly chosen values.
+            # Therefore, we append ":list" to all names where it's missing.
+            items = self.items
+            changed = False
+            for item in items:
+                if item.get('name', None) and \
+                        not item['name'].endswith(":list"):
+                    item['name'] = item['name'] + ':list'
+                    changed = True
+            if changed:
+                self.items = items
             return self.input_template(self)
 
     def js_extra(self):
-        # Get bound source to extract path
-        source = self.bound_source
         form_url = self.request.getURL()
         url = "%s/++widget++%s/@@contenttree-fetch" % (form_url, self.name)
+        preview_url = "%s/++widget++%s/@@contenttree-preview" % (form_url, self.name)
 
         return """\
-
-                $('#%(id)s-widgets-query').each(function() {
-                    if($(this).siblings('input.searchButton').length > 0) { return; }
-                    $(document.createElement('input'))
-                        .attr({
-                            'type': 'button',
-                            'value': '%(button_val)s'
-                        })
-                        .addClass('searchButton')
-                        .click( function () {
-                            var parent = $(this).parents("*[id$='-autocomplete']")
-                            var window = parent.siblings("*[id$='-contenttree-window']")
-                            window.showDialog('%(url)s', %(expandSpeed)d);
-                            $('#' + parent.attr('id').replace('autocomplete', 'contenttree')).contentTree(
-                    {
-                        script: '%(url)s',
-                        folderEvent: '%(folderEvent)s',
-                        selectEvent: '%(selectEvent)s',
-                        expandSpeed: %(expandSpeed)d,
-                        collapseSpeed: %(collapseSpeed)s,
-                        multiFolder: %(multiFolder)s,
-                        multiSelect: %(multiSelect)s,
-                        rootUrl: '%(rootUrl)s'
-                    },
-                    function(event, selected, data, title) {
-                        // alert(event + ', ' + selected + ', ' + data + ', ' + title);
-                    }
-                );
-                        }).insertAfter($(this));
-                });
-                $('#%(id)s-contenttree-window').find('.contentTreeAdd').unbind('click').click(function () {
-                    $(this).contentTreeAdd();
-                });
-                $('#%(id)s-contenttree-window').find('.contentTreeCancel').unbind('click').click(function () {
-                    $(this).contentTreeCancel();
-                });
-                $('#%(id)s-widgets-query').after(" ");
-
-        """ % dict(url=url,
-                   id=self.name.replace('.', '-'),
-                   folderEvent=self.folderEvent,
-                   selectEvent=self.selectEvent,
-                   expandSpeed=self.expandSpeed,
-                   collapseSpeed=self.collapseSpeed,
-                   multiFolder=str(self.multiFolder).lower(),
-                   multiSelect=str(self.multi_select).lower(),
-                   rootUrl=source.navigation_tree_query['path']['query'],
-                   name=self.name,
-                   klass=self.klass,
-                   title=self.title,
-                   button_val=translate(
-                       _(u'label_contenttree_browse', default=u'browse...'),
-                       context=self.request))
+$('#%(id)s-widgets-query').each(function() {
+    if($(this).siblings('input.searchButton').length > 0) { return; }
+    $(document.createElement('input'))
+        .attr({
+            'type': 'button',
+            'value': '%(button_val)s'
+        })
+        .addClass('searchButton')
+        .click( function () {
+            var parent = $(this).parents("*[id$='-autocomplete']")
+            var window = parent.siblings("*[id$='-contenttree-window']")
+            window.showDialog('%(url)s', %(expandSpeed)d);
+            $('#' + parent.attr('id').replace('autocomplete', 'contenttree')).contentTree({
+                script: '%(url)s',
+                previewScript: '%(preview_url)s',
+                folderEvent: '%(folderEvent)s',
+                selectEvent: '%(selectEvent)s',
+                expandSpeed: %(expandSpeed)d,
+                collapseSpeed: %(collapseSpeed)s,
+                multiFolder: %(multiFolder)s,
+                multiSelect: %(multiSelect)s,
+                rootUrl: '%(rootUrl)s'
+            },
+            function(event, selected, data, title) {
+                // alert(event + ', ' + selected + ', ' + data + ', ' + title);
+            });
+        }).insertAfter($(this));
+});
+$('#%(id)s-contenttree-window').find('.contentTreeAdd').unbind('click').click(function () {
+    $(this).contentTreeAdd();
+});
+$('#%(id)s-contenttree-window').find('.contentTreeCancel').unbind('click').click(function () {
+    $(this).contentTreeCancel();
+});
+$('#%(id)s-widgets-query').after(" ");\
+""" % dict(url=url,
+           preview_url=preview_url,
+           id=self.name.replace('.', '-'),
+           folderEvent=self.folderEvent,
+           selectEvent=self.selectEvent,
+           expandSpeed=self.expandSpeed,
+           collapseSpeed=self.collapseSpeed,
+           multiFolder=str(self.multiFolder).lower(),
+           multiSelect=str(self.multi_select).lower(),
+           rootUrl=self.libraries[0]['query'],
+           name=self.name,
+           klass=self.klass,
+           title=self.title,
+           button_val=translate(
+               _(u'label_contenttree_browse', default=u'browse...'),
+               context=self.request))
 
 
 class ContentTreeWidget(ContentTreeBase, AutocompleteSelectionWidget):

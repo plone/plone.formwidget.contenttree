@@ -1,7 +1,7 @@
+# -*- coding: utf-8 -*-
+from z3c.formwidget.query.interfaces import IQuerySource
 from zope.interface import Interface, Attribute
 from zope import schema
-
-from z3c.formwidget.query.interfaces import IQuerySource
 
 
 class IContentFilter(Interface):
@@ -31,7 +31,8 @@ class IContentSource(IQuerySource):
 
     selectable_filter = schema.Object(
         title=u"Filter",
-        description=u"The filter will be applied to any returned search results",
+        description=u"The filter will be applied to any returned search "
+                    u"results",
         schema=IContentFilter
     )
 
@@ -48,3 +49,21 @@ class IContentSource(IQuerySource):
 class IContentTreeWidget(Interface):
     """Marker interface for the content tree widget
     """
+
+
+class IContentTreeWidgetPreview(Interface):
+    """Provide an adapter to allow previewing object ins preview pane.
+       You may implement your own view providing this interface to get
+       a customized view in preview pane.
+    """
+
+    def title(self):
+        """Return title for preview pane."""
+
+    def description(self):
+        """Return description for preview pane."""
+
+
+class ILibraryProvider(Interface):
+    """Adapter to provide libraries to ContentTreeWidgets."""
+

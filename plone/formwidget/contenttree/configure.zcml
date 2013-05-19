@@ -10,6 +10,8 @@
 
     <i18n:registerTranslations directory="locales" />
 
+    <include package=".adapters" />
+
     <adapter factory=".navtree.QueryBuilder" />
     <adapter factory=".navtree.NavtreeStrategy" />
 
@@ -18,6 +20,13 @@
         for=".interfaces.IContentTreeWidget"
         permission="zope.Public"
         class=".widget.Fetch"
+        />
+
+    <browser:page
+        name="contenttree-preview"
+        for=".interfaces.IContentTreeWidget"
+        permission="zope.Public"
+        class=".widget.Preview"
         />
 
     <browser:resourceDirectory

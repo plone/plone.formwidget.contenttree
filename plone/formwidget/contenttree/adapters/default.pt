@@ -1,0 +1,12 @@
+<div class="contenttreePreviewPane">
+    <h4 tal:content="context/title">
+        Title
+    </h4>
+
+    <p class="documentDescription"
+       tal:condition="view/description"
+       tal:content="view/description">
+       Description
+   </p>
+
+</div>

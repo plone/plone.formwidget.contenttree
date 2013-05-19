@@ -1,21 +1,72 @@
-.contenttreeWidget {
-    bottom: 3.5em;
-    height: auto;
-    left: 0px;
-    overflow-y: auto;
-    margin: 0em 1em;
+.contenttreeWidget,
+.contenttreePreview {
+    top: 4em;
     position: absolute;
-    right: 0px;
-    top: 6em;
-    width: auto;
+    height: auto;
     border: 1px solid #8CACBB;
+    margin: 0 0.5em;
+    bottom: 3.5em;
+    right: 0;
+    padding: 0.5em;
 }
-
+.contenttreeWidget {
+    left: 0;
+    width: 54%;
+    overflow-y: scroll;
+}
+.contenttreePreview {
+    width: 39%;
+    overflow-y: auto;
+}
 .contenttreeWidget li {
     display: block;
-    padding-left: 1em;
+    padding-left: 0.5em;
+}
+.contenttreeWindowHeader h2 {
+    font-size: 100%;
 }
 
+/* The .formTab section was copied from authoring.css, because we're not
+ * in #content section here, we can't use it */
+.contenttreeWindow .formTabs {
+    display: block;
+    background-color: #ddd;
+    margin-left: 0;
+    padding: 0.25em 0.5em 0 0.5em;
+    font-size: 80%;
+}
+.contenttreeWindow li.formTab {
+    display: inline;
+    margin-right:0.25em;
+}
+.contenttreeWindow li.formTab a {
+    /* this isn't supported by all browsers, so we keep it in a separate rule */
+    display: inline-block;
+}
+.contenttreeWindow li.formTab a {
+    line-height: 2.04em;
+    padding: 0 0.75em;
+    text-decoration: none;
+    border: none;
+    margin: 0 ;
+}
+.contenttreeWindow li.formTab a.selected {
+    font-weight: bold;
+}
+.contenttreeWindow li.formTab a.selected,
+.contenttreeWindow li.formTab a:hover {
+    background: White;
+    color: Black;
+    border-top-right-radius: 0.5em;
+    border-top-left-radius: 0.5em;
+    -webkit-border-top-right-radius: 0.5em;
+    -webkit-border-top-left-radius: 0.5em;
+    -moz-border-radius-topleft: 0.5em;
+    -moz-border-radius-topright: 0.5em;
+}
+
+
+/* Navtree */
 .contenttreeWidget .navTreeCurrentItem {
     font-weight: bold;
 }
@@ -65,20 +116,20 @@
 
 .contenttreeWindow h2 {
     display: block;
-    top: 0px;
-    margin: 0px;
+    top: 0;
+    margin: 0;
 }
 
 .contenttreeWindowHeader {
-    padding: 1em;
+    padding: 0.5em;
 }
 
 .contenttreeWindowActions {
     position: absolute;
     width: 100%;
     top: auto;
-    bottom: 0px;
-    padding: 1em;
+    bottom: 0;
+    padding: 0.5em;
 }
 .contenttreeWindowBlocker {
     z-index: 99;
@@ -86,8 +137,8 @@
     height: 100%;
     opacity: 0.4;
     background-color: black;
-    top: 0px;
-    left: 0px;
+    top: 0;
+    left: 0;
     position: fixed;
     _position: absolute;
     _top: expression(eval((document.body.scrollTop)?document.body.scrollTop:document.documentElement.scrollTop));
