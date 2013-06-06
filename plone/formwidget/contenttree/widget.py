@@ -121,6 +121,7 @@ class ContentTreeBase(Explicit):
     hidden_template = ViewPageTemplateFile('hidden.pt')
     display_template = None  # set by subclass
     recurse_template = ViewPageTemplateFile('input_recurse.pt')
+    ignoreMissing = True
 
     # Parameters passed to the JavaScript function
     folderEvent = 'click'
