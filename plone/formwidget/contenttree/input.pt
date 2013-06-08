@@ -1,4 +1,5 @@
 <i18n:domain i18n:domain="plone.formwidget.contenttree">
+
     <div tal:attributes="id string:${view/id}-autocomplete">
         <div tal:attributes="id string:${view/id}-input-fields" class="autocompleteInputWidget"
              tal:content="structure view/renderQueryWidget" />
@@ -11,9 +12,22 @@
          tal:attributes="id string:${view/id}-contenttree-window">
 
         <ul class="formTabs"
-            tal:define="libraries view/libraries"
-            tal:condition="python:len(libraries) > 1">
+            tal:define="libraries view/libraries;
+                        length python:len(libraries)">
             <li class="formTab"
+                tal:condition="python:length > 10">
+                <select name="library">
+                    <option tal:repeat="lib libraries"
+                             tal:attributes="value lib/query;
+                                             selected python:lib.get('selected') and 'selected' or nothing"
+                             tal:content="lib/label">
+                        Library
+                    </option>
+                </select>
+            </li>
+
+            <li class="formTab"
+                tal:condition="python:length > 1 and length <= 10"
                 tal:repeat="lib libraries"><a href=""
                 tal:attributes="href lib/query;
                                 class python:lib.get('selected') and 'selected' or nothing"
@@ -57,4 +71,5 @@
 
     <script type="text/javascript"
             tal:content="structure view/js" />
+
 </i18n:domain>
