@@ -22,6 +22,9 @@ Changelog
 
 * Do not exclude content types which are not allowed in navigation [ebrehault]
 
+* Ignore missing values, content objects can go away or the content of a source may change.
+  [gaudenz]
+
 1.0.6 (2012-09-28)
 ------------------
 
