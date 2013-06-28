@@ -4,6 +4,10 @@ Changelog
 1.0.7 (unreleased)
 ------------------
 
+* Add in some default binder instances, mostly for use with supermodel XML
+  schemas.
+  [lentinj]
+
 * Switch to ``plone.app.testing``
   [saily]
 
