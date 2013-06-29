@@ -10,7 +10,27 @@ Choice fields, and a multi-select one (AutocompleteMultiSelectionFieldWidget)
 for collection fields (e.g. List, Tuple) with a value_type of Choice.
 
 When using this widget, the vocabulary/source has to provide the IQuerySource
-interface from z3c.formwidget.query and have a search() method.
+interface from z3c.formwidget.query and have a search() method. The easiest
+way to do this is generate one with one of:
+
+* plone.formwidget.contenttree.PathSourceBinder(navigation_tree_query=None, **kw)
+* plone.formwidget.contenttree.ObjPathSourceBinder(navigation_tree_query=None, **kw)
+* plone.formwidget.contenttree.UUIDSourceBinder(navigation_tree_query=None, **kw)
+
+Where ``navigation_tree_query`` is some restrictions that should be applied to
+any Catalog query. The rest of the arguments are used to form a filter (see source.py).
+
+``PathSourceBinder`` and ``ObjPathSourceBinder`` store the selected object's
+path in the field value. This means that the link will be broken if the object
+is moved. ``UUIDSourceBinder`` stores UUID references, so will handle pages
+being moved.
+
+If you do not want to filter the content tree whatsoever, there are some
+pre-baked instances too:
+
+* plone.formwidget.contenttree.path_src_binder
+* plone.formwidget.contenttree.obj_path_src_binder
+* plone.formwidget.contenttree.uuid_src_binder
 
 Example Usage::
 
