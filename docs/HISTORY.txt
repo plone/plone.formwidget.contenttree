@@ -1,7 +1,7 @@
 Changelog
 =========
 
-1.0.7 (unreleased)
+1.0.7 (2013-06-30)
 ------------------
 
 * Add in some default binder instances, mostly for use with supermodel XML
