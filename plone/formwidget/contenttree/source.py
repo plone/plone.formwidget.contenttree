@@ -127,7 +127,7 @@ class PathSource(object):
             return self._placeholderTerm(value)
         if not self.isBrainSelectable(brain):
             raise LookupError('Value "%s" does not match criteria for field'
-                              % str(value))
+                              , str(value))
         return self.getTermByBrain(brain)
 
     # Query API - used to locate content, e.g. in non-JS mode
