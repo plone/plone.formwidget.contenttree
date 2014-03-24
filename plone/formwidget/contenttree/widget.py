@@ -176,7 +176,7 @@ class ContentTreeBase(Explicit):
         return """\
 
                 $('#%(id)s-widgets-query').each(function() {
-                    if($(this).siblings('input.searchButton').length > 0) { return; }
+                    if($(this).siblings('input.searchButton').length != 0) { return; }
                     $(document.createElement('input'))
                         .attr({
                             'type': 'button',
