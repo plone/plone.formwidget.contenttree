@@ -4,6 +4,9 @@ Changelog
 1.0.8 (unreleased)
 ------------------
 
+* Work around bizarro Diazo encoding bug
+  [gyst]
+
 1.0.7 (2013-06-30)
 ------------------
 
