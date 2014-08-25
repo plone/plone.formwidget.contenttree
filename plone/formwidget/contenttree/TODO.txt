@@ -18,9 +18,9 @@ Tags: [x] Plone
       [x] Zope
       [x] Python
      [Search...       ]
-      | autocomplete | 
-      | autocomplete | 
-      | autocomplete | 
+      | autocomplete |
+      | autocomplete |
+      | autocomplete |
       |______________|
 
 
@@ -30,9 +30,9 @@ Tags: [x] Document 1
       [x] Document 2
       [x] Image 1
      [Search...       ] [Browse...]
-      | autocomplete | 
-      | autocomplete | 
-      | autocomplete | 
+      | autocomplete |
+      | autocomplete |
+      | autocomplete |
       |______________|
 
 Clicking [Browse...] gives you a lightbox-style (ie. not a real window)
@@ -57,7 +57,7 @@ Other notes:
  - Multiselect is still hard, but for now: if multiselect is supported, the
    buttons are: [Add] and [Close], if it's single-select, they are [Add] and
    [Cancel].
-   
- - Adding an item in the multiselect case shows a "Item X added" status 
+
+ - Adding an item in the multiselect case shows a "Item X added" status
    message, but doesn't close the window. Adding in the single-select case
    closes the window.
