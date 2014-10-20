@@ -3,8 +3,11 @@ from Acquisition import Explicit
 from Acquisition.interfaces import IAcquirer
 
 from zope.browserpage.viewpagetemplatefile import ViewPageTemplateFile
-from zope.interface import implementsOnly, implementer
+from zope.interface import implementsOnly
+from zope.interface import implementer
 from zope.component import getMultiAdapter
+from zope.pagetemplate.interfaces import IPageTemplate
+from zope.schema.vocabulary import SimpleTerm
 from zope.i18n import translate
 
 import z3c.form.interfaces
@@ -110,6 +113,52 @@ class Fetch(BrowserView):
         return self.fragment_template(children=children, level=int(level))
 
 
+ADDITIONAL_JS = """\
+$('#%(id)s-widgets-query').each(function() {
+    if ($(this).siblings('input.searchButton').length != 0) {
+        return;
+    }
+    var input = document.createElement('input');
+    $(input)
+        .attr({
+            'type': 'button',
+            'value': '%(button_val)s'
+        })
+        .addClass('searchButton')
+        .click(function () {
+            var parent = $(this).parents("*[id$='-autocomplete']");
+            var window = parent.siblings("*[id$='-contenttree-window']");
+            window.showDialog('%(url)s', %(expandSpeed)d);
+            $('#' + parent.attr('id').replace(
+                    'autocomplete', 'contenttree')).contentTree({
+                script: '%(url)s',
+                folderEvent: '%(folderEvent)s',
+                selectEvent: '%(selectEvent)s',
+                expandSpeed: %(expandSpeed)d,
+                collapseSpeed: %(collapseSpeed)s,
+                multiFolder: %(multiFolder)s,
+                multiSelect: %(multiSelect)s,
+                rootUrl: '%(rootUrl)s'
+            },
+            function(event, selected, data, title) {
+            });
+        })
+        .insertAfter($(this));
+});
+$('#%(id)s-contenttree-window').find('.contentTreeAdd')
+                               .unbind('click')
+                               .click(function () {
+    $(this).contentTreeAdd();
+});
+$('#%(id)s-contenttree-window').find('.contentTreeCancel')
+                               .unbind('click')
+                               .click(function () {
+    $(this).contentTreeCancel();
+});
+$('#%(id)s-widgets-query').after(" ");
+"""
+
+
 class ContentTreeBase(Explicit):
     implementsOnly(IContentTreeWidget)
 
@@ -172,67 +221,29 @@ class ContentTreeBase(Explicit):
         source = self.bound_source
         form_url = self.request.getURL()
         url = "%s/++widget++%s/@@contenttree-fetch" % (form_url, self.name)
-
-        return """\
-
-                $('#%(id)s-widgets-query').each(function() {
-                    if($(this).siblings('input.searchButton').length != 0) { return; }
-                    $(document.createElement('input'))
-                        .attr({
-                            'type': 'button',
-                            'value': '%(button_val)s'
-                        })
-                        .addClass('searchButton')
-                        .click( function () {
-                            var parent = $(this).parents("*[id$='-autocomplete']")
-                            var window = parent.siblings("*[id$='-contenttree-window']")
-                            window.showDialog('%(url)s', %(expandSpeed)d);
-                            $('#' + parent.attr('id').replace('autocomplete', 'contenttree')).contentTree(
-                    {
-                        script: '%(url)s',
-                        folderEvent: '%(folderEvent)s',
-                        selectEvent: '%(selectEvent)s',
-                        expandSpeed: %(expandSpeed)d,
-                        collapseSpeed: %(collapseSpeed)s,
-                        multiFolder: %(multiFolder)s,
-                        multiSelect: %(multiSelect)s,
-                        rootUrl: '%(rootUrl)s'
-                    },
-                    function(event, selected, data, title) {
-                        // alert(event + ', ' + selected + ', ' + data + ', ' + title);
-                    }
-                );
-                        }).insertAfter($(this));
-                });
-                $('#%(id)s-contenttree-window').find('.contentTreeAdd').unbind('click').click(function () {
-                    $(this).contentTreeAdd();
-                });
-                $('#%(id)s-contenttree-window').find('.contentTreeCancel').unbind('click').click(function () {
-                    $(this).contentTreeCancel();
-                });
-                $('#%(id)s-widgets-query').after(" ");
-
-        """ % dict(url=url,
-                   id=self.name.replace('.', '-'),
-                   folderEvent=self.folderEvent,
-                   selectEvent=self.selectEvent,
-                   expandSpeed=self.expandSpeed,
-                   collapseSpeed=self.collapseSpeed,
-                   multiFolder=str(self.multiFolder).lower(),
-                   multiSelect=str(self.multi_select).lower(),
-                   rootUrl=source.navigation_tree_query['path']['query'],
-                   name=self.name,
-                   klass=self.klass,
-                   title=self.title,
-                   button_val=translate(
-                       _(u'label_contenttree_browse', default=u'browse...'),
-                       context=self.request))
+        return ADDITIONAL_JS % dict(
+            url=url,
+            id=self.name.replace('.', '-'),
+            folderEvent=self.folderEvent,
+            selectEvent=self.selectEvent,
+            expandSpeed=self.expandSpeed,
+            collapseSpeed=self.collapseSpeed,
+            multiFolder=str(self.multiFolder).lower(),
+            multiSelect=str(self.multi_select).lower(),
+            rootUrl=source.navigation_tree_query['path']['query'],
+            name=self.name,
+            klass=self.klass,
+            title=self.title,
+            button_val=translate(
+                _(u'label_contenttree_browse', default=u'browse...'),
+                context=self.request
+            ),
+        )
 
 
 class ContentTreeWidget(ContentTreeBase, AutocompleteSelectionWidget):
     """ContentTree widget that allows single selection.
     """
-
     klass = u"contenttree-widget"
     display_template = ViewPageTemplateFile('display_single.pt')
 
@@ -240,7 +251,6 @@ class ContentTreeWidget(ContentTreeBase, AutocompleteSelectionWidget):
 class MultiContentTreeWidget(ContentTreeBase, AutocompleteMultiSelectionWidget):
     """ContentTree widget that allows multiple selection
     """
-
     klass = u"contenttree-widget"
     multi_select = True
     display_template = ViewPageTemplateFile('display_multiple.pt')
