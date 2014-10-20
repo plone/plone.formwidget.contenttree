@@ -216,6 +216,24 @@ class ContentTreeBase(Explicit):
         else:
             return self.input_template(self)
 
+    def renderForValue(self, value):
+        try:
+            return super(ContentTreeBase, self).renderForValue(value)
+        except LookupError, e:
+            if value != z3c.form.widget.SequenceWidget.noValueToken:
+                raise e
+        item = {
+            'id': '%s-0' % self.id,
+            'name': self.name,
+            'value': '',
+            'checked': 'checked',
+        }
+        template = getMultiAdapter(
+            (self.context, self.request, self.form, self.field, self),
+            IPageTemplate, name=self.mode + '_single'
+        )
+        return template(self, item)
+
     def js_extra(self):
         # Get bound source to extract path
         source = self.bound_source
