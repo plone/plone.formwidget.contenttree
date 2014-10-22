@@ -1,12 +1,15 @@
 Changelog
 =========
 
-1.0.8 (unreleased)
+1.0.9 (unreleased)
 ------------------
 
 * Implement ``renderForValue`` on ``ContentTreeBase`` in order to make
   single valued relation fields work.
   [rnixx]
+
+1.0.8 (2014-10-21)
+------------------
 
 * Work around bizarro Diazo encoding bug
   [gyst]
