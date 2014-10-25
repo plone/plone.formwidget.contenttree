@@ -198,7 +198,6 @@ Changelog
   sources that only work after security is applied.
   [gaudenzius]
 
-
 1.0b1 - 2010-04-19
 ------------------
 
