@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import os
 
-version = '1.0.9'
+version = '1.0.10.dev0'
 
 setup(name='plone.formwidget.contenttree',
       version=version,
