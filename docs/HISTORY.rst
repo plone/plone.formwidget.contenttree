@@ -1,7 +1,13 @@
 Changelog
 =========
 
-1.0.9 (unreleased)
+1.0.10 (unreleased)
+-------------------
+
+- Nothing changed yet.
+
+
+1.0.9 (2014-10-25)
 ------------------
 
 * Implement ``renderForValue`` on ``ContentTreeBase`` in order to make
