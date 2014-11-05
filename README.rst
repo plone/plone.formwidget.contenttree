@@ -1,8 +1,8 @@
 Introduction
 ============
 
-plone.formwidget.contenttree is a z3c.form widget for use with Plone. It
-uses the jQuery Autocomplete widget, and has graceful fallback for non-
+``plone.formwidget.contenttree`` is a ``z3c.form`` widget for use with Plone.
+It uses the jQuery Autocomplete widget, and has graceful fallback for non-
 Javascript browsers.
 
 There is a single-select version (AutocompleteSelectionFieldWidget) for
@@ -18,7 +18,8 @@ way to do this is generate one with one of:
 * plone.formwidget.contenttree.UUIDSourceBinder(navigation_tree_query=None, **kw)
 
 Where ``navigation_tree_query`` is some restrictions that should be applied to
-any Catalog query. The rest of the arguments are used to form a filter (see source.py).
+any Catalog query. The rest of the arguments are used to form a filter
+(see source.py).
 
 ``PathSourceBinder`` and ``ObjPathSourceBinder`` store the selected object's
 path in the field value. This means that the link will be broken if the object
@@ -34,14 +35,14 @@ pre-baked instances too:
 
 Example Usage::
 
-    from zope.component import adapts
-    from zope.interface import Interface, implements
+    from zope.component import adapter
+    from zope.interface import Interface
+    from zope.interface import implementer
     from zope import schema
-
     from plone.z3cform import layout
-
-    from z3c.form import form, button, field
-
+    from z3c.form import form
+    from z3c.form import button
+    from z3c.form import field
     from plone.formwidget.contenttree import ContentTreeFieldWidget
     from plone.formwidget.contenttree import MultiContentTreeFieldWidget
     from plone.formwidget.contenttree import PathSourceBinder
@@ -49,35 +50,43 @@ Example Usage::
 
     class ITestForm(Interface):
 
-        buddy = schema.Choice(title=u"Buddy object",
-                              description=u"Select one, please",
-                              source=PathSourceBinder(portal_type='Document'))
+        buddy = schema.Choice(
+            title=u"Buddy object",
+            description=u"Select one, please",
+            source=PathSourceBinder(portal_type='Document')
+        )
 
         friends = schema.List(
             title=u"Friend objects",
             description=u"Select as many as you want",
             value_type=schema.Choice(
                 title=u"Selection",
-                source=PathSourceBinder(portal_type='Document')))
+                source=PathSourceBinder(portal_type='Document')
+            )
+        )
 
 
+    @implementer(ITestForm)
+    @adapter(Interface)
     class TestAdapter(object):
-        implements(ITestForm)
-        adapts(Interface)
 
         def __init__(self, context):
             self.context = context
 
         def _get_buddy(self):
             return None
+
         def _set_buddy(self, value):
             print "setting", value
+
         buddy = property(_get_buddy, _set_buddy)
 
         def _get_friends(self):
             return []
+
         def _set_friends(self, value):
             print "setting", value
+
         friends = property(_get_friends, _set_friends)
 
 
@@ -92,5 +101,6 @@ Example Usage::
         def handle_ok(self, action):
             data, errors = self.extractData()
             print data, errors
+
 
     TestView = layout.wrap_form(TestForm)
