@@ -4,7 +4,9 @@ Changelog
 1.0.10 (unreleased)
 -------------------
 
-- Nothing changed yet.
+- Render CSS as link, no css-import. This allows cooking with other
+  link rendered css and gives better asynchronous download behavior.
+  [thet]
 
 
 1.0.9 (2014-10-25)
