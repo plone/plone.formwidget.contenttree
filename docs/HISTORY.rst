@@ -8,6 +8,8 @@ Changelog
   link rendered css and gives better asynchronous download behavior.
   [thet]
 
+- Add support for navigating into objects with spaces in their ids
+  [MatthewWilkes]
 
 1.0.9 (2014-10-25)
 ------------------
