@@ -1,3 +1,5 @@
+import urllib
+
 from AccessControl import getSecurityManager
 from Acquisition import Explicit
 from Acquisition.interfaces import IAcquirer
@@ -78,6 +80,8 @@ class Fetch(BrowserView):
 
         # Convert token from request to the path to the object
         token = self.request.form.get('href', None)
+        if token is not None:
+            token = urllib.unquote(token)
         directory = self.context.bound_source.tokenToPath(token)
         level = self.request.form.get('rel', 0)
 
