@@ -3,7 +3,7 @@ from setuptools import find_packages
 import os
 
 
-version = '1.0.10'
+version = '1.0.11dev0'
 desc = 'AJAX selection widget for Plone'
 longdesc = '\n\n'.join([
     open('README.rst').read(),
