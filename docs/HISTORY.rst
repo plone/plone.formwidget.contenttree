@@ -1,7 +1,7 @@
 Changelog
 =========
 
-1.0.11 (Unreleased)
+1.0.11 (2015-02-09)
 -------------------
 
 - Add support for providing defaults to contenttrees. This wasn't reliable
