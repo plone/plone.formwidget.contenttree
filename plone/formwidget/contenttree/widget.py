@@ -15,6 +15,7 @@ from zope.i18n import translate
 import z3c.form.interfaces
 import z3c.form.widget
 import z3c.form.util
+from z3c.formwidget.query.widget import SourceTerms
 
 from plone.app.layout.navigation.interfaces import INavtreeStrategy
 from plone.app.layout.navigation.navtree import buildFolderTree
@@ -198,6 +199,12 @@ class ContentTreeBase(Explicit):
 
     def getTermByBrain(self, brain):
         return self.bound_source.getTermByBrain(brain)
+
+    def update(self):
+        super(ContentTreeBase, self).update()
+        if not self.terms:
+            self.terms = SourceTerms(self.context, self.request, self.form, self.field, self, self._bound_source)
+            self.updateQueryWidget()
 
     def render_tree(self):
         content = closest_content(self.context)

@@ -4,7 +4,11 @@ Changelog
 1.0.11 (Unreleased)
 -------------------
 
-
+- Add support for providing defaults to contenttrees. This wasn't reliable
+  previously as only defaults that were found by the initial query were
+  rendered. Now SourceBinders take an optional default or defaultFactory
+  argument, in the same format as schema.Choice.
+  [MatthewWilkes]
 
 1.0.10 (2015-01-16)
 -------------------
