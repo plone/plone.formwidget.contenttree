@@ -4,7 +4,8 @@ Changelog
 1.0.12 (Unreleased)
 -------------------
 
-- Nothing yet
+- Remove unnecessary test setup.
+  [timo] 
 
 
 1.0.11 (2015-02-09)

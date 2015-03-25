@@ -31,9 +31,6 @@ class ContentTreeLayer(PloneSandboxLayer):
         portal.portal_workflow.setDefaultChain("simple_publication_workflow")
 
         setRoles(portal, TEST_USER_ID, ['Manager'])
-        portal.invokeFactory("Folder",
-                             id="contenttree-test-folder",
-                             title=u"A Test Folder")
 
 
 CONTENTTREE_FIXTURE = ContentTreeLayer()
