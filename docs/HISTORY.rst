@@ -11,6 +11,53 @@ Changelog
   own types. A default adapter is still available and provides title and
   description preview for all items.  [saily]
 
+1.0.12 (Unreleased)
+-------------------
+
+- Remove unnecessary test setup.
+  [timo] 
+
+
+1.0.11 (2015-02-09)
+-------------------
+
+- Add support for providing defaults to contenttrees. This wasn't reliable
+  previously as only defaults that were found by the initial query were
+  rendered. Now SourceBinders take an optional default or defaultFactory
+  argument, in the same format as schema.Choice.
+  [MatthewWilkes]
+
+1.0.10 (2015-01-16)
+-------------------
+
+- Render CSS as link, no css-import. This allows cooking with other
+  link rendered css and gives better asynchronous download behavior.
+  [thet]
+
+- Add support for navigating into objects with spaces in their ids
+  [MatthewWilkes]
+
+1.0.9 (2014-10-25)
+------------------
+
+* Implement ``renderForValue`` on ``ContentTreeBase`` in order to make
+  single valued relation fields work.
+  [rnixx]
+
+1.0.8 (2014-10-21)
+------------------
+
+* Work around bizarro Diazo encoding bug
+  [gyst]
+
+1.0.7 (2013-06-30)
+------------------
+
+* Add in some default binder instances, mostly for use with supermodel XML
+  schemas.
+  [lentinj]
+>>>>>>> master:docs/HISTORY.rst
+
 * Switch to ``plone.app.testing``
   [saily]
 
@@ -187,7 +234,6 @@ Changelog
   was only bound during traversal. This avoids problems with
   sources that only work after security is applied.
   [gaudenzius]
-
 
 1.0b1 - 2010-04-19
 ------------------

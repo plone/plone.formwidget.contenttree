@@ -1,31 +1,33 @@
 # -*- coding: utf-8 -*-
+import urllib
+
+import z3c.form.interfaces
+import z3c.form.util
+import z3c.form.widget
 from AccessControl import getSecurityManager
 from Acquisition import Explicit
 from Acquisition.interfaces import IAcquirer
-from Products.CMFCore.utils import getToolByName
-from Products.Five.browser import BrowserView
-
-from plone.memoize import view
 from plone.app.layout.navigation.interfaces import INavtreeStrategy
 from plone.app.layout.navigation.navtree import buildFolderTree
-from plone.formwidget.autocomplete.widget import (
-    AutocompleteMultiSelectionWidget, AutocompleteSelectionWidget
-)
-from plone.formwidget.contenttree.interfaces import (
-    IContentTreeWidget, IContentTreeWidgetPreview, ILibraryProvider
-)
+from plone.formwidget.autocomplete.widget import AutocompleteMultiSelectionWidget
+from plone.formwidget.autocomplete.widget import AutocompleteSelectionWidget
 from plone.formwidget.contenttree import MessageFactory as _
+from plone.formwidget.contenttree.interfaces import IContentTreeWidget
+from plone.formwidget.contenttree.interfaces import IContentTreeWidgetPreview
+from plone.formwidget.contenttree.interfaces import ILibraryProvider
 from plone.formwidget.contenttree.utils import closest_content
+from plone.memoize import view
+from Products.CMFCore.utils import getToolByName
+from Products.Five.browser import BrowserView
+from z3c.formwidget.query.widget import SourceTerms
 from zope.browserpage.viewpagetemplatefile import ViewPageTemplateFile
 from zope.component import getMultiAdapter
 from zope.component import queryMultiAdapter
 from zope.i18n import translate
 from zope.interface import implementer
 from zope.interface import implementsOnly
-
-import z3c.form.interfaces
-import z3c.form.widget
-import z3c.form.util
+from zope.pagetemplate.interfaces import IPageTemplate
+from zope.schema.vocabulary import SimpleTerm
 
 
 class BaseView(BrowserView):
@@ -128,6 +130,8 @@ class Fetch(BaseView):
 
         # Convert token from request to the path to the object
         token = self.request.form.get('href', None)
+        if token is not None:
+            token = urllib.unquote(token)
         directory = self.context.bound_source.tokenToPath(token)
         level = self.request.form.get('rel', 0)
 
@@ -161,6 +165,52 @@ class Fetch(BaseView):
         self.request.response.setHeader('X-Theme-Disabled', 'True')
 
         return self.fragment_template(children=children, level=int(level))
+
+
+ADDITIONAL_JS = """\
+$('#%(id)s-widgets-query').each(function() {
+    if ($(this).siblings('input.searchButton').length != 0) {
+        return;
+    }
+    var input = document.createElement('input');
+    $(input)
+        .attr({
+            'type': 'button',
+            'value': '%(button_val)s'
+        })
+        .addClass('searchButton')
+        .click(function () {
+            var parent = $(this).parents("*[id$='-autocomplete']");
+            var window = parent.siblings("*[id$='-contenttree-window']");
+            window.showDialog('%(url)s', %(expandSpeed)d);
+            $('#' + parent.attr('id').replace(
+                    'autocomplete', 'contenttree')).contentTree({
+                script: '%(url)s',
+                folderEvent: '%(folderEvent)s',
+                selectEvent: '%(selectEvent)s',
+                expandSpeed: %(expandSpeed)d,
+                collapseSpeed: %(collapseSpeed)s,
+                multiFolder: %(multiFolder)s,
+                multiSelect: %(multiSelect)s,
+                rootUrl: '%(rootUrl)s'
+            },
+            function(event, selected, data, title) {
+            });
+        })
+        .insertAfter($(this));
+});
+$('#%(id)s-contenttree-window').find('.contentTreeAdd')
+                               .unbind('click')
+                               .click(function () {
+    $(this).contentTreeAdd();
+});
+$('#%(id)s-contenttree-window').find('.contentTreeCancel')
+                               .unbind('click')
+                               .click(function () {
+    $(this).contentTreeCancel();
+});
+$('#%(id)s-widgets-query').after(" ");
+"""
 
 
 class ContentTreeBase(Explicit):
@@ -226,6 +276,12 @@ class ContentTreeBase(Explicit):
 
         return libraries
 
+    def update(self):
+        super(ContentTreeBase, self).update()
+        if not self.terms:
+            self.terms = SourceTerms(self.context, self.request, self.form, self.field, self, self._bound_source)
+            self.updateQueryWidget()
+
     def render_tree(self):
         content = self.closest_content
         source = self.bound_source
@@ -262,6 +318,24 @@ class ContentTreeBase(Explicit):
             if changed:
                 self.items = items
             return self.input_template(self)
+
+    def renderForValue(self, value):
+        try:
+            return super(ContentTreeBase, self).renderForValue(value)
+        except LookupError, e:
+            if value != z3c.form.widget.SequenceWidget.noValueToken:
+                raise e
+        item = {
+            'id': '%s-0' % self.id,
+            'name': self.name,
+            'value': '',
+            'checked': 'checked',
+        }
+        template = getMultiAdapter(
+            (self.context, self.request, self.form, self.field, self),
+            IPageTemplate, name=self.mode + '_single'
+        )
+        return template(self, item)
 
     def js_extra(self):
         form_url = self.request.getURL()
@@ -313,7 +387,7 @@ $('#%(id)s-widgets-query').after(" ");\
            collapseSpeed=self.collapseSpeed,
            multiFolder=str(self.multiFolder).lower(),
            multiSelect=str(self.multi_select).lower(),
-           rootUrl=self.libraries[0]['query'],
+           rootUrl=source.navigation_tree_query['path']['query'],
            name=self.name,
            klass=self.klass,
            title=self.title,
@@ -325,7 +399,6 @@ $('#%(id)s-widgets-query').after(" ");\
 class ContentTreeWidget(ContentTreeBase, AutocompleteSelectionWidget):
     """ContentTree widget that allows single selection.
     """
-
     klass = u"contenttree-widget"
     display_template = ViewPageTemplateFile('display_single.pt')
 
@@ -333,7 +406,6 @@ class ContentTreeWidget(ContentTreeBase, AutocompleteSelectionWidget):
 class MultiContentTreeWidget(ContentTreeBase, AutocompleteMultiSelectionWidget):
     """ContentTree widget that allows multiple selection
     """
-
     klass = u"contenttree-widget"
     multi_select = True
     display_template = ViewPageTemplateFile('display_multiple.pt')
@@ -347,3 +419,4 @@ def ContentTreeFieldWidget(field, request):
 @implementer(z3c.form.interfaces.IFieldWidget)
 def MultiContentTreeFieldWidget(field, request):
     return z3c.form.widget.FieldWidget(field, MultiContentTreeWidget(request))
+

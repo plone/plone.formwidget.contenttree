@@ -64,8 +64,9 @@ class CustomFilter(object):
 class PathSource(object):
     implements(IContentSource)
 
-    def __init__(self, context, selectable_filter, navigation_tree_query=None):
+    def __init__(self, context, selectable_filter, navigation_tree_query=None, default=None, defaultFactory=None):
         self.context = context
+        
         nav_root = getNavigationRootObject(context, None)
         query_builder = getMultiAdapter((nav_root, self),
                                         INavigationQueryBuilder)
@@ -99,10 +100,19 @@ class PathSource(object):
         portal_tool = getToolByName(context, "portal_url")
         self.portal_path = portal_tool.getPortalPath()
 
+        self._default_terms = []
+        if default is not None:
+            term = self.getTerm(default)
+            self._default_terms = [term]
+        elif defaultFactory is not None:
+            term = self.getTerm(defaultFactory(context))
+            self._default_terms = [term]
+
+
     # Tokenised vocabulary API
 
     def __iter__(self):
-        return [].__iter__()
+        return iter(self._default_terms)
 
     def __contains__(self, value):
         try:
@@ -135,7 +145,7 @@ class PathSource(object):
             return self._placeholderTerm(value)
         if not self.isBrainSelectable(brain):
             raise LookupError('Value "%s" does not match criteria for field'
-                              % str(value))
+                              , str(value))
         return self.getTermByBrain(brain)
 
     # Query API - used to locate content, e.g. in non-JS mode
@@ -163,6 +173,13 @@ class PathSource(object):
 
     def getTermByBrain(self, brain, real_value=True):
         value = brain.getPath()[len(self.portal_path):]
+        for term in self._default_terms:
+            # Short-circuit the generation of a new term, so we can return the
+            # same object if this represents a default term. This is required
+            # because z3c.form coerces the terms to a list when rendering
+            # radio buttons
+            if term.value == value:
+                return term
         return SimpleTerm(value, token=brain.getPath(), title=brain.Title or
                           brain.id)
 
@@ -202,6 +219,13 @@ class ObjPathSource(PathSource):
             value = brain._unrestrictedGetObject()
         else:
             value = brain.getPath()[len(self.portal_path):]
+        for term in self._default_terms:
+            # Short-circuit the generation of a new term, so we can return the
+            # same object if this represents a default term. This is required
+            # because z3c.form coerces the terms to a list when rendering
+            # radio buttons
+            if term.value == value:
+                return term
         return SimpleTerm(value, token=brain.getPath(), title=brain.Title or
                           brain.id)
 
@@ -225,6 +249,13 @@ class UUIDSource(PathSource):
             logger.warn("Brain in UUIDSource has missing UID value. Maybe you "
                         "need to enable plone.app.referenceablebehavior on "
                         "portal type %s?", brain.portal_type)
+        for term in self._default_terms:
+            # Short-circuit the generation of a new term, so we can return the
+            # same object if this represents a default term. This is required
+            # because z3c.form coerces the terms to a list when rendering
+            # radio buttons
+            if term.value == value:
+                return term
         return SimpleTerm(value, token=brain.getPath(), title=brain.Title or
                           brain.id)
 
@@ -234,15 +265,19 @@ class PathSourceBinder(object):
 
     path_source = PathSource
 
-    def __init__(self, navigation_tree_query=None, **kw):
+    def __init__(self, navigation_tree_query=None, default=None, defaultFactory=None, **kw):
         self.selectable_filter = CustomFilter(**kw)
         self.navigation_tree_query = navigation_tree_query
+        self.default = default
+        self.defaultFactory = defaultFactory
 
     def __call__(self, context):
         return self.path_source(
             closest_content(context),
             selectable_filter=self.selectable_filter,
-            navigation_tree_query=self.navigation_tree_query)
+            navigation_tree_query=self.navigation_tree_query,
+            default=self.default,
+            defaultFactory=self.defaultFactory)
 
     def __contains__(self, value):
         # If used without being properly bound (looks at DataGridField), bind

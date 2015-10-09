@@ -18,8 +18,6 @@ class ContentTreeFormWidgetTestCase(unittest.TestCase):
         self.portal = self.layer['portal']
         setRoles(self.portal, TEST_USER_ID, ['Manager'])
         login(self.portal, TEST_USER_NAME)
-        self.portal.invokeFactory('Folder', 'test-folder')
-        self.folder = self.portal['test-folder']
 
     def test_css_registered(self):
         css_registry = self.portal['portal_css']
