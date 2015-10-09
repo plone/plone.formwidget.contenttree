@@ -339,6 +339,7 @@ class ContentTreeBase(Explicit):
 
     def js_extra(self):
         form_url = self.request.getURL()
+        source = self.bound_source
         url = "%s/++widget++%s/@@contenttree-fetch" % (form_url, self.name)
         preview_url = "%s/++widget++%s/@@contenttree-preview" % (form_url, self.name)
 
