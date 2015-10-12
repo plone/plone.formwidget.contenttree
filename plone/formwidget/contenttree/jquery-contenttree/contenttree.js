@@ -207,15 +207,11 @@ if(jQuery) (function($){
                 $(this).each(function() {
                     loadTree(this, o.rootUrl, 0);
                 });
-<<<<<<< HEAD
             } else {
                 $(this).each(function() {
                     bindTree($(this));
                 });
            }
-=======
-            }
->>>>>>> master
 
         }
     });
