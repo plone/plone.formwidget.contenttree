@@ -106,6 +106,9 @@ class PathSource(object):
     def __iter__(self):
         return iter(self._default_terms)
 
+    def __len__(self):
+        return len(self._default_terms)
+
     def __contains__(self, value):
         try:
             brain = self._getBrainByValue(value)
