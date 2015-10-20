@@ -7,6 +7,8 @@ Changelog
 - Remove unnecessary test setup.
   [timo] 
 
+- Fix HTML entities in browse button title
+  [gaudenz]
 
 1.0.11 (2015-02-09)
 -------------------
