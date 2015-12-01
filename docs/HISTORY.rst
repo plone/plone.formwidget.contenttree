@@ -1,7 +1,7 @@
 Changelog
 =========
 
-1.0.12 (Unreleased)
+1.0.12 (2015-12-01)
 -------------------
 
 - Remove unnecessary test setup.
