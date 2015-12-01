@@ -123,13 +123,7 @@ $('#%(id)s-widgets-query').each(function() {
     if ($(this).siblings('input.searchButton').length != 0) {
         return;
     }
-    var input = document.createElement('input');
-    $(input)
-        .attr({
-            'type': 'button',
-            'value': '%(button_val)s'
-        })
-        .addClass('searchButton')
+    $('<input type="button" value="%(button_val)s" class="searchButton">')
         .click(function () {
             var parent = $(this).parents("*[id$='-autocomplete']");
             var window = parent.siblings("*[id$='-contenttree-window']");
