@@ -13,6 +13,10 @@ Changelog
 - Implement __len__ for PathSource
   [gaudenz]
 
+- Add missing test dependency declaration.
+  [MatthewWilkes]
+
+
 1.0.11 (2015-02-09)
 -------------------
 
