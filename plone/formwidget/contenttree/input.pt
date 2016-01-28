@@ -1,4 +1,4 @@
-<i18n:domain i18n:domain="plone.formwidget.contenttree">
+<i18n:domain i18n:domain="plone">
 	<div tal:attributes="id string:${view/id}-autocomplete">
 	    <div tal:attributes="id string:${view/id}-input-fields" class="autocompleteInputWidget"
 	         tal:content="structure view/renderQueryWidget" />

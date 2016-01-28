@@ -1,5 +1,5 @@
 from zope.i18nmessageid import MessageFactory
-MessageFactory = MessageFactory('plone.formwidget.contenttree')
+_ = MessageFactory('plone')
 
 from plone.formwidget.contenttree.widget import ContentTreeFieldWidget
 from plone.formwidget.contenttree.widget import MultiContentTreeFieldWidget
