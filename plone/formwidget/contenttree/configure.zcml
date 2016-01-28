@@ -8,8 +8,6 @@
     <include package="plone.z3cform" />
     <include package="plone.formwidget.autocomplete" />
 
-    <i18n:registerTranslations directory="locales" />
-
     <adapter factory=".navtree.QueryBuilder" />
     <adapter factory=".navtree.NavtreeStrategy" />
 
