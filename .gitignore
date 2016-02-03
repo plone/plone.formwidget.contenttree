@@ -1,7 +1,7 @@
 *.mo
 *.pyc
 *.pyo
-*.egg-info
+/*.egg-info
 /develop-eggs
 /eggs
 /fake-eggs
@@ -14,18 +14,8 @@
 /local.cfg
 /include
 /lib
+/.installed.cfg
+/.mr.developer.cfg
 /.Python
-/devsrc/
-/.codeintel/
-
-# MacOSX
-.DS_Store
-
-# eclipse
-.project
-.pydevproject
-
-# mr.developer / local development
-.installed.cfg
-.mr.developer.cfg
-local.cfg
+/.project
+/.pydevproject
