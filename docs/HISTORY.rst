@@ -56,7 +56,6 @@ Changelog
 * Add in some default binder instances, mostly for use with supermodel XML
   schemas.
   [lentinj]
->>>>>>> master:docs/HISTORY.rst
 
 * Switch to ``plone.app.testing``
   [saily]
