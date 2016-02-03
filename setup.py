@@ -4,7 +4,7 @@ from setuptools import find_packages
 import os
 
 
-version = '1.0.12'
+version = '1.0.13'
 desc = 'AJAX selection widget for Plone'
 longdesc = '\n\n'.join([
     open('README.rst').read(),
@@ -41,6 +41,7 @@ setup(
         'test': [
             'plone.app.testing [robot] >= 4.2.2',
             'plone.app.multilingual [archetypes]',
+            'plone.app.testing',
         ],
     },
     entry_points="""

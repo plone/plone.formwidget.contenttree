@@ -11,11 +11,26 @@ Changelog
   own types. A default adapter is still available and provides title and
   description preview for all items.  [saily]
 
-1.0.12 (Unreleased)
+1.0.13 (Unreleased)
+-------------------
+
+- Nothing yet
+
+
+1.0.12 (2015-12-01)
 -------------------
 
 - Remove unnecessary test setup.
   [timo] 
+
+- Fix HTML entities in browse button title
+  [gaudenz]
+
+- Implement __len__ for PathSource
+  [gaudenz]
+
+- Add missing test dependency declaration.
+  [MatthewWilkes]
 
 
 1.0.11 (2015-02-09)
