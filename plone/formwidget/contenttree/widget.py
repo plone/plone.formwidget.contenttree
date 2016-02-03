@@ -27,7 +27,7 @@ from Products.CMFCore.utils import getToolByName
 from Products.Five.browser import BrowserView
 
 from plone.formwidget.contenttree.interfaces import IContentTreeWidget
-from plone.formwidget.contenttree import MessageFactory as _
+from plone.formwidget.contenttree import _
 from plone.formwidget.contenttree.utils import closest_content
 
 
