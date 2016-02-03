@@ -1,0 +1,48 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns:gs="http://namespaces.zope.org/genericsetup"
+    xmlns:i18n="http://namespaces.zope.org/i18n"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
+    i18n_domain="plone.formwidget.contenttree">
+
+    <adapter factory=".libraries.shared_libs" />
+
+    <!-- Register default adapter -->
+    <adapter for="*
+                  ..interfaces.IContentTreeWidget"
+             provides="..interfaces.IContentTreeWidgetPreview"
+             factory=".preview.DefaultPreviewAdapter"
+             />
+
+    <!-- Register ATCT -->
+    <adapter for="Products.ATContentTypes.interfaces.file.IATFile
+                  ..interfaces.IContentTreeWidget"
+             provides="..interfaces.IContentTreeWidgetPreview"
+             factory=".preview.FilePreviewAdapter"
+             zcml:condition="installed Products.ATContentTypes"
+             />
+
+    <adapter for="Products.ATContentTypes.interfaces.image.IATImage
+                  ..interfaces.IContentTreeWidget"
+             provides="..interfaces.IContentTreeWidgetPreview"
+             factory=".preview.ImagePreviewAdapter"
+             zcml:condition="installed Products.ATContentTypes"
+             />
+
+    <!-- Register for plone.app.contenttypes -->
+    <adapter for="plone.app.contenttypes.interfaces.IFile
+                  ..interfaces.IContentTreeWidget"
+             provides="..interfaces.IContentTreeWidgetPreview"
+             factory=".preview.FilePreviewAdapter"
+             zcml:condition="installed plone.app.contenttypes"
+             />
+
+    <adapter for="plone.app.contenttypes.interfaces.IImage
+                  ..interfaces.IContentTreeWidget"
+             provides="..interfaces.IContentTreeWidgetPreview"
+             factory=".preview.ImagePreviewAdapter"
+             zcml:condition="installed plone.app.contenttypes"
+             />
+
+</configure>

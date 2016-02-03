@@ -43,6 +43,9 @@ if(jQuery) (function($){
 
         contentTree: function(o, h) {
             // Defaults
+            if(o.previewScript == undefined) {
+                o.previewScript = 'preview';
+            }
             if (!o) {
                 var o = {};
             }
@@ -130,6 +133,8 @@ if(jQuery) (function($){
                     }
 
                     li.addClass('navTreeCurrentItem');
+                    var preview_window = $('.contenttreePreview',$(li).parents('.contenttreeWindow')[0])[0];
+                    loadPreview(preview_window, escape($(this).attr('href')), escape($(this).attr('rel')));
                     selected = true;
                 } else {
                     li.removeClass('navTreeCurrentItem');
@@ -137,6 +142,14 @@ if(jQuery) (function($){
                 }
 
                 h(event, true, $(this).attr('href'), $.trim($(this).text()));
+            }
+
+            function loadPreview(c,t,r) {
+                $(c).addClass('wait');
+                $.post(o.previewScript, { href: t, rel: r}, function(data) {
+                    $('.contenttreePreviewPane',c).replaceWith(data);
+                    $(c).removeClass('wait');
+                });
             }
 
             function bindTree(t) {
@@ -155,11 +168,50 @@ if(jQuery) (function($){
                 );
             }
 
+            // ----------------------------------------------------------------
+            // Libarary selection event handling
+            // ----------------------------------------------------------------
+            // We need the contenttree window
+            var ctwindow = $(this).parent('.contenttreeWindow');
+
+            $('ul.formTabs li a', ctwindow).each(function() {
+                $(this).bind('click', function() {
+                    $('li a.selected', ctwindow).removeClass('selected');
+                    $(this).addClass('selected');
+
+                    // Remove old tree
+                    $('.contenttreeWidget>ul', ctwindow).remove();
+
+                    // Append new tree
+                    console.log($(this).attr('href'));
+                    loadTree($('.contenttreeWidget', ctwindow), $(this).attr('href'), 0);
+                    return false;
+                });
+            });
+
+            $('select[name="library"] option', ctwindow).each(function() {
+                $(this).removeAttr('selected');
+                $(this).bind('click', function() {
+                    $(this).attr('selected', 'selected');
+
+                    // Remove old tree
+                    $('.contenttreeWidget>ul', ctwindow).remove();
+
+                    // Append new tree
+                    loadTree($('.contenttreeWidget', ctwindow), escape($(this).attr('value')), 0);
+                    return false;
+                });
+            });
+
             if ($(this).children('ul.navTree').length <= 0) {
                 $(this).each(function() {
                     loadTree(this, o.rootUrl, 0);
                 });
-            }
+            } else {
+                $(this).each(function() {
+                    bindTree($(this));
+                });
+           }
 
         }
     });

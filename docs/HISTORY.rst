@@ -1,6 +1,16 @@
 Changelog
 =========
 
+2.0.0 (unreleased)
+------------------
+
+* Move hint *Press CTRL to select multiple items* down to *Add* and *Cancel*
+  buttons because users did not read it on top.  [saily]
+
+* Adapt PreviewPane to allow writing own Preview Adapters for custom preview of
+  own types. A default adapter is still available and provides title and
+  description preview for all items.  [saily]
+
 1.0.13 (Unreleased)
 -------------------
 
