@@ -4,7 +4,10 @@ Changelog
 1.0.13 (Unreleased)
 -------------------
 
-- Nothing yet
+New:
+
+- Translations moved to plone.app.locales in plone domain.
+  [staeff]
 
 
 1.0.12 (2015-12-01)
