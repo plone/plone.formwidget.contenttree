@@ -13,9 +13,9 @@ When using this widget, the vocabulary/source has to provide the IQuerySource
 interface from z3c.formwidget.query and have a search() method. The easiest
 way to do this is generate one with one of:
 
-* plone.formwidget.contenttree.PathSourceBinder(navigation_tree_query=None, **kw)
-* plone.formwidget.contenttree.ObjPathSourceBinder(navigation_tree_query=None, **kw)
-* plone.formwidget.contenttree.UUIDSourceBinder(navigation_tree_query=None, **kw)
+* ``plone.formwidget.contenttree.PathSourceBinder(navigation_tree_query=None, **kw)``
+* ``plone.formwidget.contenttree.ObjPathSourceBinder(navigation_tree_query=None, **kw)``
+* ``plone.formwidget.contenttree.UUIDSourceBinder(navigation_tree_query=None, **kw)``
 
 Where ``navigation_tree_query`` is some restrictions that should be applied to
 any Catalog query. The rest of the arguments are used to form a filter
