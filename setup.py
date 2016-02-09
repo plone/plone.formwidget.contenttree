@@ -1,13 +1,12 @@
 from setuptools import setup
 from setuptools import find_packages
-import os
 
 
 version = '1.0.13'
 desc = 'AJAX selection widget for Plone'
 longdesc = '\n\n'.join([
     open('README.rst').read(),
-    open(os.path.join('docs', 'HISTORY.rst')).read(),
+    open('CHANGES.rst').read(),
 ])
 
 
