@@ -10,8 +10,9 @@ New:
 
 Fixes:
 
-- *add item here*
-
+- Slice search results in `PathSource` object to limit the search results correctly.
+  http://docs.plone.org/develop/plone/searching_and_indexing/query.html#sorting-and-limiting-the-number-of-results
+  [elioschmutz]
 
 1.0.13 (2016-02-09)
 -------------------
@@ -26,7 +27,7 @@ New:
 -------------------
 
 - Remove unnecessary test setup.
-  [timo] 
+  [timo]
 
 - Fix HTML entities in browse button title
   [gaudenz]
