@@ -66,7 +66,7 @@ class PathSource(object):
 
     def __init__(self, context, selectable_filter, navigation_tree_query=None, default=None, defaultFactory=None):
         self.context = context
-        
+
         nav_root = getNavigationRootObject(context, None)
         query_builder = getMultiAdapter((nav_root, self),
                                         INavigationQueryBuilder)
@@ -153,12 +153,10 @@ class PathSource(object):
             catalog_query['sort_limit'] = limit
 
         try:
-            results = (self.getTermByBrain(brain, real_value=False)
-                       for brain in self.catalog(**catalog_query))
+            for brain in self.catalog(**catalog_query)[:limit]:
+                yield self.getTermByBrain(brain, real_value=False)
         except ParseError:
-            return []
-
-        return results
+            pass
 
     def isBrainSelectable(self, brain):
         if brain is None:
