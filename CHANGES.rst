@@ -4,10 +4,6 @@ Changelog
 1.0.14 (unreleased)
 -------------------
 
-New:
-
-- *add item here*
-
 Fixes:
 
 - Slice search results in `PathSource` object to limit the search results correctly.
