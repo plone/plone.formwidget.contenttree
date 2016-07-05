@@ -1,5 +1,5 @@
 from zope.component import adapts
-from zope.interface import Interface, implements
+from zope.interface import Interface, implementer
 from zope import schema
 
 from plone.z3cform import layout
@@ -25,8 +25,8 @@ class ITestForm(Interface):
             source=PathSourceBinder(portal_type='Document')))
 
 
+@implementer(ITestForm)
 class TestAdapter(object):
-    implements(ITestForm)
     adapts(Interface)
 
     def __init__(self, context):
