@@ -1,7 +1,7 @@
 import logging
 
 import Missing
-from zope.interface import implements
+from zope.interface import implementer
 from zope.component import getMultiAdapter
 
 from zope.schema.interfaces import IContextSourceBinder
@@ -23,6 +23,7 @@ from OFS.interfaces import ITraversable
 logger = logging.getLogger(__name__)
 
 
+@implementer(IContentFilter)
 class CustomFilter(object):
     """A filter that can be used to test simple values in brain metadata and
     indexes.
@@ -31,7 +32,6 @@ class CustomFilter(object):
 
     - Will probably only work on FieldIndex, KeywordIndex and PathIndex indexes
     """
-    implements(IContentFilter)
 
     def __init__(self, **kw):
         self.criteria = {}
@@ -61,8 +61,8 @@ class CustomFilter(object):
         return True
 
 
+@implementer(IContentSource)
 class PathSource(object):
-    implements(IContentSource)
 
     def __init__(self, context, selectable_filter, navigation_tree_query=None, default=None, defaultFactory=None):
         self.context = context
@@ -253,8 +253,8 @@ class UUIDSource(PathSource):
                           brain.id)
 
 
+@implementer(IContextSourceBinder)
 class PathSourceBinder(object):
-    implements(IContextSourceBinder)
 
     path_source = PathSource
 

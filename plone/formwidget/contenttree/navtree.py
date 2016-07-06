@@ -1,4 +1,4 @@
-from zope.interface import implements, Interface
+from zope.interface import implementer, Interface
 from zope.component import adapts
 
 from Products.CMFCore.utils import getToolByName
@@ -20,10 +20,10 @@ from plone.formwidget.contenttree.interfaces import IContentSource
 from plone.formwidget.contenttree.interfaces import IContentTreeWidget
 
 
+@implementer(INavigationQueryBuilder)
 class QueryBuilder(object):
     """Build a navtree query for a content source
     """
-    implements(INavigationQueryBuilder)
     adapts(Interface, IContentSource)
 
     def __init__(self, context, source):
@@ -66,10 +66,10 @@ class QueryBuilder(object):
         return query
 
 
+@implementer(INavtreeStrategy)
 class NavtreeStrategy(SitemapNavtreeStrategy):
     """The navtree strategy used for the content tree widget
     """
-    implements(INavtreeStrategy)
     adapts(Interface, IContentTreeWidget)
 
     def __init__(self, context, widget):

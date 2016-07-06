@@ -5,7 +5,7 @@ from Acquisition import Explicit
 from Acquisition.interfaces import IAcquirer
 
 from zope.browserpage.viewpagetemplatefile import ViewPageTemplateFile
-from zope.interface import implementsOnly
+from zope.interface import implementer_only
 from zope.interface import implementer
 from zope.component import getMultiAdapter
 from zope.pagetemplate.interfaces import IPageTemplate
@@ -158,8 +158,8 @@ $('#%(id)s-widgets-query').after(" ");
 """
 
 
+@implementer_only(IContentTreeWidget)
 class ContentTreeBase(Explicit):
-    implementsOnly(IContentTreeWidget)
 
     # XXX: Due to the way the rendering of the QuerySourceRadioWidget works,
     # if we call this 'template' or use a <z3c:widgetTemplate /> directive,
