@@ -14,7 +14,8 @@ New features:
 
 Bug fixes:
 
-- *add item here*
+- Do not filter automatically default pages.
+  [pgrunewald]
 
 
 1.0.15 (2016-08-08)
