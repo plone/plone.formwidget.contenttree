@@ -198,14 +198,17 @@ class PathSource(object):
     # brain. These will get hidden in the display templates
     def _placeholderTerm(self, value):
         return SimpleTerm(str(value),
-                          token='#error-missing-' + value,
-                          title=u"Hidden or missing item '%s'" % value)
+                          token='#error-missing-' + str(value),
+                          title=u"Hidden or missing item '%s'" % str(value))
 
 
 class ObjPathSource(PathSource):
 
     def _getBrainByValue(self, value):
-        return self._getBrainByToken('/'.join(value.getPhysicalPath()))
+        try:
+            return self._getBrainByToken('/'.join(value.getPhysicalPath()))
+        except AttributeError:
+            return None
 
     def getTermByBrain(self, brain, real_value=True):
         if real_value:
