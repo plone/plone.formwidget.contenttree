@@ -161,6 +161,12 @@ class PathSource(object):
     def isBrainSelectable(self, brain):
         if brain is None:
             return False
+        if not getattr(self.selectable_filter, 'criteria', True):
+            # Short circuits expensive index retrieval for large objects.
+            # Without filter criteria selectable_filter will always return true.
+            # For custom implementations of CustomFilter, continue retrieving
+            # indexes.
+            return True
         index_data = self.catalog.getIndexDataForRID(brain.getRID())
         return self.selectable_filter(brain, index_data)
 

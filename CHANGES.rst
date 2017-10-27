@@ -4,17 +4,13 @@ Changelog
 1.0.16 (unreleased)
 -------------------
 
-Breaking changes:
+Fixes:
 
-- *add item here*
-
-New features:
-
-- *add item here*
-
-Bug fixes:
-
-- *add item here*
+- If the widget is loaded without a content filter to limit the content listing,
+  skip retrieving all index data for the brain from the catalog in
+  isBrainSelectable. This considerably speeds up listing folders with many items
+  that have large (SearchableText) indexes.
+  [fredvd, mauritsvanrees]
 
 
 1.0.15 (2016-08-08)
