@@ -10,7 +10,8 @@ Breaking changes:
 
 New features:
 
-- *add item here*
+- Add uninstall profile.
+  [thet]
 
 Bug fixes:
 
