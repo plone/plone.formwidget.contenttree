@@ -4,18 +4,10 @@ Changelog
 1.1.0 (unreleased)
 ------------------
 
-Breaking changes:
-
-- *add item here*
-
 New features:
 
 - Add uninstall profile.
   [thet]
-
-Bug fixes:
-
-- *add item here*
 
 
 1.0.16 (2018-01-17)
