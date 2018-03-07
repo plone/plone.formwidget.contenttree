@@ -1,8 +1,8 @@
 Changelog
 =========
 
-1.0.17 (unreleased)
--------------------
+1.1.0 (unreleased)
+------------------
 
 Breaking changes:
 
