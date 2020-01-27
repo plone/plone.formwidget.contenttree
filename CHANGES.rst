@@ -10,7 +10,7 @@ Breaking changes:
 
 New features:
 
-- *add item here*
+- Added Python 3 compatibility.  [cekk]
 
 Bug fixes:
 
