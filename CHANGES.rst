@@ -4,17 +4,9 @@ Changelog
 1.1.1 (unreleased)
 ------------------
 
-Breaking changes:
-
-- *add item here*
-
 New features:
 
 - Added Python 3 compatibility.  [cekk]
-
-Bug fixes:
-
-- *add item here*
 
 
 1.1.0 (2018-03-07)
