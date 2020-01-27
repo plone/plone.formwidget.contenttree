@@ -16,6 +16,7 @@ setup(
     description=desc,
     long_description=longdesc,
     classifiers=[
+        "Development Status :: 5 - Production/Stable",
         "Framework :: Plone",
         "Framework :: Plone :: 4.3",
         "Framework :: Plone :: 5.0",
