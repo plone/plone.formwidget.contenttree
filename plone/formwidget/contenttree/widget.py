@@ -271,7 +271,7 @@ class ContentTreeBase(Explicit):
             klass=self.klass,
             title=self.title,
             button_val=translate(
-                _(u'label_contenttree_browse', default=u'browse...'),
+                _(u'label_contenttree_browse', default=u'Browse'),
                 context=self.request,
             ),
         )

@@ -1,7 +1,17 @@
-from zope.interface import implementer, Interface
-from zope.component import adapts
-
+from Acquisition import aq_inner
+from plone.app.layout.navigation.interfaces import INavigationQueryBuilder
+from plone.app.layout.navigation.interfaces import INavtreeStrategy
+from plone.app.layout.navigation.root import getNavigationRoot
+from plone.formwidget.contenttree.interfaces import IContentSource
+from plone.formwidget.contenttree.interfaces import IContentTreeWidget
+from plone.i18n.normalizer.interfaces import IIDNormalizer
 from Products.CMFCore.utils import getToolByName
+from Products.CMFPlone import utils
+from zope.component import adapts
+from zope.component import queryUtility
+from zope.interface import Interface
+from zope.interface import implementer
+
 
 try:
     from Products.CMFPlone.browser.navtree import SitemapNavtreeStrategy
@@ -9,15 +19,6 @@ try:
 except ImportError:
     # Plone trunk
     from plone.app.layout.navigation.sitemap import SitemapNavtreeStrategy
-from Products.CMFPlone import utils
-
-from plone.app.layout.navigation.interfaces import INavtreeStrategy
-from plone.app.layout.navigation.interfaces import INavigationQueryBuilder
-
-from plone.app.layout.navigation.root import getNavigationRoot
-
-from plone.formwidget.contenttree.interfaces import IContentSource
-from plone.formwidget.contenttree.interfaces import IContentTreeWidget
 
 
 @implementer(INavigationQueryBuilder)
@@ -110,22 +111,70 @@ class NavtreeStrategy(SitemapNavtreeStrategy):
         return self.widget.bound_source.isBrainSelectable(node['item'])
 
     def decoratorFactory(self, node):
-        new_node = super(NavtreeStrategy, self).decoratorFactory(node)
+        """Cleanup this method's original
+            - remove unused plone view, then request is not needed anymore
+        """
+        context = aq_inner(self.context)
+        # Patch: request empty because acquisiton gone already, but we do not need it anyway
+        # request = context.REQUEST
 
+        newNode = node.copy()
+        item = node['item']
+
+        portalType = getattr(item, 'portal_type', None)
+        itemUrl = item.getURL()
+        if portalType is not None and portalType in self.viewActionTypes:
+            itemUrl += '/view'
+
+        useRemoteUrl = False
+        getRemoteUrl = getattr(item, 'getRemoteUrl', None)
+        isCreator = self.memberId == getattr(item, 'Creator', None)
+        if getRemoteUrl and not isCreator:
+            useRemoteUrl = True
+
+        isFolderish = getattr(item, 'is_folderish', None)
+
+        # Patch: remove unused view
+        #layout_view = getMultiAdapter((context, request), name=u'plone_layout')
+
+        newNode['Title'] = utils.pretty_title_or_id(context, item)
+        newNode['id'] = item.getId
+        newNode['UID'] = item.UID
+        newNode['absolute_url'] = itemUrl
+        newNode['getURL'] = itemUrl
+        newNode['path'] = item.getPath()
+        newNode['Creator'] = getattr(item, 'Creator', None)
+        newNode['creation_date'] = getattr(item, 'CreationDate', None)
+        newNode['portal_type'] = portalType
+        newNode['review_state'] = getattr(item, 'review_state', None)
+        newNode['Description'] = getattr(item, 'Description', None)
+        newNode['show_children'] = showChildren
         # Allow entering children even if the type would not normally be
         # expanded in the navigation tree
-        new_node['show_children'] = getattr(new_node['item'],
-                                            'is_folderish',
-                                            False)
-
+        newNode['show_children'] = getattr(item,
+                                           'is_folderish',
+                                           False)
+        newNode['no_display'] = False  # We sort this out with the nodeFilter
+        # BBB getRemoteUrl and link_remote are deprecated, remove in Plone 4
+        newNode['getRemoteUrl'] = getattr(item, 'getRemoteUrl', None)
+        newNode['useRemoteUrl'] = useRemoteUrl
+        newNode['link_remote'] = (
+            newNode['getRemoteUrl'] and newNode['Creator'] != self.memberId
+        )
         # Mark selectable nodes
-        new_node['selectable'] = self.widget.bound_source.isBrainSelectable(
-            new_node['item'])
+        newNode['selectable'] = self.widget.bound_source.isBrainSelectable(item)
+
+        idnormalizer = queryUtility(IIDNormalizer)
+        newNode['normalized_portal_type'] = idnormalizer.normalize(portalType)
+        newNode['normalized_review_state'] = idnormalizer.normalize(
+            newNode['review_state']
+        )
+        newNode['normalized_id'] = idnormalizer.normalize(newNode['id'])
 
         # turn all strings to unicode to render non ascii characters
         # in the recursion template
-        for key, value in new_node.items():
+        for key, value in newNode.items():
             if isinstance(value, str):
-                new_node[key] = unicode(value, self.site_encoding)
+                newNode[key] = unicode(value, self.site_encoding)
 
-        return new_node
+        return newNode
