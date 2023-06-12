@@ -1,8 +1,8 @@
 Changelog
 =========
 
-1.0.16 (unreleased)
--------------------
+1.2.1 (unreleased)
+------------------
 
 Breaking changes:
 
@@ -16,6 +16,35 @@ Bug fixes:
 
 - Do not filter automatically default pages.
   [pgrunewald]
+
+
+1.2.0 (2020-01-27)
+------------------
+
+New features:
+
+- Added Python 3 compatibility.  [cekk]
+
+
+1.1.0 (2018-03-07)
+------------------
+
+New features:
+
+- Add uninstall profile.
+  [thet]
+
+
+1.0.16 (2018-01-17)
+-------------------
+
+Fixes:
+
+- If the widget is loaded without a content filter to limit the content listing,
+  skip retrieving all index data for the brain from the catalog in
+  isBrainSelectable. This considerably speeds up listing folders with many items
+  that have large (SearchableText) indexes.
+  [fredvd, mauritsvanrees]
 
 
 1.0.15 (2016-08-08)

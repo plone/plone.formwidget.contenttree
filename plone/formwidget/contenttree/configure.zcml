@@ -30,5 +30,12 @@
         for="Products.CMFPlone.interfaces.IPloneSiteRoot"
         provides="Products.GenericSetup.interfaces.EXTENSION"
         />
+    <gs:registerProfile
+        name="uninstall"
+        title="Content tree widget (uninstall)"
+        directory="profiles/uninstall"
+        for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+        provides="Products.GenericSetup.interfaces.EXTENSION"
+        />
 
 </configure>

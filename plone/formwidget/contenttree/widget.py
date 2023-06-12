@@ -20,8 +20,10 @@ from z3c.formwidget.query.widget import SourceTerms
 from plone.app.layout.navigation.interfaces import INavtreeStrategy
 from plone.app.layout.navigation.navtree import buildFolderTree
 
-from plone.formwidget.autocomplete.widget import \
-    AutocompleteSelectionWidget, AutocompleteMultiSelectionWidget
+from plone.formwidget.autocomplete.widget import (
+    AutocompleteSelectionWidget,
+    AutocompleteMultiSelectionWidget,
+)
 
 from Products.CMFCore.utils import getToolByName
 from Products.Five.browser import BrowserView
@@ -50,7 +52,7 @@ class Fetch(BrowserView):
             return
 
         url = self.request.getURL()
-        view_name = url[len(content.absolute_url()):].split('/')[1]
+        view_name = url[len(content.absolute_url()) :].split('/')[1]
 
         # May raise Unauthorized
 
@@ -61,8 +63,9 @@ class Fetch(BrowserView):
             view_name = '@@' + view_name
 
         view_instance = content.restrictedTraverse(view_name)
-        getSecurityManager().validate(content, content, view_name,
-                                      view_instance)
+        getSecurityManager().validate(
+            content, content, view_name, view_instance
+        )
 
     def __call__(self):
         # We want to check that the user was indeed allowed to access the
@@ -101,11 +104,13 @@ class Fetch(BrowserView):
 
         children = []
         for brain in catalog(navtree_query):
-            newNode = {'item': brain,
-                       'depth': -1,  # not needed here
-                       'currentItem': False,
-                       'currentParent': False,
-                       'children': []}
+            newNode = {
+                'item': brain,
+                'depth': -1,  # not needed here
+                'currentItem': False,
+                'currentParent': False,
+                'children': [],
+            }
             if strategy.nodeFilter(newNode):
                 newNode = strategy.decoratorFactory(newNode)
                 children.append(newNode)
@@ -177,8 +182,10 @@ class ContentTreeBase(Explicit):
     multi_select = False
 
     # Overrides for autocomplete widget
-    formatItem = ('function(row, idx, count, value) {'
-                  '  return row[1] + " (" + row[0] + ")"; }')
+    formatItem = (
+        'function(row, idx, count, value) {'
+        '  return row[1] + " (" + row[0] + ")"; }'
+    )
 
     # By default, only show 'interesting' nodes, that is: nodes that
     # are selectable or that are folders.
@@ -194,7 +201,14 @@ class ContentTreeBase(Explicit):
     def update(self):
         super(ContentTreeBase, self).update()
         if not self.terms:
-            self.terms = SourceTerms(self.context, self.request, self.form, self.field, self, self._bound_source)
+            self.terms = SourceTerms(
+                self.context,
+                self.request,
+                self.form,
+                self.field,
+                self,
+                self._bound_source,
+            )
             self.updateQueryWidget()
 
     def render_tree(self):
@@ -202,13 +216,14 @@ class ContentTreeBase(Explicit):
         source = self.bound_source
 
         strategy = getMultiAdapter((content, self), INavtreeStrategy)
-        data = buildFolderTree(content,
-                               obj=content,
-                               query=source.navigation_tree_query,
-                               strategy=strategy)
+        data = buildFolderTree(
+            content,
+            obj=content,
+            query=source.navigation_tree_query,
+            strategy=strategy,
+        )
 
-        return self.recurse_template(children=data.get('children', []),
-                                     level=1)
+        return self.recurse_template(children=data.get('children', []), level=1)
 
     def render(self):
         if self.mode == z3c.form.interfaces.DISPLAY_MODE:
@@ -221,7 +236,7 @@ class ContentTreeBase(Explicit):
     def renderForValue(self, value):
         try:
             return super(ContentTreeBase, self).renderForValue(value)
-        except LookupError, e:
+        except LookupError as e:
             if value != z3c.form.widget.SequenceWidget.noValueToken:
                 raise e
         item = {
@@ -232,7 +247,8 @@ class ContentTreeBase(Explicit):
         }
         template = getMultiAdapter(
             (self.context, self.request, self.form, self.field, self),
-            IPageTemplate, name=self.mode + '_single'
+            IPageTemplate,
+            name=self.mode + '_single',
         )
         return template(self, item)
 
@@ -256,7 +272,7 @@ class ContentTreeBase(Explicit):
             title=self.title,
             button_val=translate(
                 _(u'label_contenttree_browse', default=u'browse...'),
-                context=self.request
+                context=self.request,
             ),
         )
 
@@ -264,6 +280,7 @@ class ContentTreeBase(Explicit):
 class ContentTreeWidget(ContentTreeBase, AutocompleteSelectionWidget):
     """ContentTree widget that allows single selection.
     """
+
     klass = u"contenttree-widget"
     display_template = ViewPageTemplateFile('display_single.pt')
 
@@ -271,6 +288,7 @@ class ContentTreeWidget(ContentTreeBase, AutocompleteSelectionWidget):
 class MultiContentTreeWidget(ContentTreeBase, AutocompleteMultiSelectionWidget):
     """ContentTree widget that allows multiple selection
     """
+
     klass = u"contenttree-widget"
     multi_select = True
     display_template = ViewPageTemplateFile('display_multiple.pt')
