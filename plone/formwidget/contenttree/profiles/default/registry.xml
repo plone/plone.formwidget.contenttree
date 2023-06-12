@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<registry>
+    <records prefix="plone.resources/plone.formwidget.contenttree"
+             interface='Products.CMFPlone.interfaces.IResourceRegistry'>
+        <value key="js">++resource++plone.formwidget.contenttree/contenttree.js</value>
+        <value key="css">
+            <element>++resource++plone.formwidget.contenttree/contenttree.css</element>
+        </value>
+    </records>
+
+    <records prefix="plone.bundles/plone-legacy"
+                interface='Products.CMFPlone.interfaces.IBundleRegistry'>
+        <value key="resources" purge="false">
+            <element>plone.formwidget.contenttree</element>
+        </value>
+    </records>
+</registry>
