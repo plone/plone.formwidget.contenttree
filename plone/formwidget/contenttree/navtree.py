@@ -133,6 +133,12 @@ class NavtreeStrategy(SitemapNavtreeStrategy):
             useRemoteUrl = True
 
         isFolderish = getattr(item, 'is_folderish', None)
+        showChildren = False
+        if isFolderish and \
+                (portalType is None or portalType not in self.parentTypesNQ):
+            showChildren = True
+
+        isFolderish = getattr(item, 'is_folderish', None)
 
         # Patch: remove unused view
         #layout_view = getMultiAdapter((context, request), name=u'plone_layout')
