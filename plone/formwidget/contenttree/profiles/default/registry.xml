@@ -13,5 +13,6 @@
         <value key="resources" purge="false">
             <element>plone.formwidget.contenttree</element>
         </value>
+        <value key="merge_with"></value>
     </records>
 </registry>
