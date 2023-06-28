@@ -16,6 +16,5 @@ msgstr ""
 
 #. Default: "Browse"
 #: ./widget.py:274
-#, fuzzy
 msgid "label_contenttree_browse"
 msgstr "Durchsuchen"
