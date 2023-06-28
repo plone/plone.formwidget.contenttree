@@ -97,9 +97,6 @@ class Fetch(BrowserView):
         if directory is not None:
             navtree_query['path'] = {'depth': 1, 'query': directory}
 
-        if 'is_default_page' not in navtree_query:
-            navtree_query['is_default_page'] = False
-
         content = closest_content(context)
 
         strategy = getMultiAdapter((content, widget), INavtreeStrategy)
@@ -274,7 +271,7 @@ class ContentTreeBase(Explicit):
             klass=self.klass,
             title=self.title,
             button_val=translate(
-                _(u'label_contenttree_browse', default=u'browse...'),
+                _(u'label_contenttree_browse', default=u'Browse'),
                 context=self.request,
             ),
         )
