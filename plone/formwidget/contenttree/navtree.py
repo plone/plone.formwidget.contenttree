@@ -124,7 +124,7 @@ class NavtreeStrategy(SitemapNavtreeStrategy):
 
         # turn all strings to unicode to render non ascii characters
         # in the recursion template
-        for key, value in new_node.items():
+        for key, value in list(new_node.items()):
             if isinstance(value, str):
                 new_node[key] = unicode(value, self.site_encoding)
 

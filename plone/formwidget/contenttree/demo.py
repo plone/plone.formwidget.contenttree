@@ -36,14 +36,14 @@ class TestAdapter(object):
         return None
 
     def _set_buddy(self, value):
-        print "setting", value
+        print("setting", value)
     buddy = property(_get_buddy, _set_buddy)
 
     def _get_friends(self):
         return []
 
     def _set_friends(self, value):
-        print "setting", value
+        print("setting", value)
     friends = property(_get_friends, _set_friends)
 
 
@@ -57,6 +57,6 @@ class TestForm(form.Form):
     @button.buttonAndHandler(u'Ok')
     def handle_ok(self, action):
         data, errors = self.extractData()
-        print data, errors
+        print(data, errors)
 
 TestView = layout.wrap_form(TestForm)

@@ -35,7 +35,7 @@ class CustomFilter(object):
 
     def __init__(self, **kw):
         self.criteria = {}
-        for key, value in kw.items():
+        for key, value in list(kw.items()):
             if (not isinstance(value, (list, tuple, set, frozenset))
                     and not key == 'path'):
                 self.criteria[key] = [value]
@@ -45,7 +45,7 @@ class CustomFilter(object):
                 self.criteria[key] = value
 
     def __call__(self, brain, index_data):
-        for key, value in self.criteria.items():
+        for key, value in list(self.criteria.items()):
             test_value = index_data.get(key, None)
             if test_value is not None:
                 if (not isinstance(test_value, (list, tuple, set, frozenset))
