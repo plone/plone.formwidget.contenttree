@@ -33,8 +33,9 @@ class QueryBuilder(object):
     def __call__(self):
         context = self.context
 
-        portal_properties = getToolByName(context, 'portal_properties')
-        navtree_properties = getattr(portal_properties, 'navtree_properties')
+        # MIGRATION-PLONE6
+        # portal_properties = getToolByName(context, 'portal_properties')
+        # navtree_properties = getattr(portal_properties, 'navtree_properties')
 
         query = {}
 
@@ -56,12 +57,13 @@ class QueryBuilder(object):
         query['portal_type'] = utils.typesToList(context)
 
         # Apply the desired sort
-        sortAttribute = navtree_properties.getProperty('sortAttribute', None)
-        if sortAttribute is not None:
-            query['sort_on'] = sortAttribute
-            sortOrder = navtree_properties.getProperty('sortOrder', None)
-            if sortOrder is not None:
-                query['sort_order'] = sortOrder
+        # MIGRATION-PLONE6 : are the attributes yet available ?
+        # sortAttribute = navtree_properties.getProperty('sortAttribute', None)
+        # if sortAttribute is not None:
+        #     query['sort_on'] = sortAttribute
+        #     sortOrder = navtree_properties.getProperty('sortOrder', None)
+        #     if sortOrder is not None:
+        #         query['sort_order'] = sortOrder
 
         return query
 
